@@ -198,12 +198,19 @@ foreach ($steps as $step) {
                 $body = preg_replace('/(^|&)cfg_board_title=[^&]*/', '$1cfg_board_title=' . urlencode("Forum $db"), $body);
                 $body = preg_replace('/(^|&)cfg_pubwrite=[^&]*/', '$1cfg_pubwrite=1', $body);
                 $body = preg_replace('/(^|&)cfg_captcha=[^&]*/', '$1cfg_captcha=0', $body);
+                // Settings which can't be empty: emptied, they get their defaults back (and the administrator is told)
+                foreach (array('cfg_filetypes', 'cfg_imagemimetypes', 'cfg_threads_per_page') as $emptied) {
+                    $body = preg_replace('/(^|&)' . $emptied . '=[^&]*/', '$1' . $emptied . '=', $body);
+                }
                 $body .= '&task=save';
                 $admin->post('administrator/index.php?option=com_kunena&view=config', $body);
                 list($ok, $note) = check($admin, 'config', 'config-save');
+                $restoredNotice = strpos($admin->last, 'were set back to their default values') !== false;
                 $admin->get('administrator/' . kurl('view=config'));
                 $ok = $ok && strpos($admin->last, "Forum $db") !== false;
                 result('config', $ok, $note);
+                $cfgNow = kexecJson('$c = KunenaConfig::getInstance(); return json_encode(array($c->filetypes, $c->imagemimetypes, (int) $c->threads_per_page));');
+                result('config-empty-defaults', $restoredNotice && is_array($cfgNow) && strpos($cfgNow[0], 'docx') !== false && strpos($cfgNow[1], 'image/webp') !== false && $cfgNow[2] === 20, json_encode($cfgNow));
                 break;
             case 'site':
                 $site_c = new JClient($base, "$out/$db-site.jar");
@@ -378,6 +385,26 @@ foreach ($steps as $step) {
                     return json_encode($r);');
                 $ok = !empty($img['webp']) && $img['webp_out'] === array(100, 67, 'image/webp') && (empty($img['avif']) || $img['avif_out'] === array(100, 67, 'image/avif'));
                 result('images-webp-avif', $ok, json_encode($img));
+
+                // A real upload through Kunena's upload task (as Blackadder's posting form sends it), with "Check MIME types" on
+                $made = kexecJson('$r = array(); foreach (array("webp", "avif") as $ext) { if (!KunenaImage::canProcess($ext)) { continue; } $f = JPATH_SITE . "/tmp/kunena-upload-test.$ext"; $h = imagecreatetruecolor(120, 80); imagefill($h, 0, 0, imagecolorallocate($h, 30, 120, 200)); $ext === "webp" ? imagewebp($h, $f, 80) : imageavif($h, $f, 80); $r[$ext] = $f; } return json_encode(array("files" => $r, "check" => (int) KunenaConfig::getInstance()->checkmimetypes));');
+                $form = $fe->get(kurl("view=topic&layout=reply&catid=$cid&id=$tid"));
+                $uploads = array();
+                if (preg_match('#data-kb-upload-url="([^"]+)"#', $form, $um) && !empty($made['files'])) {
+                    foreach ($made['files'] as $ext => $file) {
+                        $fe->post(html_entity_decode($um[1]), array('file' => new CURLFile($file, "image/$ext", "photo.$ext"), 'catid' => $cid, 'filename' => "photo.$ext", 'size' => filesize($file), 'mime' => "image/$ext"));
+                        $json = json_decode($fe->last, true);
+                        $uploads[$ext] = !empty($json['success']) && !empty($json['data']['id']) ? (int) $json['data']['id'] : substr(strip_tags($fe->last), 0, 200);
+                    }
+                }
+                $stored = array();
+                foreach ($uploads as $ext => $id) {
+                    if (is_int($id)) {
+                        // Checked, then deleted (later scenarios count the attachments)
+                        $stored[$ext] = kexecJson('$a = KunenaAttachmentHelper::get(' . $id . '); $r = array($a->filetype, is_file(JPATH_SITE . "/" . $a->folder . "/" . $a->filename)); $a->delete(); return json_encode($r);');
+                    }
+                }
+                result('upload-webp-avif', !empty($made['check']) && isset($stored['webp']) && $stored['webp'] === array('image/webp', true) && (!isset($made['files']['avif']) || (isset($stored['avif']) && $stored['avif'] === array('image/avif', true))), json_encode(array($uploads, $stored)));
 
                 // Configuration: SEO and Development tabs, automatic locking, resolved threads, units beside their fields
                 $admin->get('administrator/' . kurl('view=config'));

@@ -215,7 +215,8 @@ abstract class KunenaForum
             $cache->setCaching(0);
         }
 
-        $cache->setLifeTime($config->get('cache_time', 60));
+        // The setting is in seconds (the list shows minutes); Joomla's cache lifetime is in minutes
+        $cache->setLifeTime(max(1, (int) ceil((int) $config->get('cache_time', 60) / 60)));
 
         // Setup error logging.
         jimport('joomla.error.log');

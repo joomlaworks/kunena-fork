@@ -1849,7 +1849,8 @@ class KunenaBbcodeLibrary extends Nbbc\BBCodeLibrary
     {
         $cache = Factory::getCache('Kunena_ebay_request');
         $cache->setCaching(true);
-        $cache->setLifeTime(KunenaFactory::getConfig()->get('cache_time', 60));
+        // The setting is in seconds; Joomla's cache lifetime is in minutes
+        $cache->setLifeTime(max(1, (int) ceil((int) KunenaFactory::getConfig()->get('cache_time', 60) / 60)));
         $ebay_item = $cache->call(array('KunenaBbcodeLibrary', 'getEbayItem'), $ItemID);
 
         return $ebay_item;

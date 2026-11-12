@@ -721,7 +721,7 @@ class KunenaConfig extends CMSObject
      * @var    string  Image MIME types; textbox, string
      * @since  1.6.0
      */
-    public $imagemimetypes = 'image/jpeg,image/jpg,image/gif,image/png';
+    public $imagemimetypes = 'image/jpeg,image/jpg,image/gif,image/png,image/webp,image/avif';
 
     /**
      * @var    integer  Image quality; input, number

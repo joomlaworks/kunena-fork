@@ -75,7 +75,8 @@ abstract class KunenaModule
             $cache = Factory::getCache('com_kunena', 'output');
 
             $me = KunenaFactory::getUser();
-            $cache->setLifeTime($this->params->get('cache_time', 180));
+            // The module's cache time is in seconds (as Joomla's field says); Joomla's cache lifetime is in minutes
+            $cache->setLifeTime(max(1, (int) ceil((int) $this->params->get('cache_time', 180) / 60)));
             $hash = md5(serialize($this->params));
 
             if ($cache->start("display.{$me->userid}.{$hash}", 'mod_kunenalatest')) {

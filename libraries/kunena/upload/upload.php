@@ -782,11 +782,18 @@ class KunenaUpload
      */
     public function imagemimetypes($outFile)
     {
-        // check against whitelist of MIME types
-        $validFileTypes = explode(",", KunenaConfig::getInstance()->imagemimetypes);
-        $mime = KunenaFile::getMime($outFile);
+        $config = KunenaConfig::getInstance();
 
-        if (!in_array($mime, $validFileTypes)) {
+        // Configuration > Posting > Images: "Check MIME types"
+        if (!$config->checkmimetypes) {
+            return;
+        }
+
+        // check against whitelist of MIME types (commas with or without spaces)
+        $validFileTypes = array_filter(array_map('trim', explode(',', strtolower((string) $config->imagemimetypes))), 'strlen');
+        $mime           = strtolower((string) KunenaFile::getMime($outFile));
+
+        if (!in_array($mime, $validFileTypes, true)) {
             throw new RuntimeException(Text::_('COM_KUNENA_UPLOAD_ERROR_MIME'), 500);
         }
     }

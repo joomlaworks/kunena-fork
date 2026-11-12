@@ -667,7 +667,7 @@ Check back soon!') : echo 'class="changed"'; endif; ?>>
 													<td><?php echo $this->lists ['checkmimetypes'] ?></td>
 													<td><?php echo Text::_('COM_KUNENA_A_IMAGECHECKMIMETYPES_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->imagemimetypes != 'image/jpeg,image/jpg,image/gif,image/png') : echo 'class="changed"'; endif; ?>>
+												<tr <?php if ($this->config->imagemimetypes != 'image/jpeg,image/jpg,image/gif,image/png,image/webp,image/avif') : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_IMAGEALLOWEDMIMETYPES') ?></td>
 													<td>
 														<input type="text" name="cfg_imagemimetypes"

@@ -739,6 +739,21 @@ category, index and user list controllers call from `prepareDocument()`:
   them, the upload is refused with a clear message instead of failing later.
 - **Avatar types with or without spaces:** the avatar upload split the allowed types on ", " only, so a list saved as
   `gif,jpg,png` (which saving the configuration produces) refused every avatar.
+- **Emptied settings get their defaults back:** saving the configuration with a required text setting left empty (the
+  allowed file, image and avatar types, the image MIME types, page sizes, limits...) stored it empty: no file type
+  allowed refused every upload, 0 threads per page broke the lists. Such settings now get their default back on saving,
+  and a notice names them; settings where empty means something (the e-mail header: no image; the RSS item limit: no
+  limit; the eBay affiliate ID) can still be emptied. Lists of extensions are cleaned before the check, so a list of
+  only forbidden types counts as empty.
+- **WebP and AVIF uploads were refused:** every uploaded image and avatar was checked against the image MIME types,
+  whose default lacked `image/webp` and `image/avif`, and whether "Check MIME types" was on or not. The default list has
+  them (upgraded sites still on the old default list get the new one), the option is honoured, and the list is read with
+  or without spaces. An end-to-end test now uploads WebP and AVIF files through Kunena's upload task.
+- **Cache times were 60 times too long:** Kunena's cache time, the RSS feed cache and the modules' cache time are in
+  seconds (the lists show 1, 5, 15... minutes), but were passed to Joomla's cache as minutes: "1 minute" kept output for
+  an hour, the RSS feeds' "15 minutes" for 15 hours. They are converted now.
+- **Help texts** of the file, image and avatar types, the image MIME types and the image quality show the current
+  defaults and behaviour.
 - **Configuration page:** the units of number fields (kB, px, %, days) stay beside their fields instead of wrapping
   below; the Development tab's options are Joomla's Yes/No buttons; every setting holding an image (default share image,
   e-mail header, default avatar and small avatar) uses Joomla's media field, which opens the Media Manager. Default

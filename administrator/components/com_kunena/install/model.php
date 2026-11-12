@@ -1300,6 +1300,7 @@ class KunenaModelInstall extends \Joomla\CMS\MVC\Model\BaseDatabaseModel
         $defaults = array(
             'avatartypes' => array('gif, jpeg, jpg, png', 'gif,jpeg,jpg,png,webp,avif'),
             'imagetypes'  => array('jpg,jpeg,gif,png', 'jpg,jpeg,gif,png,webp,avif'),
+            'imagemimetypes' => array('image/jpeg,image/jpg,image/gif,image/png', 'image/jpeg,image/jpg,image/gif,image/png,image/webp,image/avif'),
             'filetypes'   => array('txt,rtf,pdf,zip,tar.gz,tgz,tar.bz2', 'txt,rtf,pdf,zip,tar.gz,tgz,tar.bz2,csv,doc,docx,xls,xlsx,ppt,pptx,odt,ods,odp,mp3,m4a,ogg,wav,flac,mp4,webm,mov'),
         );
 

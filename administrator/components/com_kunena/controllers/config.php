@@ -86,6 +86,11 @@ class KunenaAdminControllerConfig extends KunenaController
         }
 
         $properties = $this->config->getProperties();
+        $defaults   = get_class_vars('KunenaConfig');
+        $restored   = array();
+
+        // Settings which may be left empty although their default isn't
+        $mayBeEmpty = array('ebay_affiliate_id', 'emailheader', 'rss_limit');
 
         $post_config = $this->app->input->post->getArray();
 
@@ -100,18 +105,18 @@ class KunenaAdminControllerConfig extends KunenaController
 
                 $postname = Joomla\String\StringHelper::strtolower(Joomla\String\StringHelper::substr($postsetting, 4));
 
-                if ($postname == 'imagewidth' || $postname == 'imageheight') {
-                    if (empty($postvalue)) {
-                        $this->app->enqueueMessage(Text::_('COM_KUNENA_IMAGEWIDTH_IMAGEHEIGHT_EMPTY_CONFIG_NOT_SAVED'));
-                        $this->setRedirect(KunenaRoute::_($url, false));
-
-                        return;
-                    }
-                }
 
                 // Never allow executable / active content extensions to be whitelisted for uploads.
                 if (in_array($postname, array('filetypes', 'imagetypes', 'avatartypes'), true)) {
                     $postvalue = $this->sanitizeExtensionList($postvalue);
+                }
+
+                // A setting with a default can't be emptied (e.g. the allowed file types: none would refuse every upload):
+                // it gets its default back, and the administrator is told so
+                if (trim((string) $postvalue) === '' && isset($defaults[$postname]) && is_scalar($defaults[$postname])
+                    && (string) $defaults[$postname] !== '' && !in_array($postname, $mayBeEmpty, true)) {
+                    $postvalue             = $defaults[$postname];
+                    $restored[$postname] = $postname;
                 }
 
                 // No matter what got posted, we only store config parameters defined
@@ -123,6 +128,10 @@ class KunenaAdminControllerConfig extends KunenaController
         }
 
         $this->config->save();
+
+        if ($restored) {
+            $this->app->enqueueMessage(Text::sprintf('COM_KUNENA_CFG_EMPTY_RESTORED', implode(', ', $this->settingLabels($restored))), 'notice');
+        }
 
         $this->app->enqueueMessage(Text::_('COM_KUNENA_CONFIGSAVED'));
 
@@ -197,5 +206,32 @@ class KunenaAdminControllerConfig extends KunenaController
         $this->config->save();
 
         $this->setRedirect('index.php?option=com_kunena&view=config', Text::_('COM_KUNENA_CONFIG_DEFAULT'));
+    }
+
+    /**
+     * The labels of settings as the configuration page shows them (its row's first language string), for messages.
+     *
+     * @param   string[]  $names  Setting names
+     *
+     * @return  string[]
+     *
+     * @since 5.3.0
+     */
+    protected function settingLabels(array $names)
+    {
+        $page   = (string) @file_get_contents(KPATH_ADMIN . '/template/j3/config/default.php');
+        $labels = array();
+
+        foreach ($names as $name) {
+            $label = $name;
+
+            if (preg_match('#<tr[^>]*\\$this->config->' . preg_quote($name, '#') . '\\b.*?Text::_\\(\'([A-Z0-9_]+)\'\\)#s', $page, $m)) {
+                $label = Text::_($m[1]);
+            }
+
+            $labels[] = '"' . trim(strip_tags($label)) . '"';
+        }
+
+        return $labels;
     }
 }

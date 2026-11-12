@@ -43,7 +43,8 @@ class KunenaViewTopics extends KunenaView
         } else {
             if ($this->config->rss_cache >= 1) {
                 $cache->setCaching(1);
-                $cache->setLifeTime($this->config->rss_cache);
+                // The setting is in seconds (the list shows minutes); Joomla's cache lifetime is in minutes
+                $cache->setLifeTime(max(1, (int) ceil($this->config->rss_cache / 60)));
             } else {
                 $cache->setCaching(0);
             }
