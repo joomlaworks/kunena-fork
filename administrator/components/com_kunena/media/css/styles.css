@@ -107,3 +107,9 @@
 	vertical-align: text-top;
 	margin-top: -0.375em;
 }
+
+/* Tab bars wrap onto a second row instead of hiding tabs behind a horizontal scroll (the configuration has ten) */
+#kunena .nav-tabs {
+	flex-wrap: wrap;
+	overflow-x: visible;
+}

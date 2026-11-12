@@ -20,7 +20,7 @@ use Joomla\CMS\Uri\Uri;
 /**
  * Search engine and social sharing metadata of the forum pages: Google's structured data (JSON-LD) for discussions
  * (DiscussionForumPosting with its replies as Comment) and forum profiles (ProfilePage), and the OpenGraph and X (Twitter)
- * card tags. The display controllers call it from prepareDocument(); Kunena > Configuration > SEO switches each
+ * card tags. The display controllers call it from prepareDocument(); Kunena > Configuration > SEO & Feeds switches each
  * part on or off (for sites where an SEO extension writes these tags).
  *
  * Structured data describes only what a visitor sees: published posts of categories guests can read, the posts on

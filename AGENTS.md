@@ -311,7 +311,7 @@ Rules:
   to it through `onStructuredDataBeforeRender` (System - Kunena plugin -> `KunenaSeo::render()`): Kunena's tags replace
   the generic ones and its nodes join the plugin's `@graph`. Otherwise Kunena writes them itself; JSON-LD always as a
   custom tag of its own (`addCustomTag()`), never `addScriptDeclaration()` (Joomla merges same-type declarations).
-- Settings: Kunena > Configuration > SEO (`seo_structured_data`, `seo_social_tags`, `seo_share_image`, `seo_x_site`).
+- Settings: Kunena > Configuration > SEO & Feeds (`seo_structured_data`, `seo_social_tags`, `seo_share_image`, `seo_x_site`).
 - Development and test sites: Configuration > Development > "Don't send e-mails" (`dev_disable_email`); new code that
   sends mail checks `KunenaEmail::isDisabled()` (or goes through `KunenaEmail::send()`, which does).
 

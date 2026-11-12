@@ -46,32 +46,40 @@ HTMLHelper::_('behavior.tabstate');
 							<div class="tabbable-line">
 								<ul class="nav nav-tabs">
 									<li class="active">
-										<a href="#tab_global"
-										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_CFG_TAB_GLOBAL'); ?></a>
+										<a href="#tab_general"
+										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_CFG_TAB_GENERAL'); ?></a>
 									</li>
 									<li>
-										<a href="#tab_frontend"
-										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_A_FRONTEND'); ?></a>
+										<a href="#tab_display"
+										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_CFG_TAB_DISPLAY'); ?></a>
+									</li>
+									<li>
+										<a href="#tab_posting"
+										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_CFG_TAB_POSTING'); ?></a>
+									</li>
+									<li>
+										<a href="#tab_members"
+										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_CFG_TAB_MEMBERS'); ?></a>
+									</li>
+									<li>
+										<a href="#tab_notifications"
+										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_CFG_TAB_NOTIFICATIONS'); ?></a>
 									</li>
 									<li>
 										<a href="#tab_security"
-										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_A_SECURITY'); ?></a>
+										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_CFG_TAB_SECURITY'); ?></a>
 									</li>
 									<li>
 										<a href="#tab_seo"
-										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_CFG_TAB_SEO'); ?></a>
+										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_CFG_TAB_SEO_FEEDS'); ?></a>
 									</li>
 									<li>
-										<a href="#tab_backend"
-										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_CFG_TAB_BACKEND'); ?></a>
+										<a href="#tab_integrations"
+										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_CFG_TAB_INTEGRATIONS'); ?></a>
 									</li>
 									<li>
-										<a href="#tab_users"
-										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_A_USERS'); ?></a>
-									</li>
-									<li>
-										<a href="#tab_thirdparty"
-										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_CFG_TAB_THIRDPARTY'); ?></a>
+										<a href="#tab_system"
+										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_CFG_TAB_SYSTEM'); ?></a>
 									</li>
 									<li>
 										<a href="#tab_development"
@@ -80,9 +88,9 @@ HTMLHelper::_('behavior.tabstate');
 								</ul>
 
 								<div class="tab-content">
-									<div class="tab-pane active" id="tab_global">
+									<div class="tab-pane active" id="tab_general">
 										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_A_BASIC_SETTINGS') ?></legend>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_FORUM') ?></legend>
 											<table class="table table-striped">
 												<thead>
 												<tr>
@@ -127,94 +135,10 @@ Check back soon!') : echo 'class="changed"'; endif; ?>>
 												</tbody>
 											</table>
 										</fieldset>
-										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_EMAIL') ?></legend>
-											<table class="table table-striped">
-												<thead>
-												<tr>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
-													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
-												</tr>
-												</thead>
-												<tbody>
-												<tr <?php if ($this->config->email != '') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_EMAIL') ?></td>
-													<td>
-														<input type="text" name="cfg_email"
-														       value="<?php echo $this->escape($this->config->email) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_EMAIL_DESC2') ?></td>
-												</tr>
-												<tr <?php if ($this->config->send_emails != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_SEND_EMAILS') ?></td>
-													<td><?php echo $this->lists ['send_emails'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_SEND_EMAILS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->email_sender_name != '') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CONFIG_EMAIL_SENDER_NAME') ?></td>
-													<td>
-														<input type="text" name="cfg_email_sender_name"
-														       value="<?php echo $this->escape($this->config->email_sender_name) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_CONFIG_EMAIL_SENDER_NAME_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->mailmod != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_MAILMOD') ?></td>
-													<td><?php echo $this->lists ['mailmod'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_MAILMOD_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->mailadmin != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_MAILADMIN') ?></td>
-													<td><?php echo $this->lists ['mailadmin'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_MAILADMIN_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->emailheader != 'media/kunena/email/hero-wide.png') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_EMAIL_HEADER') ?></td>
-													<td><?php echo $this->lists ['emailheader'] ?>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_EMAIL_HEADER_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->mailfull != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_MAILFULL') ?></td>
-													<td><?php echo $this->lists ['mailfull'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_MAILFULL_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->plain_email != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_PLAINEMAIL') ?></td>
-													<td><?php echo $this->lists ['plain_email'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_PLAINEMAIL_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->use_system_emails != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_USE_SYSTEM_EMAILS') ?></td>
-													<td><?php echo $this->lists ['use_system_emails'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_USE_SYSTEM_EMAILS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->email_recipient_count != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_SUBSCRIPTIONS_EMAIL_RECIPIENT_COUNT') ?></td>
-													<td><?php echo HTMLHelper::_('select.integerlist', 0, 100, 5, 'cfg_email_recipient_count', array('id' => 'cfg_email_recipient_count', 'list.select' => (int) $this->config->email_recipient_count)) ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_SUBSCRIPTIONS_EMAIL_RECIPIENT_COUNT_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->email_recipient_privacy != 'bcc') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_SUBSCRIPTIONS_EMAIL_RECIPIENT_PRIVACY') ?></td>
-													<td><?php echo $this->lists ['email_recipient_privacy'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_SUBSCRIPTIONS_EMAIL_RECIPIENT_PRIVACY_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->email_visible_address != '') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_SUBSCRIPTIONS_EMAIL_VISIBLE_ADDRESS') ?></td>
-													<td>
-														<input type="text" name="cfg_email_visible_address"
-														       value="<?php echo $this->escape($this->config->email_visible_address) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_SUBSCRIPTIONS_EMAIL_VISIBLE_ADDRESS_DESC') ?></td>
-												</tr>
-												</tbody>
-											</table>
-										</fieldset>
 									</div>
-									<div class="tab-pane" id="tab_frontend">
+									<div class="tab-pane" id="tab_display">
 										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_LISTS') ?></legend>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_THREAD_LISTS') ?></legend>
 											<table class="table table-striped">
 												<thead>
 												<tr>
@@ -232,36 +156,10 @@ Check back soon!') : echo 'class="changed"'; endif; ?>>
 													</td>
 													<td><?php echo Text::_('COM_KUNENA_A_THREADS_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->messages_per_page != 6) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_MESSAGES') ?></td>
-													<td>
-														<input type="text" name="cfg_messages_per_page"
-														       value="<?php echo $this->escape($this->config->messages_per_page) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_MESSAGES_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->messages_per_page_search != 15) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_MESSAGES_SEARCH') ?></td>
-													<td>
-														<input type="text" name="cfg_messages_per_page_search"
-														       value="<?php echo $this->escape($this->config->messages_per_page_search) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_MESSAGES_DESC_SEARCH') ?></td>
-												</tr>
-												<tr <?php if ($this->config->topic_layout != 'flat') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_TOPIC_LAYOUT') ?></td>
-													<td><?php echo $this->lists ['topic_layout'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_TOPIC_LAYOUT_DESC') ?></td>
-												</tr>
 												<tr <?php if ($this->config->default_sort != 'asc') : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_CFG_DEFAULT_SORT') ?></td>
 													<td><?php echo $this->lists ['default_sort'] ?></td>
 													<td><?php echo Text::_('COM_KUNENA_CFG_DEFAULT_SORT_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->ordering_system != 'mesid') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_ORDERING_SYSTEM') ?></td>
-													<td><?php echo $this->lists ['ordering_system'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_REPORT_ORDERING_SYSTEM_DESC') ?></td>
 												</tr>
 												<tr <?php if ($this->config->show_list_time != 720) : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_COM_A_SHOW_TOPICS_FROM_LAST_TIME') ?></td>
@@ -273,40 +171,10 @@ Check back soon!') : echo 'class="changed"'; endif; ?>>
 													<td><?php echo $this->lists ['shownew'] ?></td>
 													<td><?php echo Text::_('COM_KUNENA_A_SHOWNEW_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->showannouncement != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_SHOW_ANNOUNCEMENT') ?></td>
-													<td><?php echo $this->lists ['showannouncement'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_SHOW_ANNOUNCEMENT_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->post_dateformat != 'ago') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CFG_POST_DATEFORMAT') ?></td>
-													<td><?php echo $this->lists ['post_dateformat'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CFG_POST_DATEFORMAT_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->post_dateformat_hover != 'datetime') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CFG_POST_DATEFORMAT_HOVER') ?></td>
-													<td><?php echo $this->lists ['post_dateformat_hover'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CFG_POST_DATEFORMAT_HOVER_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->quickreply != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_QUICK_REPLY') ?></td>
-													<td><?php echo $this->lists ['quickreply'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_QUICK_REPLY_DESC') ?></td>
-												</tr>
 												<tr <?php if ($this->config->topicicons != 1) : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_COM_A_TOPICICONS') ?></td>
 													<td><?php echo $this->lists ['topicicons'] ?></td>
 													<td><?php echo Text::_('COM_KUNENA_COM_A_TOPCIICONS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->lightbox != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_ENABLELIGHTBOX') ?></td>
-													<td><?php echo $this->lists ['lightbox'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_ENABLELIGHTBOX_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->enableforumjump != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_FORUM_JUMP') ?></td>
-													<td><?php echo $this->lists ['enableforumjump'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_FORUM_JUMP_DESC') ?></td>
 												</tr>
 												<tr <?php if ($this->config->latestcategory != '') : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_LATESTCATEGORY') ?></td>
@@ -318,26 +186,16 @@ Check back soon!') : echo 'class="changed"'; endif; ?>>
 													<td><?php echo $this->lists ['latestcategory_in'] ?></td>
 													<td><?php echo Text::_('COM_KUNENA_A_LATESTCATEGORY_IN_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->pickup_category != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_PICKUP_CATEGORY') ?></td>
-													<td><?php echo $this->lists ['pickup_category'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_PICKUP_CATEGORY_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->article_display != 'intro') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_ARTICLE_DISPLAY') ?></td>
-													<td><?php echo $this->lists ['article_display'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_ARTICLE_DISPLAY_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->searchtime != 365) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CFG_SEARCH_TIME') ?></td>
-													<td><?php echo $this->lists ['searchtime'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CFG_SEARCH_TIME_DESC') ?></td>
+												<tr <?php if ($this->config->enableforumjump != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_FORUM_JUMP') ?></td>
+													<td><?php echo $this->lists ['enableforumjump'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_FORUM_JUMP_DESC') ?></td>
 												</tr>
 												</tbody>
 											</table>
 										</fieldset>
 										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_POSTS') ?></legend>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_THREADS') ?></legend>
 											<table class="table table-striped">
 												<thead>
 												<tr>
@@ -347,51 +205,48 @@ Check back soon!') : echo 'class="changed"'; endif; ?>>
 												</tr>
 												</thead>
 												<tbody>
-												<tr <?php if ($this->config->resolve_threads != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CFG_RESOLVE_THREADS') ?></td>
-													<td><?php echo $this->lists ['resolve_threads'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CFG_RESOLVE_THREADS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->autolock_days != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CFG_AUTOLOCK_DAYS') ?></td>
-													<td><span class="kunena-unit-field"><input type="text" name="cfg_autolock_days" class="ksm-field" value="<?php echo (int) $this->config->autolock_days ?>"/> <span><?php echo Text::_('COM_KUNENA_CFG_DAYS') ?></span></span></td>
-													<td><?php echo Text::_('COM_KUNENA_CFG_AUTOLOCK_DAYS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->useredit != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_USER_EDIT') ?></td>
-													<td><?php echo $this->lists ['useredit'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_USER_EDIT_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->useredittime != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_USER_EDIT_TIME') ?></td>
+												<tr <?php if ($this->config->messages_per_page != 6) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_MESSAGES') ?></td>
 													<td>
-														<input type="text" name="cfg_useredittime"
-														       value="<?php echo $this->escape($this->config->useredittime) ?>"/>
+														<input type="text" name="cfg_messages_per_page"
+														       value="<?php echo $this->escape($this->config->messages_per_page) ?>"/>
 													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_USER_EDIT_TIME_DESC') ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_MESSAGES_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->useredittimegrace != 600) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_USER_EDIT_TIMEGRACE') ?></td>
-													<td>
-														<input type="text" name="cfg_useredittimegrace"
-														       value="<?php echo $this->escape($this->config->useredittimegrace) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_USER_EDIT_TIMEGRACE_DESC') ?></td>
+												<tr <?php if ($this->config->topic_layout != 'flat') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_TOPIC_LAYOUT') ?></td>
+													<td><?php echo $this->lists ['topic_layout'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_TOPIC_LAYOUT_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->editmarkup != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_USER_MARKUP') ?></td>
-													<td><?php echo $this->lists ['editmarkup'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_USER_MARKUP_DESC') ?></td>
+												<tr <?php if ($this->config->post_dateformat != 'ago') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_POST_DATEFORMAT') ?></td>
+													<td><?php echo $this->lists ['post_dateformat'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_POST_DATEFORMAT_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->allow_change_subject != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ALLOW_CHANGE_SUBJECT_REPLIES_LABEL') ?></td>
-													<td><?php echo $this->lists ['allow_change_subject'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_ALLOW_CHANGE_SUBJECT_REPLIES_DESC') ?></td>
+												<tr <?php if ($this->config->post_dateformat_hover != 'datetime') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_POST_DATEFORMAT_HOVER') ?></td>
+													<td><?php echo $this->lists ['post_dateformat_hover'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_POST_DATEFORMAT_HOVER_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->disable_re != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_DISABLE_RE') ?></td>
-													<td><?php echo $this->lists ['disable_re'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_DISABLE_RE_DESC') ?></td>
+												<tr <?php if ($this->config->ordering_system != 'mesid') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_ORDERING_SYSTEM') ?></td>
+													<td><?php echo $this->lists ['ordering_system'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_REPORT_ORDERING_SYSTEM_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->lightbox != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_ENABLELIGHTBOX') ?></td>
+													<td><?php echo $this->lists ['lightbox'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_ENABLELIGHTBOX_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->showannouncement != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_SHOW_ANNOUNCEMENT') ?></td>
+													<td><?php echo $this->lists ['showannouncement'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_SHOW_ANNOUNCEMENT_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->article_display != 'intro') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_ARTICLE_DISPLAY') ?></td>
+													<td><?php echo $this->lists ['article_display'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_ARTICLE_DISPLAY_DESC') ?></td>
 												</tr>
 												<tr <?php if ($this->config->showhistory != 1) : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_HISTORY') ?></td>
@@ -414,41 +269,52 @@ Check back soon!') : echo 'class="changed"'; endif; ?>>
 													<td align="left"
 													    valign="top"><?php echo Text::_('COM_KUNENA_CONFIGURATION_RATING_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->reportmsg != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_REPORT') ?></td>
-													<td><?php echo $this->lists ['reportmsg'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_REPORT_DESC') ?></td>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_AUTHORS') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
 												</tr>
-												<tr <?php if ($this->config->boxghostmessage != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_GHOSTMESSAGE') ?></td>
-													<td><?php echo $this->lists ['boxghostmessage'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_GHOSTMESSAGE_DESC') ?></td>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->showranking != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_RANKING') ?></td>
+													<td><?php echo $this->lists ['showranking'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_RANKING_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->hide_ip != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_HIDE_IP') ?></td>
-													<td><?php echo $this->lists ['hide_ip'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_HIDE_IP_DESC') ?></td>
+												<tr <?php if ($this->config->rankimages != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_RANKINGIMAGES') ?></td>
+													<td><?php echo $this->lists ['rankimages'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_RANKINGIMAGES_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->attach_start != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CONFIG_ATTACHMENT_SHORTEN_NAME_START') ?></td>
+												<tr <?php if ($this->config->showuserstats != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_USERSTATS') ?></td>
+													<td><?php echo $this->lists ['showuserstats'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_USERSTATS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->showkarma != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_KARMA') ?></td>
+													<td><?php echo $this->lists ['showkarma'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_KARMA_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->showthankyou != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_THANKYOU') ?></td>
+													<td><?php echo $this->lists ['showthankyou'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_THANKYOU_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->thankyou_max != 10) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_DISPLAY_THANKYOU_NUMBERS') ?></td>
 													<td>
-														<input type="text" name="cfg_attach_start" class="ksm-field"
-														       value="<?php echo $this->escape($this->config->attach_start) ?>"/>
+														<input type="text" name="cfg_thankyou_max" class="ksm-field"
+														       value="<?php echo $this->escape($this->config->thankyou_max) ?>"/>
 													</td>
-													<td><?php echo Text::_('COM_KUNENA_CONFIG_ATTACHMENT_SHORTEN_NAME_START_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->attach_end != 14) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CONFIG_ATTACHMENT_SHORTEN_NAME_END') ?></td>
-													<td>
-														<input type="text" name="cfg_attach_end" class="ksm-field"
-														       value="<?php echo $this->escape($this->config->attach_end) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_CONFIG_ATTACHMENT_SHORTEN_NAME_END_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->display_filename_attachment != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CONFIG_DISPLAY_FILENAME_ATTACHMENT') ?></td>
-													<td><?php echo $this->lists ['display_filename_attachment'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CONFIG_DISPLAY_FILENAME_ATTACHMENT_DESC') ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_DISPLAY_THANKYOU_NUMBERS') ?></td>
 												</tr>
 												</tbody>
 											</table>
@@ -491,65 +357,7 @@ Check back soon!') : echo 'class="changed"'; endif; ?>>
 											</table>
 										</fieldset>
 										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_A_POLL_TITLE') ?></legend>
-											<table class="table table-striped">
-												<thead>
-												<tr>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
-													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
-												</tr>
-												</thead>
-												<tbody>
-												<tr <?php if ($this->config->pollenabled != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_POLL_ENABLED') ?></td>
-													<td><?php echo $this->lists ['pollenabled'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_ENABLED_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->pollnboptions != 4) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_POLL_NUMBER_OPTIONS') ?></td>
-													<td>
-														<input type="text" name="cfg_pollnboptions"
-														       value="<?php echo $this->escape($this->config->pollnboptions) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_POLL_NUMBER_OPTIONS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->pollnbvotesbyuser != 100) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_POLL_NUMBER_VOTES_BY_USER') ?></td>
-													<td>
-														<input type="text" name="cfg_pollnbvotesbyuser"
-														       value="<?php echo $this->escape($this->config->pollnbvotesbyuser) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_POLL_NUMBER_VOTES_BY_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->polltimebtvotes != '00:15:00') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_POLL_TIME_VOTES') ?></td>
-													<td>
-														<input type="text" name="cfg_polltimebtvotes"
-														       value="<?php echo $this->escape($this->config->polltimebtvotes) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_POLL_TIME_VOTES_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->pollallowvoteone != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_POLL_ALLOW_ONE_VOTE') ?></td>
-													<td><?php echo $this->lists ['pollallowvoteone'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_POLL_ALLOW_ONE_VOTE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->pollresultsuserslist != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_POLL_SHOW_USER_LIST') ?></td>
-													<td><?php echo $this->lists ['pollresultsuserslist'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_POLL_SHOW_USER_LIST_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->allow_user_edit_poll != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CONFIG_POLL_ALLOW_USER_EDIT_POLL') ?></td>
-													<td><?php echo $this->lists ['allow_user_edit_poll'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CONFIG_POLL_ALLOW_USER_EDIT_POLL_DESC') ?></td>
-												</tr>
-												</tbody>
-											</table>
-										</fieldset>
-										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_STATS') ?></legend>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_STATISTICS') ?></legend>
 											<table class="table table-striped">
 												<thead>
 												<tr>
@@ -635,7 +443,7 @@ Check back soon!') : echo 'class="changed"'; endif; ?>>
 											</table>
 										</fieldset>
 										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_A_RANKING_SETTINGS') ?></legend>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_SEARCH') ?></legend>
 											<table class="table table-striped">
 												<thead>
 												<tr>
@@ -645,21 +453,26 @@ Check back soon!') : echo 'class="changed"'; endif; ?>>
 												</tr>
 												</thead>
 												<tbody>
-												<tr <?php if ($this->config->showranking != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_RANKING') ?></td>
-													<td><?php echo $this->lists ['showranking'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_RANKING_DESC') ?></td>
+												<tr <?php if ($this->config->messages_per_page_search != 15) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_MESSAGES_SEARCH') ?></td>
+													<td>
+														<input type="text" name="cfg_messages_per_page_search"
+														       value="<?php echo $this->escape($this->config->messages_per_page_search) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_A_MESSAGES_DESC_SEARCH') ?></td>
 												</tr>
-												<tr <?php if ($this->config->rankimages != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_RANKINGIMAGES') ?></td>
-													<td><?php echo $this->lists ['rankimages'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_RANKINGIMAGES_DESC') ?></td>
+												<tr <?php if ($this->config->searchtime != 365) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEARCH_TIME') ?></td>
+													<td><?php echo $this->lists ['searchtime'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEARCH_TIME_DESC') ?></td>
 												</tr>
 												</tbody>
 											</table>
 										</fieldset>
+									</div>
+									<div class="tab-pane" id="tab_posting">
 										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_A_BBCODE_SETTINGS') ?></legend>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_WRITING') ?></legend>
 											<table class="table table-striped">
 												<thead>
 												<tr>
@@ -669,66 +482,51 @@ Check back soon!') : echo 'class="changed"'; endif; ?>>
 												</tr>
 												</thead>
 												<tbody>
-												<tr <?php if ($this->config->autolink != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_AUTOLINK') ?></td>
-													<td><?php echo $this->lists ['autolink'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_AUTOLINK_DESC') ?></td>
+												<tr <?php if ($this->config->quickreply != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_QUICK_REPLY') ?></td>
+													<td><?php echo $this->lists ['quickreply'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_QUICK_REPLY_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->smartlinking != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_SMARTAUTOLINK') ?></td>
-													<td><?php echo $this->lists ['smartlinking'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_SMARTAUTOLINK_DESC') ?></td>
+												<tr <?php if ($this->config->useredit != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_USER_EDIT') ?></td>
+													<td><?php echo $this->lists ['useredit'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_USER_EDIT_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->trimlongurls != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_TRIMLONGURLS') ?></td>
-													<td><?php echo $this->lists ['trimlongurls'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_TRIMLONGURLS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->trimlongurlsfront != 40) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_TRIMLONGURLSFRONT') ?></td>
+												<tr <?php if ($this->config->useredittime != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_USER_EDIT_TIME') ?></td>
 													<td>
-														<input type="text" name="cfg_trimlongurlsfront"
-														       value="<?php echo $this->escape($this->config->trimlongurlsfront) ?>"/>
+														<input type="text" name="cfg_useredittime"
+														       value="<?php echo $this->escape($this->config->useredittime) ?>"/>
 													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_TRIMLONGURLSFRONT_DESC') ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_USER_EDIT_TIME_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->trimlongurlsback != 20) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_TRIMLONGURLSBACK') ?></td>
+												<tr <?php if ($this->config->useredittimegrace != 600) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_USER_EDIT_TIMEGRACE') ?></td>
 													<td>
-														<input type="text" name="cfg_trimlongurlsback"
-														       value="<?php echo $this->escape($this->config->trimlongurlsback) ?>"/>
+														<input type="text" name="cfg_useredittimegrace"
+														       value="<?php echo $this->escape($this->config->useredittimegrace) ?>"/>
 													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_TRIMLONGURLSBACK_DESC') ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_USER_EDIT_TIMEGRACE_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->autoembedyoutube != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_AUTOEMBEDYOUTUBE') ?></td>
-													<td><?php echo $this->lists ['autoembedyoutube'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_AUTOEMBEDYOUTUBE_DESC') ?></td>
+												<tr <?php if ($this->config->editmarkup != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_USER_MARKUP') ?></td>
+													<td><?php echo $this->lists ['editmarkup'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_USER_MARKUP_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->autoembedinstagram != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_AUTOEMBEDINSTAGRAM') ?></td>
-													<td><?php echo $this->lists ['autoembedinstagram'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_AUTOEMBEDINSTAGRAM_DESC') ?></td>
+												<tr <?php if ($this->config->allow_change_subject != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ALLOW_CHANGE_SUBJECT_REPLIES_LABEL') ?></td>
+													<td><?php echo $this->lists ['allow_change_subject'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_ALLOW_CHANGE_SUBJECT_REPLIES_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->autoembedsoundcloud != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_AUTOEMBEDSOUNDCLOUD') ?></td>
-													<td><?php echo $this->lists ['autoembedsoundcloud'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_AUTOEMBEDSOUNDCLOUD_DESC') ?></td>
+												<tr <?php if ($this->config->disable_re != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_DISABLE_RE') ?></td>
+													<td><?php echo $this->lists ['disable_re'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_DISABLE_RE_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->autoembedebay != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_AUTOEMBEDEBAY') ?></td>
-													<td><?php echo $this->lists ['autoembedebay'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_AUTOEMBEDEBAY_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->highlightcode != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_HIGHLIGHTCODE') ?></td>
-													<td><?php echo $this->lists ['highlightcode'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_HIGHLIGHTCODE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->bbcode_img_secure != 'text') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_BBCODE_IMG_SECURE') ?></td>
-													<td><?php echo $this->lists ['bbcode_img_secure'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_BBCODE_IMG_SECURE_DESC') ?></td>
+												<tr <?php if ($this->config->pickup_category != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_PICKUP_CATEGORY') ?></td>
+													<td><?php echo $this->lists ['pickup_category'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_PICKUP_CATEGORY_DESC') ?></td>
 												</tr>
 												</tbody>
 											</table>
@@ -751,6 +549,27 @@ Check back soon!') : echo 'class="changed"'; endif; ?>>
 														       value="<?php echo $this->escape($this->config->attachment_limit) ?>"/>
 													</td>
 													<td><?php echo Text::_('COM_KUNENA_A_ATTACHMENT_LIMIT_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->attach_start != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CONFIG_ATTACHMENT_SHORTEN_NAME_START') ?></td>
+													<td>
+														<input type="text" name="cfg_attach_start" class="ksm-field"
+														       value="<?php echo $this->escape($this->config->attach_start) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_CONFIG_ATTACHMENT_SHORTEN_NAME_START_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->attach_end != 14) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CONFIG_ATTACHMENT_SHORTEN_NAME_END') ?></td>
+													<td>
+														<input type="text" name="cfg_attach_end" class="ksm-field"
+														       value="<?php echo $this->escape($this->config->attach_end) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_CONFIG_ATTACHMENT_SHORTEN_NAME_END_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->display_filename_attachment != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CONFIG_DISPLAY_FILENAME_ATTACHMENT') ?></td>
+													<td><?php echo $this->lists ['display_filename_attachment'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CONFIG_DISPLAY_FILENAME_ATTACHMENT_DESC') ?></td>
 												</tr>
 												<tr <?php if ($this->config->attachment_protection != 0) : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_ATTACHMENT_PROTECTION') ?></td>
@@ -906,7 +725,850 @@ echo Text::sprintf('COM_KUNENA_A_FILESIZE_DESC',
 											</table>
 										</fieldset>
 										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_ADMIN_RSS_SETTINGS') ?></legend>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_POLLS') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->pollenabled != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_POLL_ENABLED') ?></td>
+													<td><?php echo $this->lists ['pollenabled'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_ENABLED_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->pollnboptions != 4) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_POLL_NUMBER_OPTIONS') ?></td>
+													<td>
+														<input type="text" name="cfg_pollnboptions"
+														       value="<?php echo $this->escape($this->config->pollnboptions) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_A_POLL_NUMBER_OPTIONS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->pollnbvotesbyuser != 100) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_POLL_NUMBER_VOTES_BY_USER') ?></td>
+													<td>
+														<input type="text" name="cfg_pollnbvotesbyuser"
+														       value="<?php echo $this->escape($this->config->pollnbvotesbyuser) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_A_POLL_NUMBER_VOTES_BY_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->polltimebtvotes != '00:15:00') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_POLL_TIME_VOTES') ?></td>
+													<td>
+														<input type="text" name="cfg_polltimebtvotes"
+														       value="<?php echo $this->escape($this->config->polltimebtvotes) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_A_POLL_TIME_VOTES_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->pollallowvoteone != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_POLL_ALLOW_ONE_VOTE') ?></td>
+													<td><?php echo $this->lists ['pollallowvoteone'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_POLL_ALLOW_ONE_VOTE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->pollresultsuserslist != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_POLL_SHOW_USER_LIST') ?></td>
+													<td><?php echo $this->lists ['pollresultsuserslist'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_POLL_SHOW_USER_LIST_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->allow_user_edit_poll != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CONFIG_POLL_ALLOW_USER_EDIT_POLL') ?></td>
+													<td><?php echo $this->lists ['allow_user_edit_poll'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CONFIG_POLL_ALLOW_USER_EDIT_POLL_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_LIFECYCLE') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->resolve_threads != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_RESOLVE_THREADS') ?></td>
+													<td><?php echo $this->lists ['resolve_threads'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_RESOLVE_THREADS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->autolock_days != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_AUTOLOCK_DAYS') ?></td>
+													<td><span class="kunena-unit-field"><input type="text" name="cfg_autolock_days" class="ksm-field" value="<?php echo (int) $this->config->autolock_days ?>"/> <span><?php echo Text::_('COM_KUNENA_CFG_DAYS') ?></span></span></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_AUTOLOCK_DAYS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->boxghostmessage != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_GHOSTMESSAGE') ?></td>
+													<td><?php echo $this->lists ['boxghostmessage'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_GHOSTMESSAGE_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_BBCODE') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->autolink != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_AUTOLINK') ?></td>
+													<td><?php echo $this->lists ['autolink'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_AUTOLINK_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->smartlinking != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_SMARTAUTOLINK') ?></td>
+													<td><?php echo $this->lists ['smartlinking'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_SMARTAUTOLINK_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->trimlongurls != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_TRIMLONGURLS') ?></td>
+													<td><?php echo $this->lists ['trimlongurls'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_TRIMLONGURLS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->trimlongurlsfront != 40) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_TRIMLONGURLSFRONT') ?></td>
+													<td>
+														<input type="text" name="cfg_trimlongurlsfront"
+														       value="<?php echo $this->escape($this->config->trimlongurlsfront) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_A_TRIMLONGURLSFRONT_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->trimlongurlsback != 20) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_TRIMLONGURLSBACK') ?></td>
+													<td>
+														<input type="text" name="cfg_trimlongurlsback"
+														       value="<?php echo $this->escape($this->config->trimlongurlsback) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_A_TRIMLONGURLSBACK_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->autoembedyoutube != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_AUTOEMBEDYOUTUBE') ?></td>
+													<td><?php echo $this->lists ['autoembedyoutube'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_AUTOEMBEDYOUTUBE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->autoembedinstagram != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_AUTOEMBEDINSTAGRAM') ?></td>
+													<td><?php echo $this->lists ['autoembedinstagram'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_AUTOEMBEDINSTAGRAM_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->autoembedsoundcloud != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_AUTOEMBEDSOUNDCLOUD') ?></td>
+													<td><?php echo $this->lists ['autoembedsoundcloud'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_AUTOEMBEDSOUNDCLOUD_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->autoembedebay != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_AUTOEMBEDEBAY') ?></td>
+													<td><?php echo $this->lists ['autoembedebay'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_AUTOEMBEDEBAY_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->highlightcode != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_HIGHLIGHTCODE') ?></td>
+													<td><?php echo $this->lists ['highlightcode'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_HIGHLIGHTCODE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->bbcode_img_secure != 'text') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_BBCODE_IMG_SECURE') ?></td>
+													<td><?php echo $this->lists ['bbcode_img_secure'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_BBCODE_IMG_SECURE_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+									</div>
+									<div class="tab-pane" id="tab_members">
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_PROFILES') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->username != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_DISPLAY_NAME') ?></td>
+													<td><?php echo $this->lists ['username'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_USERNAME_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->askemail != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_ASK_EMAIL') ?></td>
+													<td><?php echo $this->lists ['askemail'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_ASK_EMAIL_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->showemail != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_SHOWMAIL') ?></td>
+													<td><?php echo $this->lists ['showemail'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_SHOWMAIL_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->user_status != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_USER_STATUS') ?></td>
+													<td><?php echo $this->lists ['user_status'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_USER_STATUS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->signature != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_SIGNATURES') ?></td>
+													<td><?php echo $this->lists ['signature'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_SIGNATURES_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->maxsig != 300) : echo 'class="changed"'; endif; ?>>
+													<td align="left"
+													    valign="top"><?php echo Text::_('COM_KUNENA_A_SIGNATURE') ?></td>
+													<td align="left" valign="top"><input type="text" name="cfg_maxsig"
+													                                     value="<?php echo $this->escape($this->config->maxsig) ?>"/>
+													</td>
+													<td align="left"
+													    valign="top"><?php echo Text::_('COM_KUNENA_A_SIGNATURE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->personal != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_PERSONAL') ?></td>
+													<td><?php echo $this->lists ['personal'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_PERSONAL_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->social != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_SOCIAL') ?></td>
+													<td><?php echo $this->lists ['social'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_SOCIAL_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->allowfavorites != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_FAVORITES') ?></td>
+													<td><?php echo $this->lists ['allowfavorites'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_FAVORITES_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->showbannedreason != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_SHOWBANNEDREASON_PROFILE') ?></td>
+													<td><?php echo $this->lists ['showbannedreason'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_SHOWBANNEDREASON_PROFILE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->show_imgfiles_manage_profile != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_DISPLAY_IMGFILES_TAB_MANAGEMENT_PROFILE') ?></td>
+													<td><?php echo $this->lists ['show_imgfiles_manage_profile'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_DISPLAY_IMGFILES_TAB_MANAGEMENT_PROFILE_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_AVATARS') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->allowavatarupload != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_AVATARUPLOAD') ?></td>
+													<td><?php echo $this->lists ['allowavatarupload'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_AVATARUPLOAD_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->allowavatargallery != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_AVATARGALLERY') ?></td>
+													<td><?php echo $this->lists ['allowavatargallery'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_AVATARGALLERY_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->avatar_type != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_AVATARTYPE') ?></td>
+													<td><?php echo $this->lists ['avatar_type'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_AVATARTYPE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->defaultavatar != 'nophoto.png') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_AVATAR_DEFAULT') ?></td>
+													<td><?php echo $this->lists ['defaultavatar'] ?>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_A_AVATAR_DEFAULT_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->defaultavatarsmall != 's_nophoto.png') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_AVATAR_DEFAULT_SMALL') ?></td>
+													<td><?php echo $this->lists ['defaultavatarsmall'] ?>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_A_AVATAR_DEFAULT_SMALL_DESC') ?></td>
+												</tr>
+												<tr <?php if (str_replace(' ', '', $this->config->avatartypes) != 'gif,jpeg,jpg,png,webp,avif') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CONFIG_AVATAR_FILESALLOWED') ?></td>
+													<td><input type="text" name="cfg_avatartypes"
+													           value="<?php echo $this->escape($this->config->avatartypes) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_CONFIG_AVATAR_FILESALLOWED_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->avatarsize != 2048) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_AVSIZE') ?></td>
+													<td>
+														<span class="kunena-unit-field"><input type="text" name="cfg_avatarsize" class="ksm-field" value="<?php echo $this->escape($this->config->avatarsize) ?>"/> <span>kB</span></span>
+													</td>
+													<td></td>
+												</tr>
+												<tr <?php if ($this->config->avatarquality != 75) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_AVATAR_QUALITY') ?></td>
+													<td class="nowrap">
+														<span class="kunena-unit-field"><input type="text" name="cfg_avatarquality" class="ksm-field" value="<?php echo $this->escape($this->config->avatarquality) ?>"/> <span>%</span></span>
+													</td>
+													<td></td>
+												</tr>
+												<tr <?php if ($this->config->avatarresizemethod != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_AVATAR_RESIZE_METHOD') ?></td>
+													<td><?php echo $this->lists ['avatarresizemethod'] ?></td>
+													<td></td>
+												</tr>
+												<tr <?php if ($this->config->avatarcrop != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_AVATAR_CROP') ?></td>
+													<td><?php echo $this->lists ['avatarcrop'] ?></td>
+													<td></td>
+												</tr>
+												<tr <?php if ($this->config->avataredit != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_AVATAREDIT') ?></td>
+													<td><?php echo $this->lists ['avataredit'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_AVATAREDIT_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_USERLIST') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->userlist_rows != 30) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_ROWS') ?></td>
+													<td>
+														<input type="text" name="cfg_userlist_rows"
+														       value="<?php echo $this->escape($this->config->userlist_rows) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_ROWS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->userlist_online != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_USERONLINE') ?></td>
+													<td><?php echo $this->lists ['userlist_online'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_USERONLINE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->userlist_avatar != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_AVATAR') ?></td>
+													<td><?php echo $this->lists ['userlist_avatar'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_USERLIST_AVATAR_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->userlist_posts != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_POSTS') ?></td>
+													<td><?php echo $this->lists ['userlist_posts'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_POSTS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->userlist_karma != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_KARMA') ?></td>
+													<td><?php echo $this->lists ['userlist_karma'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_KARMA_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->userlist_email != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_EMAIL') ?></td>
+													<td><?php echo $this->lists ['userlist_email'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_EMAIL_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->userlist_joindate != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_JOINDATE') ?></td>
+													<td><?php echo $this->lists ['userlist_joindate'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_JOINDATE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->userlist_lastvisitdate != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_LASTVISITDATE') ?></td>
+													<td><?php echo $this->lists ['userlist_lastvisitdate'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_LASTVISITDATE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->userlist_userhits != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_HITS') ?></td>
+													<td><?php echo $this->lists ['userlist_userhits'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_HITS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->superadmin_userlist != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_SHOW_SUPERADMINS_IN_USERLIST') ?></td>
+													<td><?php echo $this->lists ['superadmin_userlist'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_SHOW_SUPERADMINS_IN_USERLIST_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->show_session_type != 2) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_USER_SESSIONS_TYPE') ?></td>
+													<td><?php echo $this->lists ['show_session_type'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_SESSIONS_TYPE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->show_session_starttime != 1800) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_USER_SESSIONS_START_TIME') ?></td>
+													<td>
+														<input type="text" name="cfg_show_session_starttime"
+														       value="<?php echo $this->escape($this->config->show_session_starttime) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_SESSIONS_START_TIME_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+									</div>
+									<div class="tab-pane" id="tab_notifications">
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_SENDING') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->send_emails != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_SEND_EMAILS') ?></td>
+													<td><?php echo $this->lists ['send_emails'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_SEND_EMAILS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->email != '') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_EMAIL') ?></td>
+													<td>
+														<input type="text" name="cfg_email"
+														       value="<?php echo $this->escape($this->config->email) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_A_EMAIL_DESC2') ?></td>
+												</tr>
+												<tr <?php if ($this->config->email_sender_name != '') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CONFIG_EMAIL_SENDER_NAME') ?></td>
+													<td>
+														<input type="text" name="cfg_email_sender_name"
+														       value="<?php echo $this->escape($this->config->email_sender_name) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_CONFIG_EMAIL_SENDER_NAME_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->emailheader != 'media/kunena/email/hero-wide.png') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_EMAIL_HEADER') ?></td>
+													<td><?php echo $this->lists ['emailheader'] ?>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_EMAIL_HEADER_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->plain_email != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_PLAINEMAIL') ?></td>
+													<td><?php echo $this->lists ['plain_email'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_PLAINEMAIL_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->mailfull != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_MAILFULL') ?></td>
+													<td><?php echo $this->lists ['mailfull'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_MAILFULL_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->use_system_emails != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_USE_SYSTEM_EMAILS') ?></td>
+													<td><?php echo $this->lists ['use_system_emails'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_USE_SYSTEM_EMAILS_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_SUBSCRIPTIONS') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->allowsubscriptions != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_SUBSCRIPTIONS') ?></td>
+													<td><?php echo $this->lists ['allowsubscriptions'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_SUBSCRIPTIONS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->category_subscriptions != 'post') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_CATEGORY_SUBSCRIPTIONS') ?></td>
+													<td><?php echo $this->lists ['category_subscriptions'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_CATEGORY_SUBSCRIPTIONS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->topic_subscriptions != 'every') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_TOPIC_SUBSCRIPTIONS') ?></td>
+													<td><?php echo $this->lists ['topic_subscriptions'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_TOPIC_SUBSCRIPTIONS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->subscriptionschecked != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_SUBSCRIPTIONSCHECKED') ?></td>
+													<td><?php echo $this->lists ['subscriptionschecked'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_SUBSCRIPTIONSCHECKED_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_STAFF') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->mailmod != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_MAILMOD') ?></td>
+													<td><?php echo $this->lists ['mailmod'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_MAILMOD_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->mailadmin != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_MAILADMIN') ?></td>
+													<td><?php echo $this->lists ['mailadmin'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_MAILADMIN_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_DELIVERY') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->email_recipient_count != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_SUBSCRIPTIONS_EMAIL_RECIPIENT_COUNT') ?></td>
+													<td><?php echo HTMLHelper::_('select.integerlist', 0, 100, 5, 'cfg_email_recipient_count', array('id' => 'cfg_email_recipient_count', 'list.select' => (int) $this->config->email_recipient_count)) ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_SUBSCRIPTIONS_EMAIL_RECIPIENT_COUNT_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->email_recipient_privacy != 'bcc') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_SUBSCRIPTIONS_EMAIL_RECIPIENT_PRIVACY') ?></td>
+													<td><?php echo $this->lists ['email_recipient_privacy'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_SUBSCRIPTIONS_EMAIL_RECIPIENT_PRIVACY_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->email_visible_address != '') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_SUBSCRIPTIONS_EMAIL_VISIBLE_ADDRESS') ?></td>
+													<td>
+														<input type="text" name="cfg_email_visible_address"
+														       value="<?php echo $this->escape($this->config->email_visible_address) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_A_SUBSCRIPTIONS_EMAIL_VISIBLE_ADDRESS_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+									</div>
+									<div class="tab-pane" id="tab_security">
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_ACCESS') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->regonly != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_REGISTERED_ONLY') ?></td>
+													<td><?php echo $this->lists ['regonly'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_REG_ONLY_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->pubwrite != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_PUBWRITE') ?></td>
+													<td><?php echo $this->lists ['pubwrite'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_PUBWRITE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->teaser != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_TEASER') ?></td>
+													<td><?php echo $this->lists ['teaser'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_TEASER_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->pubprofile != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_PUBPROFILE') ?></td>
+													<td><?php echo $this->lists ['pubprofile'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_PUBPROFILE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->userlist_allowed != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_ALLOWED') ?></td>
+													<td><?php echo $this->lists ['userlist_allowed'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_ALLOWED_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->statslink_allowed != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_STATSLINK_ALLOWED') ?></td>
+													<td><?php echo $this->lists ['statslink_allowed'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_STATSLINK_ALLOWED_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_SPAM') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->hold_guest_posts != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_HOLD_GUEST_POSTS') ?></td>
+													<td><?php echo $this->lists ['hold_guest_posts'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_HOLD_GUEST_POSTS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->hold_newusers_posts != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_HOLD_NEWUSERS_POSTS') ?></td>
+													<td>
+														<input type="text" name="cfg_hold_newusers_posts"
+														       class="ksm-field"
+														       value="<?php echo $this->escape($this->config->hold_newusers_posts) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_A_HOLD_NEWUSERS_POSTS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->floodprotection != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_FLOOD') ?></td>
+													<td>
+														<input type="text" name="cfg_floodprotection"
+														       value="<?php echo $this->escape($this->config->floodprotection) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_A_FLOOD_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->max_links != 6) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_MAX_LINKS') ?></td>
+													<td>
+														<input type="text" name="cfg_max_links"
+														       value="<?php echo $this->escape($this->config->max_links) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_MAX_LINKS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->new_users_prevent_post_url_images != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_PREVENT_NEW_USERS_POST_URL_IMAGE') ?></td>
+													<td><?php echo $this->lists['new_users_prevent_post_url_images'] ?> </td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_PREVENT_NEW_USERS_POST_URL_IMAGE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->minimal_user_posts_add_url_image != 10) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_MINIMAL_NUMBER_OF_USER_POSTS_TO_ADD_URL_IMAGE') ?></td>
+													<td>
+														<input type="text" name="cfg_minimal_user_posts_add_url_image"
+														       value="<?php echo $this->escape($this->config->minimal_user_posts_add_url_image) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_MINIMAL_NUMBER_OF_USER_POSTS_TO_ADD_URL_IMAGE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->url_subject_topic != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_URL_SUBJECT') ?></td>
+													<td><?php echo $this->lists['url_subject_topic'] ?> </td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_URL_SUBJECT_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_A_CAPTCHA_CONFIGURATION') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->captcha != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_CAPTCHA_FOR_WHO_TITLE') ?></td>
+													<td><?php echo $this->lists ['captcha'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_CAPTCHA_FOR_WHO_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->captcha_post_limit != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_CAPTCHA_POST_LIMIT') ?></td>
+													<td>
+														<input type="text" name="cfg_captcha_post_limit"
+														       class="ksm-field"
+														       value="<?php echo $this->escape($this->config->captcha_post_limit) ?>"/>
+													</td>
+													<td><?php echo Text::_('COM_KUNENA_A_CAPTCHA_POST_LIMIT_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_STOP_FORUM_SPAM_CONFIGURATION') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->stopforumspam_key != '') : echo 'class="changed"'; endif; ?>>
+													<td align="left" valign="top"
+													    width="25%"><?php echo Text::_('COM_KUNENA_STOP_FORUM_SPAM_KEY') ?></td>
+													<td align="left" valign="top" width="25%">
+														<input type="text"
+														       name="cfg_stopforumspam_key"
+														       class="ksm-field-large"
+														       value="<?php echo $this->escape($this->config->stopforumspam_key); ?>"/>
+													</td>
+													<td align="left"
+													    valign="top"><?php echo Text::_('COM_KUNENA_STOP_FORUM_SPAM_KEY_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_MODERATION') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->reportmsg != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_REPORT') ?></td>
+													<td><?php echo $this->lists ['reportmsg'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_REPORT_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->user_report != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_USER_CAN_SEND_OWN_REPORT') ?></td>
+													<td><?php echo $this->lists ['user_report'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_USER_CAN_SEND_OWN_REPORT_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->mod_see_deleted != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_MOD_SEE_DELETED') ?></td>
+													<td><?php echo $this->lists ['mod_see_deleted'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_MOD_SEE_DELETED_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->moderator_permdelete != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_MOD_PERDELETE') ?></td>
+													<td><?php echo $this->lists['moderator_permdelete'] ?> </td>
+													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_MOD_PERDELETE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->userdeletetmessage != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_DELETEMESSAGE') ?></td>
+													<td><?php echo $this->lists ['userdeletetmessage'] ?> </td>
+													<td><?php echo Text::_('COM_KUNENA_A_DELETEMESSAGE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->log_moderation != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_LOG_COLLECT_DATA') ?></td>
+													<td><?php echo $this->lists ['log_moderation'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_LOG_COLLECT_DATA_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_PRIVACY') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->iptracking != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_IP_TRACKING') ?></td>
+													<td><?php echo $this->lists ['iptracking'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_A_IP_TRACKING_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->hide_ip != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_HIDE_IP') ?></td>
+													<td><?php echo $this->lists ['hide_ip'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_COM_A_HIDE_IP_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+									</div>
+									<div class="tab-pane" id="tab_seo">
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_URLS') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->sef != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_SEF') ?></td>
+													<td><?php echo $this->lists ['sef'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_SEF_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->sef_redirect != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_SEF_REDIRECT') ?></td>
+													<td><?php echo $this->lists ['sef_redirect'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_SEF_REDIRECT_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->access_component != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_ACCESS_COMPONENT') ?></td>
+													<td><?php echo $this->lists ['access_component'] ?></td>
+													<td><?php echo Text::sprintf('COM_KUNENA_CFG_ACCESS_COMPONENT_DESC', $this->lists ['componentUrl'], Text::_('JLIB_APPLICATION_ERROR_COMPONENT_NOT_FOUND')) ?></td>
+												</tr>
+												<tr <?php if ($this->config->legacy_urls != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_LEGACY_URLS') ?></td>
+													<td><?php echo $this->lists ['legacy_urls'] ?></td>
+													<td><?php echo Text::sprintf('COM_KUNENA_CFG_LEGACY_URLS_DESC', $this->lists['legacy_urls_version'], $this->lists['legacy_urls_desc']);
+if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGACY_URL_DEPRECATED_DESC'); endif; ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_SHARING') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->seo_structured_data != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_STRUCTURED_DATA') ?></td>
+													<td><?php echo $this->lists ['seo_structured_data'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_STRUCTURED_DATA_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->seo_social_tags != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_SOCIAL_TAGS') ?></td>
+													<td><?php echo $this->lists ['seo_social_tags'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_SOCIAL_TAGS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->seo_share_image != '') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_SHARE_IMAGE') ?></td>
+													<td><?php echo $this->lists ['seo_share_image'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_SHARE_IMAGE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->seo_x_site != '') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_X_SITE') ?></td>
+													<td><input name="cfg_seo_x_site" type="text" value="<?php echo $this->escape($this->config->seo_x_site) ?>" placeholder="@example"></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_X_SITE_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_RSS') ?></legend>
 											<table class="table table-striped">
 												<thead>
 												<tr>
@@ -1003,685 +1665,7 @@ echo Text::sprintf('COM_KUNENA_A_FILESIZE_DESC',
 											</table>
 										</fieldset>
 									</div>
-									<div class="tab-pane" id="tab_security">
-										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_A_SECURITY_SETTINGS') ?></legend>
-											<table class="table table-striped">
-												<thead>
-												<tr>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
-													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
-												</tr>
-												</thead>
-												<tbody>
-												<tr <?php if ($this->config->regonly != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_REGISTERED_ONLY') ?></td>
-													<td><?php echo $this->lists ['regonly'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_REG_ONLY_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->pubwrite != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_PUBWRITE') ?></td>
-													<td><?php echo $this->lists ['pubwrite'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_PUBWRITE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->hold_guest_posts != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_HOLD_GUEST_POSTS') ?></td>
-													<td><?php echo $this->lists ['hold_guest_posts'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_HOLD_GUEST_POSTS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->hold_newusers_posts != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_HOLD_NEWUSERS_POSTS') ?></td>
-													<td>
-														<input type="text" name="cfg_hold_newusers_posts"
-														       class="ksm-field"
-														       value="<?php echo $this->escape($this->config->hold_newusers_posts) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_HOLD_NEWUSERS_POSTS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->floodprotection != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_FLOOD') ?></td>
-													<td>
-														<input type="text" name="cfg_floodprotection"
-														       value="<?php echo $this->escape($this->config->floodprotection) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_FLOOD_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->max_links != 6) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_MAX_LINKS') ?></td>
-													<td>
-														<input type="text" name="cfg_max_links"
-														       value="<?php echo $this->escape($this->config->max_links) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_MAX_LINKS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->new_users_prevent_post_url_images != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_PREVENT_NEW_USERS_POST_URL_IMAGE') ?></td>
-													<td><?php echo $this->lists['new_users_prevent_post_url_images'] ?> </td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_PREVENT_NEW_USERS_POST_URL_IMAGE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->minimal_user_posts_add_url_image != 10) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_MINIMAL_NUMBER_OF_USER_POSTS_TO_ADD_URL_IMAGE') ?></td>
-													<td>
-														<input type="text" name="cfg_minimal_user_posts_add_url_image"
-														       value="<?php echo $this->escape($this->config->minimal_user_posts_add_url_image) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_MINIMAL_NUMBER_OF_USER_POSTS_TO_ADD_URL_IMAGE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->url_subject_topic != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_URL_SUBJECT') ?></td>
-													<td><?php echo $this->lists['url_subject_topic'] ?> </td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_URL_SUBJECT_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->teaser != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_TEASER') ?></td>
-													<td><?php echo $this->lists ['teaser'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_TEASER_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->pubprofile != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_PUBPROFILE') ?></td>
-													<td><?php echo $this->lists ['pubprofile'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_PUBPROFILE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->userlist_allowed != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_ALLOWED') ?></td>
-													<td><?php echo $this->lists ['userlist_allowed'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_ALLOWED_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->statslink_allowed != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_STATSLINK_ALLOWED') ?></td>
-													<td><?php echo $this->lists ['statslink_allowed'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_STATSLINK_ALLOWED_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->iptracking != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_IP_TRACKING') ?></td>
-													<td><?php echo $this->lists ['iptracking'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_IP_TRACKING_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->mod_see_deleted != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_MOD_SEE_DELETED') ?></td>
-													<td><?php echo $this->lists ['mod_see_deleted'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_MOD_SEE_DELETED_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->moderator_permdelete != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_MOD_PERDELETE') ?></td>
-													<td><?php echo $this->lists['moderator_permdelete'] ?> </td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_MOD_PERDELETE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->userdeletetmessage != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_DELETEMESSAGE') ?></td>
-													<td><?php echo $this->lists ['userdeletetmessage'] ?> </td>
-													<td><?php echo Text::_('COM_KUNENA_A_DELETEMESSAGE_DESC') ?></td>
-												</tr>
-												</tbody>
-											</table>
-										</fieldset>
-										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_A_CAPTCHA_CONFIGURATION') ?></legend>
-											<table class="table table-striped">
-												<thead>
-												<tr>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
-													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
-												</tr>
-												</thead>
-												<tbody>
-												<tr <?php if ($this->config->captcha != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_CAPTCHA_FOR_WHO_TITLE') ?></td>
-													<td><?php echo $this->lists ['captcha'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_CAPTCHA_FOR_WHO_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->captcha_post_limit != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_CAPTCHA_POST_LIMIT') ?></td>
-													<td>
-														<input type="text" name="cfg_captcha_post_limit"
-														       class="ksm-field"
-														       value="<?php echo $this->escape($this->config->captcha_post_limit) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_CAPTCHA_POST_LIMIT_DESC') ?></td>
-												</tr>
-												</tbody>
-											</table>
-										</fieldset>
-										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_STOP_FORUM_SPAM_CONFIGURATION') ?></legend>
-											<table class="table table-striped">
-												<thead>
-												<tr>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
-													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
-												</tr>
-												</thead>
-												<tbody>
-												<tr <?php if ($this->config->stopforumspam_key != '') : echo 'class="changed"'; endif; ?>>
-													<td align="left" valign="top"
-													    width="25%"><?php echo Text::_('COM_KUNENA_STOP_FORUM_SPAM_KEY') ?></td>
-													<td align="left" valign="top" width="25%">
-														<input type="text"
-														       name="cfg_stopforumspam_key"
-														       class="ksm-field-large"
-														       value="<?php echo $this->escape($this->config->stopforumspam_key); ?>"/>
-													</td>
-													<td align="left"
-													    valign="top"><?php echo Text::_('COM_KUNENA_STOP_FORUM_SPAM_KEY_DESC') ?></td>
-												</tr>
-												</tbody>
-											</table>
-										</fieldset>
-									</div>
-									<div class="tab-pane" id="tab_seo">
-										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_SEO_SETTINGS') ?></legend>
-											<table class="table table-striped">
-												<thead>
-												<tr>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
-													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
-												</tr>
-												</thead>
-												<tbody>
-												<tr <?php if ($this->config->sef != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_SEF') ?></td>
-													<td><?php echo $this->lists ['sef'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_SEF_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->sef_redirect != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_SEF_REDIRECT') ?></td>
-													<td><?php echo $this->lists ['sef_redirect'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_SEF_REDIRECT_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->seo_structured_data != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_STRUCTURED_DATA') ?></td>
-													<td><?php echo $this->lists ['seo_structured_data'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_STRUCTURED_DATA_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->seo_social_tags != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_SOCIAL_TAGS') ?></td>
-													<td><?php echo $this->lists ['seo_social_tags'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_SOCIAL_TAGS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->seo_share_image != '') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_SHARE_IMAGE') ?></td>
-													<td><?php echo $this->lists ['seo_share_image'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_SHARE_IMAGE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->seo_x_site != '') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_X_SITE') ?></td>
-													<td><input name="cfg_seo_x_site" type="text" value="<?php echo $this->escape($this->config->seo_x_site) ?>" placeholder="@example"></td>
-													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_X_SITE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->access_component != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CFG_ACCESS_COMPONENT') ?></td>
-													<td><?php echo $this->lists ['access_component'] ?></td>
-													<td><?php echo Text::sprintf('COM_KUNENA_CFG_ACCESS_COMPONENT_DESC', $this->lists ['componentUrl'], Text::_('JLIB_APPLICATION_ERROR_COMPONENT_NOT_FOUND')) ?></td>
-												</tr>
-												<tr <?php if ($this->config->legacy_urls != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CFG_LEGACY_URLS') ?></td>
-													<td><?php echo $this->lists ['legacy_urls'] ?></td>
-													<td><?php echo Text::sprintf('COM_KUNENA_CFG_LEGACY_URLS_DESC', $this->lists['legacy_urls_version'], $this->lists['legacy_urls_desc']);
-if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGACY_URL_DEPRECATED_DESC'); endif; ?></td>
-												</tr>
-												</tbody>
-											</table>
-										</fieldset>
-									</div>
-									<div class="tab-pane" id="tab_backend">
-										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_ADMIN_MENU_SETTINGS_DESC') ?></legend>
-											<table class="table table-striped">
-												<thead>
-												<tr>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
-													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
-												</tr>
-												</thead>
-												<tbody>
-												<tr <?php if ($this->config->activemenuitem != '') : echo 'class="changed"'; endif; ?>>
-													<td align="left" valign="top"
-													    width="5%"><?php echo Text::_('COM_KUNENA_A_ACTIVEMENU') ?></td>
-													<td align="left" valign="top"
-													    width="5%"><input type="text" name="cfg_activemenuitem"
-													                      value="<?php echo $this->escape($this->config->activemenuitem); ?>"/>
-													</td>
-													<td align="left"
-													    valign="top"><?php echo Text::_('COM_KUNENA_A_ACTIVEMENU_DESC'); ?></td>
-												</tr>
-												<tr <?php if ($this->config->mainmenu_id != '') : echo 'class="changed"'; endif; ?>>
-													<td align="left" valign="top"
-													    width="5%"><?php echo Text::_('COM_KUNENA_A_MAINMENU') ?></td>
-													<td align="left" valign="top"
-													    width="5%"><input type="text" name="cfg_mainmenu_id"
-													                      value="<?php echo $this->escape($this->config->mainmenu_id); ?>"/>
-													</td>
-													<td align="left"
-													    valign="top"><?php echo Text::_('COM_KUNENA_A_MAINMENU_DESC'); ?></td>
-												</tr>
-												<tr <?php if ($this->config->home_id != '') : echo 'class="changed"'; endif; ?>>
-													<td align="left" valign="top"
-													    width="5%"><?php echo Text::_('COM_KUNENA_A_HOMEID') ?></td>
-													<td align="left" valign="top"
-													    width="5%"><input type="text" name="cfg_home_id"
-													                      value="<?php echo $this->escape($this->config->home_id); ?>"/>
-													</td>
-													<td align="left"
-													    valign="top"><?php echo Text::_('COM_KUNENA_A_HOMEID_DESC'); ?></td>
-												</tr>
-												<tr <?php if ($this->config->index_id != '') : echo 'class="changed"'; endif; ?>>
-													<td align="left" valign="top"
-													    width="15%"><?php echo Text::_('COM_KUNENA_A_INDEXID') ?></td>
-													<td align="left" valign="top"
-													    width="5%"><input type="text" name="cfg_index_id"
-													                      value="<?php echo $this->escape($this->config->index_id); ?>"/>
-													</td>
-													<td align="left"
-													    valign="top"><?php echo Text::_('COM_KUNENA_A_INDEXID_DESC'); ?></td>
-												</tr>
-												<tr <?php if ($this->config->topiclist_id != '') : echo 'class="changed"'; endif; ?>>
-													<td align="left" valign="top"
-													    width="15%"><?php echo Text::_('COM_KUNENA_A_TOPICLISTID') ?></td>
-													<td align="left" valign="top"
-													    width="5%"><input type="text" name="cfg_topiclist_id"
-													                      value="<?php echo $this->escape($this->config->topiclist_id); ?>"/>
-													</td>
-													<td align="left"
-													    valign="top"><?php echo Text::_('COM_KUNENA_A_TOPICLISTID_DESC'); ?></td>
-												</tr>
-												<tr <?php if ($this->config->moderators_id != '') : echo 'class="changed"'; endif; ?>>
-													<td align="left" valign="top"
-													    width="15%"><?php echo Text::_('COM_KUNENA_A_MODERATORSID') ?></td>
-													<td align="left" valign="top"
-													    width="5%"><input type="text" name="cfg_moderators_id"
-													                      value="<?php echo $this->escape($this->config->moderators_id); ?>"/>
-													</td>
-													<td align="left"
-													    valign="top"><?php echo Text::_('COM_KUNENA_A_MODERATORSID_DESC'); ?></td>
-												</tr>
-												<tr <?php if ($this->config->misc_id != '') : echo 'class="changed"'; endif; ?>>
-													<td align="left" valign="top"
-													    width="15%"><?php echo Text::_('COM_KUNENA_A_MISCID') ?></td>
-													<td align="left" valign="top"
-													    width="5%"><input type="text" name="cfg_misc_id"
-													                      value="<?php echo $this->escape($this->config->misc_id); ?>"/>
-													</td>
-													<td align="left"
-													    valign="top"><?php echo Text::_('COM_KUNENA_A_MISCID_DESC'); ?></td>
-												</tr>
-												<tr <?php if ($this->config->profile_id != '') : echo 'class="changed"'; endif; ?>>
-													<td align="left" valign="top"
-													    width="15%"><?php echo Text::_('COM_KUNENA_A_PROFILEID') ?></td>
-													<td align="left" valign="top"
-													    width="5%"><input type="text" name="cfg_profile_id"
-													                      value="<?php echo $this->escape($this->config->profile_id); ?>"/>
-													</td>
-													<td align="left"
-													    valign="top"><?php echo Text::_('COM_KUNENA_A_PROFILEID_DESC'); ?></td>
-												</tr>
-												<tr <?php if ($this->config->search_id != '') : echo 'class="changed"'; endif; ?>>
-													<td align="left" valign="top"
-													    width="15%"><?php echo Text::_('COM_KUNENA_A_SEARCHID') ?></td>
-													<td align="left" valign="top"
-													    width="5%"><input type="text" name="cfg_search_id"
-													                      value="<?php echo $this->escape($this->config->search_id); ?>"/>
-													</td>
-													<td align="left"
-													    valign="top"><?php echo Text::_('COM_KUNENA_A_SEARCHID_DESC'); ?></td>
-												</tr>
-												</tbody>
-											</table>
-										</fieldset>
-										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_PERFORMANCE') ?></legend>
-											<table class="table table-striped">
-												<thead>
-												<tr>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
-													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
-												</tr>
-												</thead>
-												<tbody>
-												<tr <?php if ($this->config->cache != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CFG_CACHE') ?></td>
-													<td><?php echo $this->lists ['cache'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CFG_CACHE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->cache_time != 60) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CFG_CACHE_TIME') ?></td>
-													<td><?php echo $this->lists ['cache_time'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CFG_CACHE_TIME_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->escape($this->config->sessiontimeout) != 1800) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_KUNENA_SESSION_TIMEOUT') ?>
-													</td>
-													<td><input type="text"
-													           name="cfg_sessiontimeout"
-													           value="<?php echo $this->escape($this->config->sessiontimeout);
-?>"/></td>
-													<td><?php echo Text::_('COM_KUNENA_A_KUNENA_SESSION_TIMEOUT_DESC') ?>
-													</td>
-												</tr>
-												</tbody>
-											</table>
-										</fieldset>
-										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_LOGS') ?></legend>
-											<table class="table table-striped">
-												<thead>
-												<tr>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
-													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
-												</tr>
-												</thead>
-												<tbody>
-												<tr <?php if ($this->config->log_moderation != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_LOG_COLLECT_DATA') ?></td>
-													<td><?php echo $this->lists ['log_moderation'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_LOG_COLLECT_DATA_DESC') ?></td>
-												</tr>
-												</tbody>
-											</table>
-										</fieldset>
-									</div>
-									<div class="tab-pane" id="tab_users">
-										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_A_USER_RELATED') ?></legend>
-											<table class="table table-striped">
-												<thead>
-												<tr>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
-													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
-												</tr>
-												</thead>
-												<tbody>
-												<tr <?php if ($this->config->username != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_DISPLAY_NAME') ?></td>
-													<td><?php echo $this->lists ['username'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_USERNAME_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->askemail != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_ASK_EMAIL') ?></td>
-													<td><?php echo $this->lists ['askemail'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_ASK_EMAIL_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->showemail != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_SHOWMAIL') ?></td>
-													<td><?php echo $this->lists ['showemail'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_SHOWMAIL_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->user_status != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_USER_STATUS') ?></td>
-													<td><?php echo $this->lists ['user_status'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_USER_STATUS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->signature != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_SIGNATURES') ?></td>
-													<td><?php echo $this->lists ['signature'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_SIGNATURES_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->maxsig != 300) : echo 'class="changed"'; endif; ?>>
-													<td align="left"
-													    valign="top"><?php echo Text::_('COM_KUNENA_A_SIGNATURE') ?></td>
-													<td align="left" valign="top"><input type="text" name="cfg_maxsig"
-													                                     value="<?php echo $this->escape($this->config->maxsig) ?>"/>
-													</td>
-													<td align="left"
-													    valign="top"><?php echo Text::_('COM_KUNENA_A_SIGNATURE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->personal != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_PERSONAL') ?></td>
-													<td><?php echo $this->lists ['personal'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_PERSONAL_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->social != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_SOCIAL') ?></td>
-													<td><?php echo $this->lists ['social'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_SOCIAL_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->showuserstats != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_USERSTATS') ?></td>
-													<td><?php echo $this->lists ['showuserstats'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_USERSTATS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->showkarma != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_KARMA') ?></td>
-													<td><?php echo $this->lists ['showkarma'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_KARMA_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->showthankyou != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_THANKYOU') ?></td>
-													<td><?php echo $this->lists ['showthankyou'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_THANKYOU_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->thankyou_max != 10) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_DISPLAY_THANKYOU_NUMBERS') ?></td>
-													<td>
-														<input type="text" name="cfg_thankyou_max" class="ksm-field"
-														       value="<?php echo $this->escape($this->config->thankyou_max) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_DISPLAY_THANKYOU_NUMBERS') ?></td>
-												</tr>
-												<tr <?php if ($this->config->allowfavorites != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_FAVORITES') ?></td>
-													<td><?php echo $this->lists ['allowfavorites'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_FAVORITES_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->user_report != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_USER_CAN_SEND_OWN_REPORT') ?></td>
-													<td><?php echo $this->lists ['user_report'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_USER_CAN_SEND_OWN_REPORT_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->showbannedreason != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_SHOWBANNEDREASON_PROFILE') ?></td>
-													<td><?php echo $this->lists ['showbannedreason'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_SHOWBANNEDREASON_PROFILE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->show_imgfiles_manage_profile != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_DISPLAY_IMGFILES_TAB_MANAGEMENT_PROFILE') ?></td>
-													<td><?php echo $this->lists ['show_imgfiles_manage_profile'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_DISPLAY_IMGFILES_TAB_MANAGEMENT_PROFILE_DESC') ?></td>
-												</tr>
-												</tbody>
-											</table>
-										</fieldset>
-										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_SUBSCRIPTIONS') ?></legend>
-											<table class="table table-striped">
-												<thead>
-												<tr>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
-													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
-												</tr>
-												</thead>
-												<tbody>
-												<tr <?php if ($this->config->allowsubscriptions != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_SUBSCRIPTIONS') ?></td>
-													<td><?php echo $this->lists ['allowsubscriptions'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_SUBSCRIPTIONS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->category_subscriptions != 'post') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_CATEGORY_SUBSCRIPTIONS') ?></td>
-													<td><?php echo $this->lists ['category_subscriptions'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_CATEGORY_SUBSCRIPTIONS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->topic_subscriptions != 'every') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_TOPIC_SUBSCRIPTIONS') ?></td>
-													<td><?php echo $this->lists ['topic_subscriptions'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_TOPIC_SUBSCRIPTIONS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->subscriptionschecked != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_SUBSCRIPTIONSCHECKED') ?></td>
-													<td><?php echo $this->lists ['subscriptionschecked'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_SUBSCRIPTIONSCHECKED_DESC') ?></td>
-												</tr>
-												</tbody>
-											</table>
-										</fieldset>
-										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_A_AVATAR_SETTINGS') ?></legend>
-											<table class="table table-striped">
-												<thead>
-												<tr>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
-													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
-												</tr>
-												</thead>
-												<tbody>
-												<tr <?php if ($this->config->allowavatarupload != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_AVATARUPLOAD') ?></td>
-													<td><?php echo $this->lists ['allowavatarupload'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_AVATARUPLOAD_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->allowavatargallery != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_AVATARGALLERY') ?></td>
-													<td><?php echo $this->lists ['allowavatargallery'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_AVATARGALLERY_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->avatar_type != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_AVATARTYPE') ?></td>
-													<td><?php echo $this->lists ['avatar_type'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_AVATARTYPE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->defaultavatar != 'nophoto.png') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_AVATAR_DEFAULT') ?></td>
-													<td><?php echo $this->lists ['defaultavatar'] ?>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_AVATAR_DEFAULT_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->defaultavatarsmall != 's_nophoto.png') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_AVATAR_DEFAULT_SMALL') ?></td>
-													<td><?php echo $this->lists ['defaultavatarsmall'] ?>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_A_AVATAR_DEFAULT_SMALL_DESC') ?></td>
-												</tr>
-												<tr <?php if (str_replace(' ', '', $this->config->avatartypes) != 'gif,jpeg,jpg,png,webp,avif') : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CONFIG_AVATAR_FILESALLOWED') ?></td>
-													<td><input type="text" name="cfg_avatartypes"
-													           value="<?php echo $this->escape($this->config->avatartypes) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_CONFIG_AVATAR_FILESALLOWED_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->avatarsize != 2048) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_AVSIZE') ?></td>
-													<td>
-														<span class="kunena-unit-field"><input type="text" name="cfg_avatarsize" class="ksm-field" value="<?php echo $this->escape($this->config->avatarsize) ?>"/> <span>kB</span></span>
-													</td>
-													<td></td>
-												</tr>
-												<tr <?php if ($this->config->avatarquality != 75) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_AVATAR_QUALITY') ?></td>
-													<td class="nowrap">
-														<span class="kunena-unit-field"><input type="text" name="cfg_avatarquality" class="ksm-field" value="<?php echo $this->escape($this->config->avatarquality) ?>"/> <span>%</span></span>
-													</td>
-													<td></td>
-												</tr>
-												<tr <?php if ($this->config->avatarresizemethod != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_AVATAR_RESIZE_METHOD') ?></td>
-													<td><?php echo $this->lists ['avatarresizemethod'] ?></td>
-													<td></td>
-												</tr>
-												<tr <?php if ($this->config->avatarcrop != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_AVATAR_CROP') ?></td>
-													<td><?php echo $this->lists ['avatarcrop'] ?></td>
-													<td></td>
-												</tr>
-												<tr <?php if ($this->config->avataredit != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_AVATAREDIT') ?></td>
-													<td><?php echo $this->lists ['avataredit'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_AVATAREDIT_DESC') ?></td>
-												</tr>
-												</tbody>
-											</table>
-										</fieldset>
-										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_SETTINGS') ?></legend>
-											<table class="table table-striped">
-												<thead>
-												<tr>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
-													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
-												</tr>
-												</thead>
-												<tbody>
-												<tr <?php if ($this->config->userlist_rows != 30) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_ROWS') ?></td>
-													<td>
-														<input type="text" name="cfg_userlist_rows"
-														       value="<?php echo $this->escape($this->config->userlist_rows) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_ROWS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->userlist_online != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_USERONLINE') ?></td>
-													<td><?php echo $this->lists ['userlist_online'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_USERONLINE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->userlist_avatar != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_AVATAR') ?></td>
-													<td><?php echo $this->lists ['userlist_avatar'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_USERLIST_AVATAR_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->userlist_posts != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_POSTS') ?></td>
-													<td><?php echo $this->lists ['userlist_posts'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_POSTS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->userlist_karma != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_KARMA') ?></td>
-													<td><?php echo $this->lists ['userlist_karma'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_KARMA_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->userlist_email != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_EMAIL') ?></td>
-													<td><?php echo $this->lists ['userlist_email'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_EMAIL_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->userlist_joindate != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_JOINDATE') ?></td>
-													<td><?php echo $this->lists ['userlist_joindate'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_JOINDATE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->userlist_lastvisitdate != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_LASTVISITDATE') ?></td>
-													<td><?php echo $this->lists ['userlist_lastvisitdate'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_LASTVISITDATE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->userlist_userhits != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_HITS') ?></td>
-													<td><?php echo $this->lists ['userlist_userhits'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_ADMIN_CONFIG_USERLIST_HITS_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->superadmin_userlist != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_A_SHOW_SUPERADMINS_IN_USERLIST') ?></td>
-													<td><?php echo $this->lists ['superadmin_userlist'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_A_SHOW_SUPERADMINS_IN_USERLIST_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->show_session_type != 2) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_USER_SESSIONS_TYPE') ?></td>
-													<td><?php echo $this->lists ['show_session_type'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_SESSIONS_TYPE_DESC') ?></td>
-												</tr>
-												<tr <?php if ($this->config->show_session_starttime != 1800) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_USER_SESSIONS_START_TIME') ?></td>
-													<td>
-														<input type="text" name="cfg_show_session_starttime"
-														       value="<?php echo $this->escape($this->config->show_session_starttime) ?>"/>
-													</td>
-													<td><?php echo Text::_('COM_KUNENA_COM_A_SESSIONS_START_TIME_DESC') ?></td>
-												</tr>
-												</tbody>
-											</table>
-										</fieldset>
-									</div>
-									<div class="tab-pane" id="tab_thirdparty">
+									<div class="tab-pane" id="tab_integrations">
 										<fieldset>
 											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_EBAY') ?></legend>
 											<table class="table table-striped">
@@ -1773,6 +1757,146 @@ if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGA
 														       value="<?php echo $this->escape($this->config->google_map_api_key) ?>"/>
 													</td>
 													<td><?php echo Text::_('COM_KUNENA_CONFIGURATION_GOOGLE_MAPS_API_KEY_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+									</div>
+									<div class="tab-pane" id="tab_system">
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_MENU') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->mainmenu_id != '') : echo 'class="changed"'; endif; ?>>
+													<td align="left" valign="top"
+													    width="5%"><?php echo Text::_('COM_KUNENA_A_MAINMENU') ?></td>
+													<td align="left" valign="top"
+													    width="5%"><input type="text" name="cfg_mainmenu_id"
+													                      value="<?php echo $this->escape($this->config->mainmenu_id); ?>"/>
+													</td>
+													<td align="left"
+													    valign="top"><?php echo Text::_('COM_KUNENA_A_MAINMENU_DESC'); ?></td>
+												</tr>
+												<tr <?php if ($this->config->home_id != '') : echo 'class="changed"'; endif; ?>>
+													<td align="left" valign="top"
+													    width="5%"><?php echo Text::_('COM_KUNENA_A_HOMEID') ?></td>
+													<td align="left" valign="top"
+													    width="5%"><input type="text" name="cfg_home_id"
+													                      value="<?php echo $this->escape($this->config->home_id); ?>"/>
+													</td>
+													<td align="left"
+													    valign="top"><?php echo Text::_('COM_KUNENA_A_HOMEID_DESC'); ?></td>
+												</tr>
+												<tr <?php if ($this->config->index_id != '') : echo 'class="changed"'; endif; ?>>
+													<td align="left" valign="top"
+													    width="15%"><?php echo Text::_('COM_KUNENA_A_INDEXID') ?></td>
+													<td align="left" valign="top"
+													    width="5%"><input type="text" name="cfg_index_id"
+													                      value="<?php echo $this->escape($this->config->index_id); ?>"/>
+													</td>
+													<td align="left"
+													    valign="top"><?php echo Text::_('COM_KUNENA_A_INDEXID_DESC'); ?></td>
+												</tr>
+												<tr <?php if ($this->config->topiclist_id != '') : echo 'class="changed"'; endif; ?>>
+													<td align="left" valign="top"
+													    width="15%"><?php echo Text::_('COM_KUNENA_A_TOPICLISTID') ?></td>
+													<td align="left" valign="top"
+													    width="5%"><input type="text" name="cfg_topiclist_id"
+													                      value="<?php echo $this->escape($this->config->topiclist_id); ?>"/>
+													</td>
+													<td align="left"
+													    valign="top"><?php echo Text::_('COM_KUNENA_A_TOPICLISTID_DESC'); ?></td>
+												</tr>
+												<tr <?php if ($this->config->moderators_id != '') : echo 'class="changed"'; endif; ?>>
+													<td align="left" valign="top"
+													    width="15%"><?php echo Text::_('COM_KUNENA_A_MODERATORSID') ?></td>
+													<td align="left" valign="top"
+													    width="5%"><input type="text" name="cfg_moderators_id"
+													                      value="<?php echo $this->escape($this->config->moderators_id); ?>"/>
+													</td>
+													<td align="left"
+													    valign="top"><?php echo Text::_('COM_KUNENA_A_MODERATORSID_DESC'); ?></td>
+												</tr>
+												<tr <?php if ($this->config->misc_id != '') : echo 'class="changed"'; endif; ?>>
+													<td align="left" valign="top"
+													    width="15%"><?php echo Text::_('COM_KUNENA_A_MISCID') ?></td>
+													<td align="left" valign="top"
+													    width="5%"><input type="text" name="cfg_misc_id"
+													                      value="<?php echo $this->escape($this->config->misc_id); ?>"/>
+													</td>
+													<td align="left"
+													    valign="top"><?php echo Text::_('COM_KUNENA_A_MISCID_DESC'); ?></td>
+												</tr>
+												<tr <?php if ($this->config->profile_id != '') : echo 'class="changed"'; endif; ?>>
+													<td align="left" valign="top"
+													    width="15%"><?php echo Text::_('COM_KUNENA_A_PROFILEID') ?></td>
+													<td align="left" valign="top"
+													    width="5%"><input type="text" name="cfg_profile_id"
+													                      value="<?php echo $this->escape($this->config->profile_id); ?>"/>
+													</td>
+													<td align="left"
+													    valign="top"><?php echo Text::_('COM_KUNENA_A_PROFILEID_DESC'); ?></td>
+												</tr>
+												<tr <?php if ($this->config->search_id != '') : echo 'class="changed"'; endif; ?>>
+													<td align="left" valign="top"
+													    width="15%"><?php echo Text::_('COM_KUNENA_A_SEARCHID') ?></td>
+													<td align="left" valign="top"
+													    width="5%"><input type="text" name="cfg_search_id"
+													                      value="<?php echo $this->escape($this->config->search_id); ?>"/>
+													</td>
+													<td align="left"
+													    valign="top"><?php echo Text::_('COM_KUNENA_A_SEARCHID_DESC'); ?></td>
+												</tr>
+												<tr <?php if ($this->config->activemenuitem != '') : echo 'class="changed"'; endif; ?>>
+													<td align="left" valign="top"
+													    width="5%"><?php echo Text::_('COM_KUNENA_A_ACTIVEMENU') ?></td>
+													<td align="left" valign="top"
+													    width="5%"><input type="text" name="cfg_activemenuitem"
+													                      value="<?php echo $this->escape($this->config->activemenuitem); ?>"/>
+													</td>
+													<td align="left"
+													    valign="top"><?php echo Text::_('COM_KUNENA_A_ACTIVEMENU_DESC'); ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_PERFORMANCE') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->cache != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_CACHE') ?></td>
+													<td><?php echo $this->lists ['cache'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_CACHE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->cache_time != 60) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_CACHE_TIME') ?></td>
+													<td><?php echo $this->lists ['cache_time'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_CACHE_TIME_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->escape($this->config->sessiontimeout) != 1800) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_A_KUNENA_SESSION_TIMEOUT') ?>
+													</td>
+													<td><input type="text"
+													           name="cfg_sessiontimeout"
+													           value="<?php echo $this->escape($this->config->sessiontimeout);
+?>"/></td>
+													<td><?php echo Text::_('COM_KUNENA_A_KUNENA_SESSION_TIMEOUT_DESC') ?>
+													</td>
 												</tr>
 												</tbody>
 											</table>

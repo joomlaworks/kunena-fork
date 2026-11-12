@@ -54,7 +54,7 @@ Every change is described in detail in [CHANGELOG.md](CHANGELOG.md).
   - Blackadder, the new default template: one stylesheet and one plain-JavaScript file, Bootstrap Icons as SVG, Discourse-like category and thread lists, threads with one reply box, a lightbox for attached images, and every page redone (posting, profiles, search, moderation...); it takes the site template's fonts and colours, follows its light/dark scheme (tested on Joomla 3.x UTD's Hammond, Finch and Rookwood) and can be themed with CSS variables. Upgraded sites keep their template; Crypsis remains available
   - Moderation queue: moderators see how many posts await approval (account menu) and list them all in one place, across categories, with bulk approve, delete and move
   - Resolved threads: the thread starter and moderators mark a thread as resolved from the reply form, and it shows a "Resolved" label in the thread and the lists (unchecking it in a later reply reopens the thread)
-  - Automatic locking: threads without a reply for a number of days are locked (Configuration > Frontend > Posts, and per category); moderators can still reply, which opens the thread again
+  - Automatic locking: threads without a reply for a number of days are locked (Configuration > Posting > Thread Lifecycle, and per category); moderators can still reply, which opens the thread again
 - **Baldrick AI**, the forum's AI first responder (plugin "Kunena - Baldrick AI"):
   - Answers new questions, and old questions revived after a while (configurable), that no administrator or moderator has answered, and follows up when the poster replies to it (also configurable)
   - A cheap model sorts each question first; clear questions get an answer from a more capable model, based on related public threads of the forum; broad ones get a canned "have you searched the forum?" reply; spam is unpublished
@@ -64,7 +64,7 @@ Every change is described in detail in [CHANGELOG.md](CHANGELOG.md).
 - **Administrator:**
   - Tools > Empty Trash: permanently deletes every trashed thread and post with their attachments, in batches with a progress bar
   - Tools > Sample Data: a complete fictional forum with categories, users, avatars, about 60 threads and 400 posts, polls, attachments and every post state, to style and test a new site; "Remove" deletes exactly what was installed
-  - Configuration > SEO: the search engine settings in a tab of their own, with switches for structured data and the sharing tags, a default share image and the site's X account
+  - Configuration > SEO & Feeds: the search engine settings in a tab of their own, with switches for structured data and the sharing tags, a default share image and the site's X account
   - Configuration > Development (the last tab): Kunena Fork's debug mode, and a switch that stops all of Kunena Fork's e-mails (subscriptions, reports, mentions, Baldrick AI's notifications) on development and test sites, writing each one to Kunena Fork's log instead
 - **Search engines and social networks:**
   - Google structured data (JSON-LD) for discussions: each thread as a `DiscussionForumPosting` with its author, full text, images, reply and view counts, its category, and the replies shown on the page as `Comment`; replies by Baldrick AI are marked as AI-generated (`digitalSourceType`), as Google recommends
@@ -81,7 +81,7 @@ Every change is described in detail in [CHANGELOG.md](CHANGELOG.md).
 - Runs cleanly on PHP 7.1 to 8.5
 - CAPTCHA comes from the "Default Captcha" of Joomla's Global Configuration, and fails closed: if a CAPTCHA is required but none is configured, posting is refused instead of silently allowed
 - WebP and AVIF images for avatars and attachments (resized like the others, where the server's PHP supports them), and documents and media (Office/OpenDocument files, MP3, MP4, WebM...) in the default attachment types
-- Kunena's configuration regrouped into Global, Frontend, Security, SEO, Backend, Users, Third-Party Services and Development tabs, the most-used settings first; Yes/No buttons and Media Manager image pickers where they help; the administrator template's font size
+- Kunena's configuration regrouped by task into General, Display, Posting, Members, Notifications, Security & Moderation, SEO & Feeds, Integrations, System and Development tabs, the most-used settings first; Yes/No buttons and Media Manager image pickers where they help; the administrator template's font size
 - Faster banning: the ban form preselects "block the account" and the removal of the spammer's posts, signature, avatar and profile
 - Tools > Recount is fast on large forums: 3 to 4 seconds for 200,000 posts on MariaDB, MySQL and PostgreSQL, where a single batch could take over 20 minutes before
 - Crypsis works with any site template: Bootstrap 2.3's CSS is loaded scoped to the forum, so it no longer looks unstyled on templates not built on Bootstrap 2
@@ -116,7 +116,7 @@ Install the package over your existing Kunena 5.2 site, as above. The old "Kunen
 
 1. Choose and configure a CAPTCHA plugin in **Extensions > Plugins** (Joomla 3.x UTD ships IconCaptcha ready to use, with no keys).
 2. Select it as **Default Captcha** in **System > Global Configuration > Site**.
-3. In **Kunena > Configuration > Security**, choose who must solve it ("Display Captcha for") and, for registered users, below how many posts ("CAPTCHA Challenge for Users"). Moderators are never challenged.
+3. In **Kunena > Configuration > Security & Moderation**, choose who must solve it ("Display Captcha for") and, for registered users, below how many posts ("CAPTCHA Challenge for Users"). Moderators are never challenged.
 
 ## CONFIGURING BALDRICK AI
 
@@ -139,7 +139,7 @@ The posts Baldrick handles (and related public threads) are sent to the AI provi
 
 ## SEARCH ENGINES & SOCIAL NETWORKS
 
-Structured data and the Open Graph / X card tags are on by default. In **Kunena > Configuration > SEO** you can turn each of them off (e.g. when an SEO extension already writes them for the forum), choose a **default share image** for pages without an image of their own (1200 x 630 pixels recommended) and enter the site's **X account**.
+Structured data and the Open Graph / X card tags are on by default. In **Kunena > Configuration > SEO & Feeds** you can turn each of them off (e.g. when an SEO extension already writes them for the forum), choose a **default share image** for pages without an image of their own (1200 x 630 pixels recommended) and enter the site's **X account**.
 
 On Joomla 3.x UTD, the core plugin **System - Structured Data & Social Tags** writes the tags of every page; Kunena Fork gives it the forum's own (threads, profiles, categories), and the plugin's settings (site name, publisher, default image, X account) apply to everything else. Test a thread with Google's [Rich Results Test](https://search.google.com/test/rich-results).
 

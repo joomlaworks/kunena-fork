@@ -703,7 +703,7 @@ category, index and user list controllers call from `prepareDocument()`:
   JSON-LD graph and one set of tags per page. Where the plugin is missing or disabled (Joomla 3.9/3.10), Kunena writes
   its own tags and a JSON-LD block of its own (a custom tag: Joomla merges script declarations of one type into a
   single element, which would join several JSON documents into invalid JSON).
-- **Settings** in Kunena > Configuration > SEO (a new tab, with the existing SEO settings): structured data on/off,
+- **Settings** in Kunena > Configuration > SEO & Feeds (a new tab, with the existing SEO settings and RSS): structured data on/off,
   Open Graph and X tags on/off (for sites where an SEO extension writes them), default share image, X account.
 
 ### 19. Configuration: Development tab
@@ -720,11 +720,11 @@ category, index and user list controllers call from `prepareDocument()`:
   form (a checkbox, shown checked on a resolved thread: unchecking it in a reply reopens the thread). Blackadder shows a
   "Resolved" label in the thread header and in the lists. Stored as the topic's existing label (`label_id` 8, Kunena's
   "Solved" label, now called "Resolved"), so no database change and Crypsis's label display shows it too.
-  `KunenaForumTopic::isResolved()`, `canResolve()`, `setResolved()`. Kunena > Configuration > Frontend > Posts: "Resolved threads"
+  `KunenaForumTopic::isResolved()`, `canResolve()`, `setResolved()`. Kunena > Configuration > Posting > Thread Lifecycle: "Resolved threads"
   (on). Baldrick AI doesn't answer later replies in a resolved thread.
 - **Automatic locking:** threads without a reply for a number of days are locked: only moderators can reply (their
   reply opens the thread again, as the last post is new), polls can't be voted on, and the lists and the thread show the
-  lock. Kunena > Configuration > Frontend > Posts: "Lock threads after" (0: never, the default); each category can set its own
+  lock. Kunena > Configuration > Posting > Thread Lifecycle: "Lock threads after" (0: never, the default); each category can set its own
   number of days (Categories > Edit > Settings; empty: Kunena's setting, 0: never). Computed from the last post's time,
   nothing is written to the database and no scheduled task is needed: `KunenaForumTopic::isAutoLocked()` /
   `isLocked()` (the topic's own lock or the automatic one), used by the reply, edit, vote and thank-you permissions and
@@ -744,14 +744,15 @@ category, index and user list controllers call from `prepareDocument()`:
   e-mail header, default avatar and small avatar) uses Joomla's media field, which opens the Media Manager. Default
   avatars accept a path from the site's root (what the Media Manager gives) besides the former file name looked up in
   the template (`KunenaAvatarKunena::defaultImagePath()`).
-- **Configuration regrouped** into eight tabs, the settings most forums change first in each section: **Global** (forum
-  title, offline and read-only modes, English fallback; an **E-mail** section with every e-mail setting, from Basics and
-  Users), **Frontend** (lists and threads, posts (with editing, resolved threads and automatic locking), categories,
-  polls and statistics (from Extra), ranks, BBCode (only BBCode behaviour), attachments, images and files (from
-  Uploads), RSS (with its on/off switch, from Basics)), **Security**, **SEO**, **Backend** (menu items, caching and
-  sessions, moderation log), **Users** (users and profiles, subscriptions, avatars (from Avatars), the user list (from
-  Extra)), **Third-Party Services** (eBay, X/Twitter and Google Maps keys, from BBCode) and **Development**. The settings
-  themselves are unchanged.
+- **Configuration regrouped by task** into ten tabs, the settings most forums change first in each tab and section:
+  **General** (the forum: title, offline and read-only modes, English fallback), **Display** (thread lists, threads, post
+  authors with ranks, categories, statistics, search), **Posting** (writing and editing, attachments, images, files,
+  polls, thread lifecycle with resolved threads and automatic locking, BBCode), **Members** (profiles, avatars, user
+  list), **Notifications** (every e-mail: sending, subscriptions, staff notifications, delivery), **Security &
+  Moderation** (access, spam prevention, CAPTCHA, Stop Forum Spam, moderation, privacy), **SEO & Feeds** (URLs, search
+  engines and sharing, RSS), **Integrations** (eBay, X/Twitter and Google Maps keys, formerly under BBCode), **System**
+  (menu items, performance) and **Development**. Former tabs Basics, Frontend, Users, Avatars, Uploads, Ranking,
+  BBCode, RSS, Extra and Menu are gone; the settings themselves are unchanged.
 - **Settings tables aligned:** in the configuration and the category editor, labels and descriptions sat 7-8 pixels
   above the text of their fields (top-aligned cells); the cells now share their text baseline (a textarea by its first
   line).
