@@ -1,7 +1,7 @@
-# Kunena 5.3 for Joomla 3.x
+# Kunena 5.3 for Joomla 3.x & Joomla 3.x UTD
 
 Kunena is a native forum component for Joomla. This repository is a maintained fork of **Kunena 5.2.14**, the last
-release of Kunena for Joomla 3.x, modernised for current PHP versions, hardened, and packaged as a single installable
+release of Kunena for Joomla 3.x & Joomla 3.x UTD, modernised for current PHP versions, hardened and packaged as a single installable
 extension.
 
 - **Version:** 5.3.0 (2026-11-10)
