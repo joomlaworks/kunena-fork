@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE extension>
+<extension version="3.9" type="plugin" group="kunena" method="upgrade">
+    <name>plg_kunena_baldrick</name>
+    <version>5.3.0</version>
+    <creationDate>2026-11-10</creationDate>
+    <author>JoomlaWorks Ltd.</author>
+    <authorEmail>contact@joomlaworks.net</authorEmail>
+    <authorUrl>https://www.joomlaworks.net</authorUrl>
+    <copyright>Copyright (C) 2026 JoomlaWorks Ltd. All rights reserved.</copyright>
+    <license>GNU/GPLv3 or later</license>
+    <description>PLG_KUNENA_BALDRICK_XML_DESCRIPTION</description>
+    <files>
+        <filename plugin="baldrick">baldrick.php</filename>
+        <folder>assets</folder>
+        <folder>fields</folder>
+        <folder>language</folder>
+    </files>
+    <config>
+        <fields name="params" addfieldpath="/plugins/kunena/baldrick/fields">
+            <fieldset name="basic" addfieldpath="/libraries/kunena/form/fields">
+
+                <!-- Stage 1: triage -->
+                <field name="spacer_triage" type="spacer" label="PLG_KUNENA_BALDRICK_SECTION_TRIAGE" description="PLG_KUNENA_BALDRICK_SECTION_TRIAGE_DESC" />
+                <field name="triage_provider" type="list" default="anthropic" label="PLG_KUNENA_BALDRICK_PROVIDER" description="PLG_KUNENA_BALDRICK_PROVIDER_DESC">
+                    <option value="anthropic">PLG_KUNENA_BALDRICK_PROVIDER_ANTHROPIC</option>
+                    <option value="openai">PLG_KUNENA_BALDRICK_PROVIDER_OPENAI</option>
+                </field>
+                <field name="triage_base_url" type="url" default="" filter="url" validate="url" class="input-xxlarge" label="PLG_KUNENA_BALDRICK_BASE_URL" description="PLG_KUNENA_BALDRICK_BASE_URL_DESC" hint="PLG_KUNENA_BALDRICK_BASE_URL_HINT" />
+                <field name="triage_api_key" type="password" default="" filter="raw" autocomplete="off" class="input-xxlarge" label="PLG_KUNENA_BALDRICK_API_KEY" description="PLG_KUNENA_BALDRICK_API_KEY_DESC" />
+                <field name="triage_model" type="baldrickmodel" stage="triage" default="claude-haiku-5-5" label="PLG_KUNENA_BALDRICK_MODEL" description="PLG_KUNENA_BALDRICK_TRIAGE_MODEL_DESC" />
+                <field name="triage_price_in" type="text" default="" class="input-small" hint="0.10" label="PLG_KUNENA_BALDRICK_PRICE_IN" description="PLG_KUNENA_BALDRICK_PRICE_DESC" />
+                <field name="triage_price_out" type="text" default="" class="input-small" hint="0.50" label="PLG_KUNENA_BALDRICK_PRICE_OUT" description="PLG_KUNENA_BALDRICK_PRICE_DESC" />
+
+                <!-- Stage 2: answer -->
+                <field name="spacer_answer" type="spacer" label="PLG_KUNENA_BALDRICK_SECTION_ANSWER" description="PLG_KUNENA_BALDRICK_SECTION_ANSWER_DESC" />
+                <field name="answer_same_connection" type="radio" default="1" class="btn-group btn-group-yesno" label="PLG_KUNENA_BALDRICK_SAME_CONNECTION" description="PLG_KUNENA_BALDRICK_SAME_CONNECTION_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="answer_provider" type="list" default="anthropic" showon="answer_same_connection:0" label="PLG_KUNENA_BALDRICK_PROVIDER" description="PLG_KUNENA_BALDRICK_PROVIDER_DESC">
+                    <option value="anthropic">PLG_KUNENA_BALDRICK_PROVIDER_ANTHROPIC</option>
+                    <option value="openai">PLG_KUNENA_BALDRICK_PROVIDER_OPENAI</option>
+                </field>
+                <field name="answer_base_url" type="url" default="" filter="url" validate="url" class="input-xxlarge" showon="answer_same_connection:0" label="PLG_KUNENA_BALDRICK_BASE_URL" description="PLG_KUNENA_BALDRICK_BASE_URL_DESC" hint="PLG_KUNENA_BALDRICK_BASE_URL_HINT" />
+                <field name="answer_api_key" type="password" default="" filter="raw" autocomplete="off" class="input-xxlarge" showon="answer_same_connection:0" label="PLG_KUNENA_BALDRICK_API_KEY" description="PLG_KUNENA_BALDRICK_API_KEY_DESC" />
+                <field name="answer_model" type="baldrickmodel" stage="answer" default="claude-sonnet-5-5" label="PLG_KUNENA_BALDRICK_MODEL" description="PLG_KUNENA_BALDRICK_ANSWER_MODEL_DESC" />
+                <field name="answer_price_in" type="text" default="" class="input-small" hint="2.00" label="PLG_KUNENA_BALDRICK_PRICE_IN" description="PLG_KUNENA_BALDRICK_PRICE_DESC" />
+                <field name="answer_price_out" type="text" default="" class="input-small" hint="10.00" label="PLG_KUNENA_BALDRICK_PRICE_OUT" description="PLG_KUNENA_BALDRICK_PRICE_DESC" />
+
+                <!-- When Baldrick replies -->
+                <field name="spacer_behaviour" type="spacer" label="PLG_KUNENA_BALDRICK_SECTION_BEHAVIOUR" description="PLG_KUNENA_BALDRICK_SECTION_BEHAVIOUR_DESC" />
+                <field name="dry_run" type="radio" default="0" class="btn-group btn-group-yesno" label="PLG_KUNENA_BALDRICK_DRY_RUN" description="PLG_KUNENA_BALDRICK_DRY_RUN_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="user_id" type="user" default="" label="PLG_KUNENA_BALDRICK_USER" description="PLG_KUNENA_BALDRICK_USER_DESC" />
+                <field name="inactivity_days" type="number" default="7" min="1" max="3650" filter="integer" label="PLG_KUNENA_BALDRICK_INACTIVITY_DAYS" description="PLG_KUNENA_BALDRICK_INACTIVITY_DAYS_DESC" />
+                <field name="replies_per_topic" type="number" default="3" min="1" max="20" filter="integer" label="PLG_KUNENA_BALDRICK_REPLIES_PER_TOPIC" description="PLG_KUNENA_BALDRICK_REPLIES_PER_TOPIC_DESC" />
+                <field name="daily_cap" type="number" default="120" min="0" max="100000" filter="integer" label="PLG_KUNENA_BALDRICK_DAILY_CAP" description="PLG_KUNENA_BALDRICK_DAILY_CAP_DESC" />
+                <field name="min_length" type="number" default="20" min="0" max="10000" filter="integer" label="PLG_KUNENA_BALDRICK_MIN_LENGTH" description="PLG_KUNENA_BALDRICK_MIN_LENGTH_DESC" />
+                <field name="categories_include" type="kunenacategorylist" multiple="true" size="8" default="" label="PLG_KUNENA_BALDRICK_CATEGORIES_INCLUDE" description="PLG_KUNENA_BALDRICK_CATEGORIES_INCLUDE_DESC" />
+                <field name="categories_exclude" type="kunenacategorylist" multiple="true" size="8" default="" label="PLG_KUNENA_BALDRICK_CATEGORIES_EXCLUDE" description="PLG_KUNENA_BALDRICK_CATEGORIES_EXCLUDE_DESC" />
+                <field name="public_only" type="radio" default="1" class="btn-group btn-group-yesno" label="PLG_KUNENA_BALDRICK_PUBLIC_ONLY" description="PLG_KUNENA_BALDRICK_PUBLIC_ONLY_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <!-- How Baldrick replies -->
+                <field name="spacer_replies" type="spacer" label="PLG_KUNENA_BALDRICK_SECTION_REPLIES" description="PLG_KUNENA_BALDRICK_SECTION_REPLIES_DESC" />
+                <field name="translate_english" type="radio" default="1" class="btn-group btn-group-yesno" label="PLG_KUNENA_BALDRICK_TRANSLATE" description="PLG_KUNENA_BALDRICK_TRANSLATE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="retrieval_topics" type="number" default="5" min="0" max="20" filter="integer" label="PLG_KUNENA_BALDRICK_RETRIEVAL" description="PLG_KUNENA_BALDRICK_RETRIEVAL_DESC" />
+                <field name="preset" type="baldrickpreset" label="PLG_KUNENA_BALDRICK_PRESET" description="PLG_KUNENA_BALDRICK_PRESET_DESC" />
+                <field name="site_context" type="textarea" default="" filter="raw" rows="8" class="input-xxlarge" label="PLG_KUNENA_BALDRICK_SITE_CONTEXT" description="PLG_KUNENA_BALDRICK_SITE_CONTEXT_DESC" hint="PLG_KUNENA_BALDRICK_SITE_CONTEXT_HINT" />
+                <field name="canned_responses" type="baldrickcanned" default="" filter="raw" rows="12" class="input-xxlarge" label="PLG_KUNENA_BALDRICK_CANNED" description="PLG_KUNENA_BALDRICK_CANNED_DESC" />
+
+                <!-- Spam -->
+                <field name="spacer_spam" type="spacer" label="PLG_KUNENA_BALDRICK_SECTION_SPAM" description="PLG_KUNENA_BALDRICK_SECTION_SPAM_DESC" />
+                <field name="spam_action" type="list" default="unpublish" label="PLG_KUNENA_BALDRICK_SPAM_ACTION" description="PLG_KUNENA_BALDRICK_SPAM_ACTION_DESC">
+                    <option value="unpublish">PLG_KUNENA_BALDRICK_SPAM_UNPUBLISH</option>
+                    <option value="report">PLG_KUNENA_BALDRICK_SPAM_REPORT</option>
+                    <option value="ignore">PLG_KUNENA_BALDRICK_SPAM_IGNORE</option>
+                </field>
+                <field name="spam_trusted_posts" type="number" default="10" min="0" max="100000" filter="integer" label="PLG_KUNENA_BALDRICK_SPAM_TRUSTED" description="PLG_KUNENA_BALDRICK_SPAM_TRUSTED_DESC" />
+
+                <!-- Notifications -->
+                <field name="spacer_notify" type="spacer" label="PLG_KUNENA_BALDRICK_SECTION_NOTIFY" description="PLG_KUNENA_BALDRICK_SECTION_NOTIFY_DESC" />
+                <field name="notify_users" type="baldrickstaff" multiple="true" default="" label="PLG_KUNENA_BALDRICK_NOTIFY_USERS" description="PLG_KUNENA_BALDRICK_NOTIFY_USERS_DESC" />
+                <field name="notify_on" type="list" default="all" label="PLG_KUNENA_BALDRICK_NOTIFY_ON" description="PLG_KUNENA_BALDRICK_NOTIFY_ON_DESC">
+                    <option value="all">PLG_KUNENA_BALDRICK_NOTIFY_ON_ALL</option>
+                    <option value="spam">PLG_KUNENA_BALDRICK_NOTIFY_ON_SPAM</option>
+                </field>
+                <field name="notify_emails" type="textarea" default="" filter="string" rows="2" class="input-xxlarge" label="PLG_KUNENA_BALDRICK_NOTIFY_EMAILS" description="PLG_KUNENA_BALDRICK_NOTIFY_EMAILS_DESC" hint="admin@example.com, moderator@example.com" />
+
+
+                <!-- Advanced: limits and timeouts -->
+                <field name="spacer_advanced" type="spacer" label="PLG_KUNENA_BALDRICK_SECTION_ADVANCED" description="PLG_KUNENA_BALDRICK_SECTION_ADVANCED_DESC" />
+                <field name="processing" type="list" default="auto" label="PLG_KUNENA_BALDRICK_PROCESSING" description="PLG_KUNENA_BALDRICK_PROCESSING_DESC">
+                    <option value="auto">PLG_KUNENA_BALDRICK_PROCESSING_AUTO</option>
+                    <option value="cron">PLG_KUNENA_BALDRICK_PROCESSING_CRON</option>
+                </field>
+                <field name="connect_timeout" type="number" default="10" min="1" max="60" filter="integer" label="PLG_KUNENA_BALDRICK_CONNECT_TIMEOUT" description="PLG_KUNENA_BALDRICK_CONNECT_TIMEOUT_DESC" />
+                <field name="triage_timeout" type="number" default="30" min="5" max="600" filter="integer" label="PLG_KUNENA_BALDRICK_TRIAGE_TIMEOUT" description="PLG_KUNENA_BALDRICK_TRIAGE_TIMEOUT_DESC" />
+                <field name="answer_timeout" type="number" default="90" min="10" max="600" filter="integer" label="PLG_KUNENA_BALDRICK_ANSWER_TIMEOUT" description="PLG_KUNENA_BALDRICK_ANSWER_TIMEOUT_DESC" />
+                <field name="triage_max_tokens" type="number" default="2048" min="256" max="64000" filter="integer" label="PLG_KUNENA_BALDRICK_TRIAGE_MAX_TOKENS" description="PLG_KUNENA_BALDRICK_MAX_TOKENS_DESC" />
+                <field name="answer_max_tokens" type="number" default="6000" min="256" max="64000" filter="integer" label="PLG_KUNENA_BALDRICK_ANSWER_MAX_TOKENS" description="PLG_KUNENA_BALDRICK_MAX_TOKENS_DESC" />
+                <field name="retrieval_max_posts" type="number" default="50000" min="0" max="100000000" filter="integer" label="PLG_KUNENA_BALDRICK_RETRIEVAL_MAX_POSTS" description="PLG_KUNENA_BALDRICK_RETRIEVAL_MAX_POSTS_DESC" />
+                <field name="max_wait_hours" type="number" default="24" min="0" max="720" filter="integer" label="PLG_KUNENA_BALDRICK_MAX_WAIT" description="PLG_KUNENA_BALDRICK_MAX_WAIT_DESC" />
+                <field name="pause_minutes" type="number" default="15" min="1" max="1440" filter="integer" label="PLG_KUNENA_BALDRICK_PAUSE_MINUTES" description="PLG_KUNENA_BALDRICK_PAUSE_MINUTES_DESC" />
+                <field name="anthropic_fallbacks" type="radio" default="1" class="btn-group btn-group-yesno" label="PLG_KUNENA_BALDRICK_FALLBACKS" description="PLG_KUNENA_BALDRICK_FALLBACKS_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="log_days" type="number" default="90" min="1" max="3650" filter="integer" label="PLG_KUNENA_BALDRICK_LOG_DAYS" description="PLG_KUNENA_BALDRICK_LOG_DAYS_DESC" />
+            </fieldset>
+        </fields>
+    </config>
+</extension>

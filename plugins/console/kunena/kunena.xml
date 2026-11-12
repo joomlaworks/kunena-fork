@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE extension>
+<extension version="3.9" type="plugin" group="console" method="upgrade">
+    <name>plg_console_kunena</name>
+    <version>5.3.0</version>
+    <creationDate>2026-11-10</creationDate>
+    <author>JoomlaWorks Ltd.</author>
+    <authorUrl>https://www.joomlaworks.net</authorUrl>
+    <copyright>Copyright (C) 2026 JoomlaWorks Ltd. All rights reserved.</copyright>
+    <license>GNU/GPLv3 or later</license>
+    <description>PLG_CONSOLE_KUNENA_XML_DESCRIPTION</description>
+    <files>
+        <filename plugin="kunena">kunena.php</filename>
+        <filename>commands.php</filename>
+        <folder>language</folder>
+    </files>
+</extension>

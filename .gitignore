@@ -1,0 +1,9 @@
+.php-cs-fixer.cache
+.DS_Store
+/vendor/
+/node_modules/
+*.zip
+
+# Site-specific template files (written on a site, never shipped): Blackadder's custom.css, saved template settings
+/components/com_kunena/template/blackadder/assets/css/custom.css
+/components/com_kunena/template/*/config/params.ini

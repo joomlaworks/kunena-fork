@@ -1,0 +1,44 @@
+# Kunena upload directory - deny execution of PHP (and related) scripts.
+# This is a defence-in-depth measure: Kunena validates extensions and MIME
+# types on upload, but a misconfigured server must never run uploaded files.
+
+# Apache 2.4 (also matches double extensions such as file.php.jpg)
+<IfModule mod_authz_core.c>
+	<FilesMatch "(?i)\.(php\d*|pht|phtml|phar|phps|shtml|cgi|fcgi|pl|py|asp|aspx|jsp|exe|sh|bash|htaccess|htpasswd)(\.|$)">
+		Require all denied
+	</FilesMatch>
+</IfModule>
+
+# Apache 2.2
+<IfModule !mod_authz_core.c>
+	<FilesMatch "(?i)\.(php\d*|pht|phtml|phar|phps|shtml|cgi|fcgi|pl|py|asp|aspx|jsp|exe|sh|bash|htaccess|htpasswd)(\.|$)">
+		Order Deny,Allow
+		Deny from All
+	</FilesMatch>
+</IfModule>
+
+# Disable script execution via mod_php regardless of extension
+<IfModule mod_php5.c>
+	php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+	php_flag engine off
+</IfModule>
+<IfModule mod_php.c>
+	php_flag engine off
+</IfModule>
+
+# Never let browsers sniff uploaded files into an active content type
+<IfModule mod_headers.c>
+	Header always set X-Content-Type-Options "nosniff"
+	<FilesMatch "(?i)\.(svgz?|html?|xhtml|xml)$">
+		Header always set Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'; sandbox"
+	</FilesMatch>
+</IfModule>
+
+# Prevent CGI execution
+Options -ExecCGI
+
+<IfModule mod_autoindex.c>
+	Options -Indexes
+</IfModule>

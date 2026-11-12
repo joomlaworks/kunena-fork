@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE extension>
+<extension version="2.5" type="file">
+	<name>kunena_tmpl_blackadder</name>
+	<version>5.3.0</version>
+	<creationDate>2026-11-10</creationDate>
+	<author>JoomlaWorks Ltd.</author>
+	<authorEmail>contact@joomlaworks.net</authorEmail>
+	<authorUrl>https://www.joomlaworks.net</authorUrl>
+	<copyright>Copyright (C) 2026 JoomlaWorks Ltd. All rights reserved.</copyright>
+	<license>GNU/GPL</license>
+	<description>COM_KUNENA_TEMPLATE_BLACKADDER_DESC</description>
+	<files>
+		<filename>README.md</filename>
+		<filename>template.php</filename>
+		<folder>assets</folder>
+		<folder>config</folder>
+		<folder>language</folder>
+		<folder>layouts</folder>
+	</files>
+</extension>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE extension>
+<!--
+    Kunena Forum - single installer manifest (Joomla! 3.x: 3.9 - 3.18, including Joomla 3.x UTD)
+
+    This manifest lives at the root of the repository so that the archive exported
+    by GitHub ("Code" > "Download ZIP") can be uploaded directly to the Joomla!
+    Extension Manager. The component, the Kunena media files, the Kunena library
+    and the system/quickicon plugins are all installed from this single package
+    (see script.kunena.php).
+-->
+<extension type="component" version="3.9" method="upgrade">
+    <name>com_kunena</name>
+    <version>5.3.0</version>
+    <versionname>Tharsis</versionname>
+    <creationDate>2026-11-10</creationDate>
+    <author>Kunena Team</author>
+    <authorEmail>kunena@kunena.org</authorEmail>
+    <authorUrl>https://www.kunena.org</authorUrl>
+    <copyright>(C) 2008 - 2026 Kunena Team. All rights reserved.</copyright>
+    <license>GNU/GPLv3 or later</license>
+    <description>COM_KUNENA_XML_DESCRIPTION</description>
+
+    <scriptfile>script.kunena.php</scriptfile>
+
+    <!-- Site (frontend) files -->
+    <files folder="components/com_kunena">
+        <filename>attachment.php</filename>
+        <filename>kunena.php</filename>
+        <filename>router.php</filename>
+        <folder>controller</folder>
+        <folder>controllers</folder>
+        <folder>language</folder>
+        <folder>layout</folder>
+        <folder>models</folder>
+        <folder>template</folder>
+        <folder>views</folder>
+    </files>
+
+    <!-- Media files (previously the separate "kunena_media" file extension) -->
+    <media destination="kunena" folder="media/kunena">
+        <folder>attachments</folder>
+        <folder>avatars</folder>
+        <folder>category_images</folder>
+        <folder>core</folder>
+        <folder>email</folder>
+        <folder>emoticons</folder>
+        <folder>images</folder>
+        <folder>labels</folder>
+        <folder>less</folder>
+        <folder>ranks</folder>
+        <folder>topic_icons</folder>
+    </media>
+
+    <administration>
+        <menu view="cpanel" img="components/com_kunena/media/icons/favicons/kunena-logo-white.png">COM_KUNENA</menu>
+        <submenu>
+            <menu view="cpanel">COM_KUNENA_DASHBOARD</menu>
+            <menu view="categories">COM_KUNENA_CATEGORY_MANAGER</menu>
+            <menu view="users">COM_KUNENA_USER_MANAGER</menu>
+            <menu view="attachments">COM_KUNENA_FILE_MANAGER</menu>
+            <menu view="smilies">COM_KUNENA_EMOTICON_MANAGER</menu>
+            <menu view="ranks">COM_KUNENA_RANK_MANAGER</menu>
+            <menu view="templates">COM_KUNENA_TEMPLATE_MANAGER</menu>
+            <menu view="config">COM_KUNENA_CONFIGURATION</menu>
+            <menu view="plugins">COM_KUNENA_PLUGIN_MANAGER</menu>
+            <menu view="logs">COM_KUNENA_LOG_MANAGER</menu>
+            <menu view="statistics">COM_KUNENA_MENU_STATISTICS</menu>
+            <menu view="tools">COM_KUNENA_FORUM_TOOLS</menu>
+            <menu view="trash">COM_KUNENA_TRASH_MANAGER</menu>
+        </submenu>
+        <!-- Administrator (backend) files -->
+        <files folder="administrator/components/com_kunena">
+            <filename>api.php</filename>
+            <filename>install.php</filename>
+            <filename>kunena.php</filename>
+            <filename>access.xml</filename>
+            <filename>config.xml</filename>
+            <folder>controllers</folder>
+            <folder>install</folder>
+            <folder>language</folder>
+            <folder>media</folder>
+            <folder>models</folder>
+            <folder>template</folder>
+            <folder>views</folder>
+        </files>
+    </administration>
+</extension>

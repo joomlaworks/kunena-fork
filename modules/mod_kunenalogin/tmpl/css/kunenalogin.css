@@ -1,0 +1,19 @@
+@charset "UTF-8";
+/**
+ * Kunena Login Module
+ * @package Kunena.mod_kunenalogin
+ *
+ * @copyright (C) 2008 - 2026 Kunena Team. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link https://www.kunena.org
+ **/
+
+/*					VERTICAL STYLE
+----------------------------------------------------------*/
+
+.klogin-vert .center, .klogin-vert .table td.center, .klogin-vert .table th.center {
+	text-align: left !important;
+}
+.klogin-vert li {
+	list-style-type: none !important;
+}

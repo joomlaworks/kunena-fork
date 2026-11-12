@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.9" type="plugin" group="captcha" method="upgrade">
+	<name>plg_captcha_testcaptcha</name>
+	<version>1.0.0</version>
+	<description>Test-only CAPTCHA: the answer is "letmein".</description>
+	<files><filename plugin="testcaptcha">testcaptcha.php</filename></files>
+</extension>
