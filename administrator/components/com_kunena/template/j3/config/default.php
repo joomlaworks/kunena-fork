@@ -256,7 +256,7 @@ if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGA
 												</tr>
 												<tr <?php if ($this->config->seo_share_image != '') : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_SHARE_IMAGE') ?></td>
-													<td><input name="cfg_seo_share_image" type="text" value="<?php echo $this->escape($this->config->seo_share_image) ?>" placeholder="images/forum-share.jpg"></td>
+													<td><?php echo $this->lists ['seo_share_image'] ?></td>
 													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_SHARE_IMAGE_DESC') ?></td>
 												</tr>
 												<tr <?php if ($this->config->seo_x_site != '') : echo 'class="changed"'; endif; ?>>
@@ -641,8 +641,7 @@ if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGA
 												<tbody>
 												<tr <?php if ($this->config->emailheader != 'media/kunena/email/hero-wide.png') : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_EMAIL_HEADER') ?></td>
-													<td><input name="cfg_emailheader" type="text"
-													           value="<?php echo $this->escape($this->config->emailheader) ?>">
+													<td><?php echo $this->lists ['emailheader'] ?>
 													</td>
 													<td><?php echo Text::_('COM_KUNENA_EMAIL_HEADER_DESC') ?></td>
 												</tr>
@@ -893,15 +892,13 @@ if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGA
 												</tr>
 												<tr <?php if ($this->config->defaultavatar != 'nophoto.png') : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_AVATAR_DEFAULT') ?></td>
-													<td><input type="text" name="cfg_defaultavatar"
-													           value="<?php echo $this->escape($this->config->defaultavatar) ?>"/>
+													<td><?php echo $this->lists ['defaultavatar'] ?>
 													</td>
 													<td><?php echo Text::_('COM_KUNENA_A_AVATAR_DEFAULT_DESC') ?></td>
 												</tr>
 												<tr <?php if ($this->config->defaultavatarsmall != 's_nophoto.png') : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_AVATAR_DEFAULT_SMALL') ?></td>
-													<td><input type="text" name="cfg_defaultavatarsmall"
-													           value="<?php echo $this->escape($this->config->defaultavatarsmall) ?>"/>
+													<td><?php echo $this->lists ['defaultavatarsmall'] ?>
 													</td>
 													<td><?php echo Text::_('COM_KUNENA_A_AVATAR_DEFAULT_SMALL_DESC') ?></td>
 												</tr>
@@ -932,9 +929,7 @@ if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGA
 												<tr <?php if ($this->config->avatarquality != 75) : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_AVATAR_QUALITY') ?></td>
 													<td class="nowrap">
-														<input type="text" name="cfg_avatarquality" class="ksm-field"
-														       value="<?php echo $this->escape($this->config->avatarquality) ?>"/>
-														%
+														<span class="kunena-unit-field"><input type="text" name="cfg_avatarquality" class="ksm-field" value="<?php echo $this->escape($this->config->avatarquality) ?>"/> <span>%</span></span>
 													</td>
 													<td></td>
 												</tr>
@@ -1078,9 +1073,7 @@ if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGA
 												<tr <?php if ($this->config->imagequality != 50) : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_IMGQUALITY') ?></td>
 													<td>
-														<input type="text" name="cfg_imagequality" class="ksm-field"
-														       value="<?php echo $this->escape($this->config->imagequality) ?>"/>
-														%
+														<span class="kunena-unit-field"><input type="text" name="cfg_imagequality" class="ksm-field" value="<?php echo $this->escape($this->config->imagequality) ?>"/> <span>%</span></span>
 													</td>
 													<td><?php echo Text::_('COM_KUNENA_A_IMGQUALITY_DESC') ?></td>
 												</tr>

@@ -523,7 +523,6 @@ class KunenaAdminModelConfig extends KunenaModel
         $lists ['seo_structured_data'] = HTMLHelper::_('select.genericlist', $yesno, 'cfg_seo_structured_data', 'class="inputbox" size="1"', 'value', 'text', $this->config->seo_structured_data);
         $lists ['seo_social_tags']     = HTMLHelper::_('select.genericlist', $yesno, 'cfg_seo_social_tags', 'class="inputbox" size="1"', 'value', 'text', $this->config->seo_social_tags);
         $lists ['resolve_threads']     = HTMLHelper::_('select.genericlist', $yesno, 'cfg_resolve_threads', 'class="inputbox" size="1"', 'value', 'text', $this->config->resolve_threads);
-        $lists ['dev_disable_email']   = HTMLHelper::_('select.genericlist', $yesno, 'cfg_dev_disable_email', 'class="inputbox" size="1"', 'value', 'text', $this->config->dev_disable_email);
 
         $user_edit_poll   = array();
         $user_edit_poll[] = HTMLHelper::_('select.option', '1', Text::_('COM_KUNENA_CONFIG_POLL_ALLOW_USER_EDIT_POLL_ALLOW'));
@@ -542,6 +541,33 @@ class KunenaAdminModelConfig extends KunenaModel
 
         // K5.2.0
         $lists ['new_users_prevent_post_url_images'] = HTMLHelper::_('select.genericlist', $yesno, 'cfg_new_users_prevent_post_url_images', 'class="inputbox" size="1"', 'value', 'text', $this->config->new_users_prevent_post_url_images);
+
+        // 5.3.0: Joomla's own form fields where they help: Yes/No buttons in the Development tab, the Media Manager's
+        // image picker for the default share image
+        $form = \Joomla\CMS\Form\Form::getInstance(
+            'com_kunena.config.fields',
+            '<form>'
+            . '<field name="cfg_debug" type="radio" class="btn-group btn-group-yesno" default="0"><option value="1">JYES</option><option value="0">JNO</option></field>'
+            . '<field name="cfg_dev_disable_email" type="radio" class="btn-group btn-group-yesno" default="0"><option value="1">JYES</option><option value="0">JNO</option></field>'
+            . '<field name="cfg_seo_share_image" type="media" preview="tooltip" class="input-xlarge"/>'
+            . '<field name="cfg_emailheader" type="media" preview="tooltip" class="input-xlarge"/>'
+            . '<field name="cfg_defaultavatar" type="media" preview="tooltip" class="input-xlarge"/>'
+            . '<field name="cfg_defaultavatarsmall" type="media" preview="tooltip" class="input-xlarge"/>'
+            . '</form>'
+        );
+        $form->setValue('cfg_debug', null, (string) (int) $this->config->debug);
+        $form->setValue('cfg_dev_disable_email', null, (string) (int) $this->config->dev_disable_email);
+        $form->setValue('cfg_seo_share_image', null, (string) $this->config->seo_share_image);
+        $form->setValue('cfg_emailheader', null, (string) $this->config->emailheader);
+        $form->setValue('cfg_defaultavatar', null, (string) $this->config->defaultavatar);
+        $form->setValue('cfg_defaultavatarsmall', null, (string) $this->config->defaultavatarsmall);
+
+        $lists ['debug']             = $form->getInput('cfg_debug');
+        $lists ['dev_disable_email'] = $form->getInput('cfg_dev_disable_email');
+        $lists ['seo_share_image']   = $form->getInput('cfg_seo_share_image');
+        $lists ['emailheader']       = $form->getInput('cfg_emailheader');
+        $lists ['defaultavatar']     = $form->getInput('cfg_defaultavatar');
+        $lists ['defaultavatarsmall'] = $form->getInput('cfg_defaultavatarsmall');
 
         return $lists;
     }

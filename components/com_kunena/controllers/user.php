@@ -1188,7 +1188,9 @@ class KunenaControllerUser extends KunenaController
         if (!empty($kuser->avatar)) {
             $avatar->path = Uri::root() . 'media/kunena/avatars/' . $kuser->avatar;
         } else {
-            $avatar->path = Uri::root() . 'media/kunena/avatars/' . KunenaConfig::getInstance()->defaultavatar;
+            $default      = (string) KunenaConfig::getInstance()->defaultavatar;
+            $custom       = class_exists('KunenaAvatarKunena') ? KunenaAvatarKunena::defaultImagePath($default) : '';
+            $avatar->path = Uri::root() . ($custom !== '' ? $custom : 'media/kunena/avatars/' . $default);
         }
 
         header('Content-type: application/json');

@@ -20,6 +20,28 @@ defined('_JEXEC') or die();
 class KunenaAvatarKunena extends KunenaAvatar
 {
     /**
+     * A default avatar chosen with the Media Manager: a path from the site's root (e.g. images/avatar.png) to an existing
+     * image. '' for a plain file name (searched in the template, as before) or anything else.
+     *
+     * @param   string  $value  Configuration value
+     *
+     * @return  string
+     *
+     * @since 5.3.0
+     */
+    public static function defaultImagePath($value)
+    {
+        $value = ltrim(preg_replace('/#.*$/', '', (string) $value), '/');
+
+        if (strpos($value, '/') === false || strpos($value, '..') !== false || strpbrk($value, "\\\0:") !== false
+            || !preg_match('/\.(gif|jpe?g|png|webp|avif)$/i', $value) || !is_file(JPATH_SITE . '/' . $value)) {
+            return '';
+        }
+
+        return $value;
+    }
+
+    /**
      * @var null
      * @since Kunena
      */
@@ -81,15 +103,23 @@ class KunenaAvatarKunena extends KunenaAvatar
         if ($avatar === '' || !is_file($origPath)) {
             // If avatar does not exist use default image.
             if ($sizex <= 90) {
-                $avatar = KunenaConfig::getInstance()->defaultavatarsmall;
+                $avatar = (string) KunenaConfig::getInstance()->defaultavatarsmall ?: 's_nophoto.png';
             } else {
-                $avatar = KunenaConfig::getInstance()->defaultavatar;
+                $avatar = (string) KunenaConfig::getInstance()->defaultavatar ?: 'nophoto.png';
             }
 
-            // Search from the template.
-            $template = KunenaFactory::getTemplate();
-            $origPath = JPATH_SITE . '/' . $template->getAvatarPath($avatar);
-            $avatar   = $template->name . '/' . $avatar;
+            $custom = KunenaAvatarKunena::defaultImagePath($avatar);
+
+            if ($custom !== '') {
+                // An image chosen with the Media Manager (a path from the site's root)
+                $origPath = JPATH_SITE . '/' . $custom;
+                $avatar   = 'default/' . md5($custom) . '/' . basename($custom);
+            } else {
+                // A file name: searched in the template (and Kunena's avatars folder)
+                $template = KunenaFactory::getTemplate();
+                $origPath = JPATH_SITE . '/' . $template->getAvatarPath($avatar);
+                $avatar   = $template->name . '/' . $avatar;
+            }
         }
 
         $dir  = dirname($avatar);

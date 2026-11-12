@@ -739,7 +739,13 @@ category, index and user list controllers call from `prepareDocument()`:
   them, the upload is refused with a clear message instead of failing later.
 - **Avatar types with or without spaces:** the avatar upload split the allowed types on ", " only, so a list saved as
   `gif,jpg,png` (which saving the configuration produces) refused every avatar.
-- **Configuration page:** the units of number fields (kB, px, days) stay beside their fields instead of wrapping below.
+- **Configuration page:** the units of number fields (kB, px, %, days) stay beside their fields instead of wrapping
+  below; the Development tab's options are Joomla's Yes/No buttons; every setting holding an image (default share image,
+  e-mail header, default avatar and small avatar) uses Joomla's media field, which opens the Media Manager. Default
+  avatars accept a path from the site's root (what the Media Manager gives) besides the former file name looked up in
+  the template (`KunenaAvatarKunena::defaultImagePath()`).
+- **Administrator font size:** Kunena's administrator pages forced 13px text (`#kunena.admin.override`); they now use
+  the administrator template's size.
 
 ### 21. Test tooling (`tests/`, not part of the package)
 
