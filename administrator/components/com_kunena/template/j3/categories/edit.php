@@ -258,6 +258,14 @@ Factory::getDocument()->addScript(Uri::root() . 'administrator\components\com_ku
 														<td><?php echo $this->options ['allow_ratings']; ?></td>
 														<td><?php echo Text::_('COM_KUNENA_RATING_CATEGORIES_ALLOWED_DESC'); ?></td>
 													</tr>
+													<tr>
+														<td><?php echo Text::_('COM_KUNENA_CFG_AUTOLOCK_DAYS'); ?>:</td>
+														<td>
+															<?php $autolock = $this->category->params instanceof \Joomla\Registry\Registry ? (string) $this->category->params->get('autolock_days', '') : ''; ?>
+															<span class="kunena-unit-field"><input type="text" name="params[autolock_days]" class="ksm-field" value="<?php echo $this->escape($autolock); ?>" placeholder="<?php echo (int) KunenaConfig::getInstance()->autolock_days; ?>"/> <span><?php echo Text::_('COM_KUNENA_CFG_DAYS'); ?></span></span>
+														</td>
+														<td><?php echo Text::_('COM_KUNENA_CATEGORY_AUTOLOCK_DAYS_DESC'); ?></td>
+													</tr>
 												</table>
 											</fieldset>
 										</div>

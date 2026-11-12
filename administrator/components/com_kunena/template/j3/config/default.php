@@ -551,6 +551,16 @@ if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGA
 													</td>
 													<td><?php echo Text::_('COM_KUNENA_A_USER_EDIT_TIMEGRACE_DESC') ?></td>
 												</tr>
+												<tr <?php if ($this->config->autolock_days != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_AUTOLOCK_DAYS') ?></td>
+													<td><span class="kunena-unit-field"><input type="text" name="cfg_autolock_days" class="ksm-field" value="<?php echo (int) $this->config->autolock_days ?>"/> <span><?php echo Text::_('COM_KUNENA_CFG_DAYS') ?></span></span></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_AUTOLOCK_DAYS_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->resolve_threads != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_RESOLVE_THREADS') ?></td>
+													<td><?php echo $this->lists ['resolve_threads'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_RESOLVE_THREADS_DESC') ?></td>
+												</tr>
 												<tr <?php if ($this->config->editmarkup != 1) : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_USER_MARKUP') ?></td>
 													<td><?php echo $this->lists ['editmarkup'] ?></td>
@@ -895,7 +905,7 @@ if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGA
 													</td>
 													<td><?php echo Text::_('COM_KUNENA_A_AVATAR_DEFAULT_SMALL_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->avatartypes != 'gif, jpeg, jpg, png') : echo 'class="changed"'; endif; ?>>
+												<tr <?php if (str_replace(' ', '', $this->config->avatartypes) != 'gif,jpeg,jpg,png,webp,avif') : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_CONFIG_AVATAR_FILESALLOWED') ?></td>
 													<td><input type="text" name="cfg_avatartypes"
 													           value="<?php echo $this->escape($this->config->avatartypes) ?>"/>
@@ -915,9 +925,7 @@ if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGA
 												<tr <?php if ($this->config->avatarsize != 2048) : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_AVSIZE') ?></td>
 													<td>
-														<input type="text" name="cfg_avatarsize" class="ksm-field"
-														       value="<?php echo $this->escape($this->config->avatarsize) ?>"/>
-														kB
+														<span class="kunena-unit-field"><input type="text" name="cfg_avatarsize" class="ksm-field" value="<?php echo $this->escape($this->config->avatarsize) ?>"/> <span>kB</span></span>
 													</td>
 													<td></td>
 												</tr>
@@ -1004,7 +1012,7 @@ if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGA
 													<td><?php echo $this->lists ['showimgforguest'] ?></td>
 													<td><?php echo Text::_('COM_KUNENA_SHOWIMGFORGUEST_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->imagetypes != 'jpg,jpeg,gif,png') : echo 'class="changed"'; endif; ?>>
+												<tr <?php if ($this->config->imagetypes != 'jpg,jpeg,gif,png,webp,avif') : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_IMAGEALLOWEDTYPES') ?></td>
 													<td>
 														<input type="text" name="cfg_imagetypes"
@@ -1028,9 +1036,7 @@ if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGA
 												<tr <?php if ($this->config->imagesize != 150) : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_IMGSIZE') ?></td>
 													<td>
-														<input type="text" name="cfg_imagesize" class="ksm-field"
-														       value="<?php echo $this->escape($this->config->imagesize) ?>"/>
-														kB
+														<span class="kunena-unit-field"><input type="text" name="cfg_imagesize" class="ksm-field" value="<?php echo $this->escape($this->config->imagesize) ?>"/> <span>kB</span></span>
 													</td>
 													<td>
 														<?php
@@ -1044,36 +1050,28 @@ if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGA
 												<tr <?php if ($this->config->imagewidth != 800) : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_IMGWIDTH') ?></td>
 													<td>
-														<input type="text" name="cfg_imagewidth" class="ksm-field"
-														       value="<?php echo $this->escape($this->config->imagewidth) ?>"/>
-														px
+														<span class="kunena-unit-field"><input type="text" name="cfg_imagewidth" class="ksm-field" value="<?php echo $this->escape($this->config->imagewidth) ?>"/> <span>px</span></span>
 													</td>
 													<td><?php echo Text::_('COM_KUNENA_A_IMGWIDTH_DESC') ?></td>
 												</tr>
 												<tr <?php if ($this->config->imageheight != 800) : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_IMGHEIGHT') ?></td>
 													<td>
-														<input type="text" name="cfg_imageheight" class="ksm-field"
-														       value="<?php echo $this->escape($this->config->imageheight) ?>"/>
-														px
+														<span class="kunena-unit-field"><input type="text" name="cfg_imageheight" class="ksm-field" value="<?php echo $this->escape($this->config->imageheight) ?>"/> <span>px</span></span>
 													</td>
 													<td><?php echo Text::_('COM_KUNENA_A_IMGHEIGHT_DESC') ?></td>
 												</tr>
 												<tr <?php if ($this->config->thumbwidth != 32) : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_IMGTHUMBWIDTH') ?></td>
 													<td>
-														<input type="text" name="cfg_thumbwidth" class="ksm-field"
-														       value="<?php echo $this->escape($this->config->thumbwidth) ?>"/>
-														px
+														<span class="kunena-unit-field"><input type="text" name="cfg_thumbwidth" class="ksm-field" value="<?php echo $this->escape($this->config->thumbwidth) ?>"/> <span>px</span></span>
 													</td>
 													<td><?php echo Text::_('COM_KUNENA_A_IMGTHUMBWIDTH_DESC') ?></td>
 												</tr>
 												<tr <?php if ($this->config->thumbheight != 32) : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_IMGTHUMBHEIGHT') ?></td>
 													<td>
-														<input type="text" class="ksm-field" name="cfg_thumbheight"
-														       value="<?php echo $this->escape($this->config->thumbheight) ?>"/>
-														px
+														<span class="kunena-unit-field"><input type="text" class="ksm-field" name="cfg_thumbheight" value="<?php echo $this->escape($this->config->thumbheight) ?>"/> <span>px</span></span>
 													</td>
 													<td><?php echo Text::_('COM_KUNENA_A_IMGTHUMBHEIGHT_DESC') ?></td>
 												</tr>
@@ -1110,7 +1108,7 @@ if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGA
 													<td><?php echo $this->lists ['showfileforguest'] ?></td>
 													<td><?php echo Text::_('COM_KUNENA_SHOWFILEFORGUEST_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->filetypes != 'txt,rtf,pdf,zip,tar.gz,tgz,tar.bz2') : echo 'class="changed"'; endif; ?>>
+												<tr <?php if ($this->config->filetypes != 'txt,rtf,pdf,zip,tar.gz,tgz,tar.bz2,csv,doc,docx,xls,xlsx,ppt,pptx,odt,ods,odp,mp3,m4a,ogg,wav,flac,mp4,webm,mov') : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_FILEALLOWEDTYPES') ?></td>
 													<td>
 														<input type="text" name="cfg_filetypes"
@@ -1121,8 +1119,7 @@ if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGA
 												<tr <?php if ($this->config->filesize != 120) : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_A_FILESIZE') ?></td>
 													<td>
-														<input type="text" name="cfg_filesize" class="ksm-field"
-														       value="<?php echo $this->escape($this->config->filesize) ?>"/> <?php echo Text::_('COM_KUNENA_A_FILESIZE_KB') ?>
+														<span class="kunena-unit-field"><input type="text" name="cfg_filesize" class="ksm-field" value="<?php echo $this->escape($this->config->filesize) ?>"/> <span><?php echo Text::_('COM_KUNENA_A_FILESIZE_KB') ?></span></span>
 													</td>
 													<td>
 														<?php

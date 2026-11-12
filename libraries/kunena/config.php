@@ -331,7 +331,7 @@ class KunenaConfig extends CMSObject
      * @var    string  File types; input, text
      * @since  1.0.0
      */
-    public $filetypes = 'txt,rtf,pdf,zip,tar.gz,tgz,tar.bz2';
+    public $filetypes = 'txt,rtf,pdf,zip,tar.gz,tgz,tar.bz2,csv,doc,docx,xls,xlsx,ppt,pptx,odt,ods,odp,mp3,m4a,ogg,wav,flac,mp4,webm,mov';
 
     /**
      * @var    integer  File size; input, number
@@ -709,7 +709,7 @@ class KunenaConfig extends CMSObject
      * @var    string  Image types; textbox, string
      * @since  1.6.0
      */
-    public $imagetypes = 'jpg,jpeg,gif,png';
+    public $imagetypes = 'jpg,jpeg,gif,png,webp,avif';
 
     /**
      * @var    integer  Check MIM types; select, boolean
@@ -1232,7 +1232,7 @@ class KunenaConfig extends CMSObject
      * @var string
      * @since  K5.0.4
      */
-    public $avatartypes = 'gif, jpeg, jpg, png';
+    public $avatartypes = 'gif,jpeg,jpg,png,webp,avif';
 
     /**
      * @var string
@@ -1407,6 +1407,19 @@ class KunenaConfig extends CMSObject
      * @since  5.3.0
      */
     public $seo_x_site = '';
+
+    /**
+     * @var    integer  Lock threads automatically after this many days without a reply (0: never; categories may set
+     *                  their own)
+     * @since  5.3.0
+     */
+    public $autolock_days = 0;
+
+    /**
+     * @var    integer  The thread starter and moderators can mark threads as resolved
+     * @since  5.3.0
+     */
+    public $resolve_threads = 1;
 
     /**
      * @var    integer  Development: send no e-mails (subscriptions, reports, mentions, Baldrick AI's notifications)

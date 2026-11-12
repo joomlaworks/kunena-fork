@@ -535,10 +535,10 @@ $res = $c->complete('sys', 'user', array('type' => 'object'));
 $s = end($sent);
 $r['openai'] = array($s['url'] === 'https://api.openai.com/v1/chat/completions', isset($s['body']['max_completion_tokens']), $s['body']['response_format']['type'] === 'json_object', $s['headers']['Authorization'] === 'Bearer k', $res['cost'] === 500000);
 $fail = array('max_tokens', 'response_format');
-$c = new KunenaBaldrickClient(array('provider' => 'openai', 'base_url' => 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/', 'api_key' => 'k', 'model' => 'qwen-plus'));
+$c = new KunenaBaldrickClient(array('provider' => 'openai', 'base_url' => 'https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/', 'api_key' => 'k', 'model' => 'qwen-plus'));
 try { $c->complete('sys', 'user', array('type' => 'object')); } catch (Exception $e) { }
 $s = end($sent);
-$r['qwen'] = array($s['url'] === 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions');
+$r['qwen'] = array($s['url'] === 'https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions');
 $fail = array();
 $c = new KunenaBaldrickClient(array('provider' => 'anthropic', 'base_url' => 'https://token-plan.ap-southeast-1.maas.aliyuncs.com/apps/anthropic', 'api_key' => 'k', 'model' => 'qwen3-max'));
 $c->complete('sys', 'user', array('type' => 'object'), 'low');

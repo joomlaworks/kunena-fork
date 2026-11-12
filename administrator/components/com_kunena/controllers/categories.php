@@ -436,6 +436,12 @@ class KunenaAdminControllerCategories extends KunenaController
         $post['access'] = $input->getInt("access-{$accesstype}", $input->getInt('access', null));
         $post['params'] = $input->get("params-{$accesstype}", array(), 'post', 'array');
         $post['params'] += $input->get("params", array(), 'post', 'array');
+
+        // Automatic locking: empty (Kunena's setting) or a number of days (0: never)
+        if (isset($post['params']['autolock_days'])) {
+            $days                            = trim((string) $post['params']['autolock_days']);
+            $post['params']['autolock_days'] = $days === '' ? '' : (string) max(0, (int) $days);
+        }
         $success        = false;
 
         $category = KunenaForumCategoryHelper::get(intval($post ['catid']));

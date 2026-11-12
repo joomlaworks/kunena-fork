@@ -32,8 +32,12 @@ if ($topic->ordering) {
     $classes .= ' kb-topic--sticky';
 }
 
-if ($topic->locked) {
+if ($topic->isLocked()) {
     $classes .= ' kb-topic--locked';
+}
+
+if ($topic->isResolved()) {
+    $classes .= ' kb-topic--resolved';
 }
 
 // Mentions and emojis in the reply box (Kunena's jQuery plugins; their styles are in blackadder.css)
@@ -54,8 +58,11 @@ $this->addScript('jquery.atwho.js');
 		</h1>
 		<div class="kb-meta">
 			<?php echo $this->getCategoryLink($category, $this->escape($category->name), '', 'kb-chip kb-chip--cat', true, false); ?>
-			<?php if ($topic->locked) : ?>
-				<span class="kb-chip"><?php echo $template->icon('lock-fill') . ' ' . Text::_('COM_KUNENA_LOCKED'); ?></span>
+			<?php if ($topic->isResolved() && $template->params->get('labels') != 2) : ?>
+				<span class="kb-chip kb-chip--resolved"><?php echo $template->icon('check2-circle') . ' ' . Text::_('KUNENA_BLACKADDER_RESOLVED'); ?></span>
+			<?php endif; ?>
+			<?php if ($topic->isLocked()) : ?>
+				<span class="kb-chip"<?php echo !$topic->locked ? ' title="' . $this->escape(Text::sprintf('KUNENA_BLACKADDER_AUTOLOCKED', $topic->getAutoLockDays())) . '"' : ''; ?>><?php echo $template->icon('lock-fill') . ' ' . Text::_('COM_KUNENA_LOCKED'); ?></span>
 			<?php endif; ?>
 			<?php if ($topic->ordering) : ?>
 				<span class="kb-chip"><?php echo $template->icon('pin-angle-fill') . ' ' . Text::_('COM_KUNENA_BUTTON_TOPIC_STICKY'); ?></span>

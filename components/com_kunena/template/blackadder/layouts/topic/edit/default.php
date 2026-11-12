@@ -254,6 +254,10 @@ $cancel = $topic->exists() ? $topic->getUrl($category, false) : $category->getUr
 				<?php if (!empty($this->canSubscribe)) : ?>
 					<label class="kb-check"><input type="checkbox" name="subscribeMe" value="1"<?php echo !empty($this->subscriptionschecked) ? ' checked' : ''; ?>/> <?php echo Text::_('COM_KUNENA_POST_NOTIFIED'); ?></label>
 				<?php endif; ?>
+				<?php if (!$editing && $message->parent && $topic->exists() && $config->resolve_threads && $topic->canResolve($me)) : ?>
+					<input type="hidden" name="resolved" value="0"/>
+					<label class="kb-check"><input type="checkbox" name="resolved" value="1"<?php echo $topic->isResolved() ? ' checked' : ''; ?>/> <?php echo Text::_('KUNENA_BLACKADDER_MARK_RESOLVED'); ?></label>
+				<?php endif; ?>
 			</div>
 
 			<?php if (!empty($this->captchaEnabled)) : ?>

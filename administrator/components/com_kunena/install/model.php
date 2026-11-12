@@ -1295,6 +1295,20 @@ class KunenaModelInstall extends \Joomla\CMS\MVC\Model\BaseDatabaseModel
             }
         }
 
+        // 5.3.0: WebP and AVIF images, and current document and media files, in the default upload lists. Sites still on
+        // the old defaults get the new ones; lists an administrator changed are kept as they are.
+        $defaults = array(
+            'avatartypes' => array('gif, jpeg, jpg, png', 'gif,jpeg,jpg,png,webp,avif'),
+            'imagetypes'  => array('jpg,jpeg,gif,png', 'jpg,jpeg,gif,png,webp,avif'),
+            'filetypes'   => array('txt,rtf,pdf,zip,tar.gz,tgz,tar.bz2', 'txt,rtf,pdf,zip,tar.gz,tgz,tar.bz2,csv,doc,docx,xls,xlsx,ppt,pptx,odt,ods,odp,mp3,m4a,ogg,wav,flac,mp4,webm,mov'),
+        );
+
+        foreach ($defaults as $name => $values) {
+            if (str_replace(' ', '', strtolower((string) $config->get($name))) === str_replace(' ', '', $values[0])) {
+                $config->set($name, $values[1]);
+            }
+        }
+
         $config->save();
     }
 

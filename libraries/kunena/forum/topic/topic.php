@@ -366,8 +366,12 @@ class KunenaForumTopic extends KunenaDatabaseObject
             $txt .= ' moved';
         }
 
-        if ($this->locked) {
+        if ($this->isLocked()) {
             $txt .= ' locked';
+        }
+
+        if ($this->isResolved()) {
+            $txt .= ' resolved';
         }
 
         return $txt;
@@ -385,6 +389,109 @@ class KunenaForumTopic extends KunenaDatabaseObject
         $this->locked = (int) $value;
 
         return $this->save();
+    }
+
+    /**
+     * The label of resolved threads: "Solved" in Kunena's label set (media/kunena/labels/labels.xml)
+     *
+     * @since 5.3.0
+     */
+    public const LABEL_RESOLVED = 8;
+
+    /**
+     * @return  boolean  The thread is marked as resolved
+     *
+     * @since 5.3.0
+     */
+    public function isResolved()
+    {
+        return (int) $this->label_id === self::LABEL_RESOLVED;
+    }
+
+    /**
+     * Who may mark the thread as resolved (or not): its starter and the category's moderators.
+     *
+     * @param   KunenaUser|null  $user  User (default: the current one)
+     *
+     * @return  boolean
+     *
+     * @since 5.3.0
+     */
+    public function canResolve(?KunenaUser $user = null)
+    {
+        $user = $user ?: KunenaUserHelper::getMyself();
+
+        if (!$this->exists() || !$user->exists() || $this->moved_id) {
+            return false;
+        }
+
+        return $user->isModerator($this->getCategory()) || (int) $this->first_post_userid === (int) $user->userid;
+    }
+
+    /**
+     * Marks the thread as resolved, or not (only the resolved label is changed: other labels are kept).
+     *
+     * @param   boolean  $resolved  Resolved
+     *
+     * @return  boolean  Saved
+     *
+     * @since 5.3.0
+     */
+    public function setResolved($resolved)
+    {
+        if ($resolved) {
+            $this->label_id = self::LABEL_RESOLVED;
+        } elseif ($this->isResolved()) {
+            $this->label_id = 0;
+        } else {
+            return true;
+        }
+
+        return $this->save();
+    }
+
+    /**
+     * Days without replies after which the thread is locked automatically: the category's setting, else Kunena's
+     * (Configuration). 0: never.
+     *
+     * @return  integer
+     *
+     * @since 5.3.0
+     */
+    public function getAutoLockDays()
+    {
+        $params = $this->getCategory()->params;
+        $params = $params instanceof \Joomla\Registry\Registry ? $params : new \Joomla\Registry\Registry($params);
+        $days   = $params->get('autolock_days', '');
+
+        if ($days === '' || $days === null) {
+            $days = KunenaConfig::getInstance()->autolock_days;
+        }
+
+        return max(0, (int) $days);
+    }
+
+    /**
+     * @return  boolean  Locked automatically: no post for longer than getAutoLockDays()
+     *
+     * @since 5.3.0
+     */
+    public function isAutoLocked()
+    {
+        $days = $this->getAutoLockDays();
+
+        return $days > 0 && $this->exists() && (int) $this->last_post_time > 0
+            && (int) $this->last_post_time < Factory::getDate()->toUnix() - $days * 86400;
+    }
+
+    /**
+     * @return  boolean  Locked by a moderator, or automatically after days without replies
+     *
+     * @since 5.3.0
+     */
+    public function isLocked()
+    {
+        return (bool) $this->locked || $this->isAutoLocked();
     }
 
     /**
@@ -1875,9 +1982,12 @@ class KunenaForumTopic extends KunenaDatabaseObject
      */
     protected function authoriseUnlocked(KunenaUser $user)
     {
-        // Check that topic is not locked or user is a moderator
-        if ($this->locked && !$user->isModerator($this->getCategory())) {
-            return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_POST_ERROR_TOPIC_LOCKED'), 403);
+        // Check that topic is not locked (also automatically, after days without replies) or user is a moderator
+        if ($this->isLocked() && !$user->isModerator($this->getCategory())) {
+            return new KunenaExceptionAuthorise(
+                $this->locked ? Text::_('COM_KUNENA_POST_ERROR_TOPIC_LOCKED') : Text::sprintf('COM_KUNENA_POST_ERROR_TOPIC_AUTOLOCKED', $this->getAutoLockDays()),
+                403
+            );
         }
 
         return;
@@ -1990,7 +2100,7 @@ class KunenaForumTopic extends KunenaDatabaseObject
             return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_LIB_TOPIC_AUTHORISE_FAILED_VOTE_TOO_EARLY'), 403);
         }
 
-        if ($this->locked) {
+        if ($this->isLocked()) {
             return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_LIB_TOPIC_AUTHORISE_FAILED_VOTE_POLL_TOPIC_LOCKED'), 403);
         }
 

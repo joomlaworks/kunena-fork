@@ -180,14 +180,14 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControlle
             }
         } elseif (!$me->isModerator($this->topic->getCategory())) {
             // User is not allowed to write a post.
-            $this->message_closed = $this->topic->locked ? Text::_('COM_KUNENA_POST_LOCK_SET') :
+            $this->message_closed = $this->topic->isLocked() ? Text::_('COM_KUNENA_POST_LOCK_SET') :
                 ($me->exists() ? Text::_('COM_KUNENA_REPLY_USER_REPLY_DISABLED') : ' ');
         }
 
         $login = KunenaLogin::getInstance();
 
         if (!$this->message->isAuthorised('reply') && !$this->message_closed && $login->enabled() && !$this->message->hold
-            && !$config->read_only || !$this->message->isAuthorised('reply') && !$this->topic->locked && $login->enabled()
+            && !$config->read_only || !$this->message->isAuthorised('reply') && !$this->topic->isLocked() && $login->enabled()
             && !$me->userid && !$this->message->hold && !$config->read_only
         ) {
             $loginurl  = Route::_('index.php?option=com_users&view=login&return=' . base64_encode((string) Uri::getInstance()));

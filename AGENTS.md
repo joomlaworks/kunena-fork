@@ -315,6 +315,16 @@ Rules:
 - Development and test sites: Configuration > Development > "Don't send e-mails" (`dev_disable_email`); new code that
   sends mail checks `KunenaEmail::isDisabled()` (or goes through `KunenaEmail::send()`, which does).
 
+### 4.11 Threads: locks, resolved state, images
+
+- A thread is locked by a moderator (`$topic->locked`) or automatically after days without replies (Configuration >
+  Users and the category's `autolock_days`): check `$topic->isLocked()` for permissions and display, never `locked`
+  alone (only the moderator's lock/unlock action works on `locked` itself).
+- Resolved threads: `$topic->isResolved()` / `canResolve()` / `setResolved()` (the topic's `label_id` 8); don't use
+  `label_id` 8 for anything else.
+- Images: `KunenaImage` (not Joomla's `Image`) reads, resizes and writes WebP and AVIF; check `KunenaImage::canProcess()`
+  before accepting a format.
+
 ## 5. Verifying changes
 
 Run the checks that match the change; all of them before a release. Paths are relative to the repository root.

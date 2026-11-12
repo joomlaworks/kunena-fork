@@ -82,3 +82,17 @@
 	content: "\25cf";
 	font-size: 1.5em;
 }
+
+/* Number fields with a unit (kB, px): the field and its unit on one line */
+.kunena-unit-field {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4em;
+	white-space: nowrap;
+}
+
+.kunena-unit-field input.ksm-field {
+	width: 7em;
+	min-width: 0;
+	margin: 0;
+}

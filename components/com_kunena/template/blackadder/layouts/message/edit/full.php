@@ -30,7 +30,7 @@ $category = isset($this->category) ? $this->category : $message->getCategory();
 $config   = KunenaFactory::getConfig();
 
 if (!$message->isAuthorised('reply')) {
-    if (!$me->exists() && !$topic->locked) {
+    if (!$me->exists() && !$topic->isLocked()) {
         $login = KunenaLogin::getInstance();
         $reg   = $login ? $login->getRegistrationURL() : '';
         $here  = '#kb-login';
@@ -92,6 +92,10 @@ $fullEditor = KunenaRoute::_('index.php?option=com_kunena&view=topic&layout=repl
 				<?php endif; ?>
 				<?php if ($me->exists() && $category->allow_anonymous) : ?>
 					<label class="kb-check"><input type="checkbox" name="anonymous" value="1"<?php echo $category->post_anonymous ? ' checked' : ''; ?>/> <?php echo Text::_('COM_KUNENA_POST_AS_ANONYMOUS_DESC'); ?></label>
+				<?php endif; ?>
+				<?php if ($config->resolve_threads && $topic->canResolve($me)) : ?>
+					<input type="hidden" name="resolved" value="0"/>
+					<label class="kb-check"><input type="checkbox" name="resolved" value="1"<?php echo $topic->isResolved() ? ' checked' : ''; ?>/> <?php echo Text::_('KUNENA_BLACKADDER_MARK_RESOLVED'); ?></label>
 				<?php endif; ?>
 			</div>
 			<div>

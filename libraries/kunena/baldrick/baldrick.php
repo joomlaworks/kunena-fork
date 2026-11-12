@@ -805,6 +805,14 @@ abstract class KunenaBaldrick
         }
 
         $isNew    = !$message->parent || (int) $message->id === (int) $topic->first_post_id;
+
+        // A thread its starter or a moderator marked as resolved needs no answer from Baldrick
+        if (!$isNew && $topic->isResolved()) {
+            $why = 'The thread is marked as resolved.';
+
+            return '';
+        }
+
         $staff    = static::isStaff($userid, $category);
         $previous = $isNew ? null : static::getPreviousPost($message);
 

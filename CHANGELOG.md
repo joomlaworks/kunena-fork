@@ -714,7 +714,34 @@ category, index and user list controllers call from `prepareDocument()`:
   AI's activity log says why no notification went out. Joomla's own e-mails (registration, password reset) are not
   affected.
 
-### 20. Test tooling (`tests/`, not part of the package)
+### 20. Resolved threads, automatic locking, WebP and AVIF (JoomlaWorks Ltd.)
+
+- **Resolved threads:** the thread starter and the category's moderators can mark a thread as resolved from the reply
+  form (a checkbox, shown checked on a resolved thread: unchecking it in a reply reopens the thread). Blackadder shows a
+  "Resolved" label in the thread header and in the lists. Stored as the topic's existing label (`label_id` 8, Kunena's
+  "Solved" label, now called "Resolved"), so no database change and Crypsis's label display shows it too.
+  `KunenaForumTopic::isResolved()`, `canResolve()`, `setResolved()`. Kunena > Configuration > Users: "Resolved threads"
+  (on). Baldrick AI doesn't answer later replies in a resolved thread.
+- **Automatic locking:** threads without a reply for a number of days are locked: only moderators can reply (their
+  reply opens the thread again, as the last post is new), polls can't be voted on, and the lists and the thread show the
+  lock. Kunena > Configuration > Users: "Lock threads after" (0: never, the default); each category can set its own
+  number of days (Categories > Edit > Settings; empty: Kunena's setting, 0: never). Computed from the last post's time,
+  nothing is written to the database and no scheduled task is needed: `KunenaForumTopic::isAutoLocked()` /
+  `isLocked()` (the topic's own lock or the automatic one), used by the reply, edit, vote and thank-you permissions and
+  by the lock icons.
+- **WebP and AVIF images:** in the default allowed types of avatars and attached images (`gif,jpeg,jpg,png,webp,avif`),
+  and documents and media in the attachments' (`csv`, Office and OpenDocument files, `mp3`, `m4a`, `ogg`, `wav`,
+  `flac`, `mp4`, `webm`, `mov`, as Joomla 3.x UTD's Media Manager allows). Sites still using the old default lists get
+  the new ones when upgrading; lists an administrator changed are kept. Joomla's image library only reads and writes
+  GIF, JPEG and PNG, so `KunenaImage` now reads, resizes (keeping transparency) and writes WebP and AVIF itself through
+  PHP's GD, where GD supports them (`KunenaImage::canProcess()`; AVIF needs PHP 8.1 or newer built with it; also image
+  sizes of AVIF files on PHP versions whose `getimagesize()` doesn't know AVIF). On a server that can't process one of
+  them, the upload is refused with a clear message instead of failing later.
+- **Avatar types with or without spaces:** the avatar upload split the allowed types on ", " only, so a list saved as
+  `gif,jpg,png` (which saving the configuration produces) refused every avatar.
+- **Configuration page:** the units of number fields (kB, px, days) stay beside their fields instead of wrapping below.
+
+### 21. Test tooling (`tests/`, not part of the package)
 
 - `tests/tools/classload.sh <joomla-3.x checkout>`: loads every Kunena class under Joomla's class loader and reports
   PHP messages, exceptions and fatal errors raised by Kunena code.
@@ -735,7 +762,7 @@ category, index and user list controllers call from `prepareDocument()`:
 
 | Scenario set | SQLite 3.45 | PostgreSQL 16 (`postgresql`) | PostgreSQL 16 (`pgsql`, PDO) | MariaDB 11.4 | MySQL 8.4 |
 |---|---|---|---|---|---|
-| Install, wizard, administrator, frontend, posting, guests, search, profiles, lists, moderation, Empty Trash and Sample Data (admin + CLI), integrated modules and plugins, structured data and sharing tags, Baldrick AI against a mock provider, Tools, uninstall; Blackadder as the default template (136) | pass | pass | pass | pass | pass |
+| Install, wizard, administrator, frontend, posting, guests, resolved threads, automatic locking, WebP/AVIF, search, profiles, lists, moderation, Empty Trash and Sample Data (admin + CLI), integrated modules and plugins, structured data and sharing tags, Baldrick AI against a mock provider, Tools, uninstall; Blackadder as the default template (141) | pass | pass | pass | pass | pass |
 | Reinstall over existing tables, posting, structured data, purge (20) | pass | pass | pass | pass | pass |
 | Failed SQL queries / PHP messages from Kunena code | 0 / 0 | 0 / 0 | 0 / 0 | 0 / 0 | 0 / 0 |
 

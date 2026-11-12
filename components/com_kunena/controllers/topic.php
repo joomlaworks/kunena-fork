@@ -765,6 +765,16 @@ class KunenaControllerTopic extends KunenaController
             }
         }
 
+        // 5.3.0: resolved threads. The reply form's checkbox (with a hidden 0 before it) is shown to the thread starter and
+        // the category's moderators; a reply can mark the thread as resolved, or open it again.
+        $resolved = $this->app->input->post->get('resolved', null, 'int');
+
+        if ($resolved !== null && $this->id && $this->config->resolve_threads && $topic->canResolve($this->me) && (bool) $resolved !== $topic->isResolved()) {
+            if (!$topic->setResolved((bool) $resolved)) {
+                $this->app->enqueueMessage($topic->getError(), 'notice');
+            }
+        }
+
         $message->sendNotification();
 
         // Now try adding any new subscriptions if asked for by the poster

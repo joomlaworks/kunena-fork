@@ -522,6 +522,7 @@ class KunenaAdminModelConfig extends KunenaModel
 
         $lists ['seo_structured_data'] = HTMLHelper::_('select.genericlist', $yesno, 'cfg_seo_structured_data', 'class="inputbox" size="1"', 'value', 'text', $this->config->seo_structured_data);
         $lists ['seo_social_tags']     = HTMLHelper::_('select.genericlist', $yesno, 'cfg_seo_social_tags', 'class="inputbox" size="1"', 'value', 'text', $this->config->seo_social_tags);
+        $lists ['resolve_threads']     = HTMLHelper::_('select.genericlist', $yesno, 'cfg_resolve_threads', 'class="inputbox" size="1"', 'value', 'text', $this->config->resolve_threads);
         $lists ['dev_disable_email']   = HTMLHelper::_('select.genericlist', $yesno, 'cfg_dev_disable_email', 'class="inputbox" size="1"', 'value', 'text', $this->config->dev_disable_email);
 
         $user_edit_poll   = array();

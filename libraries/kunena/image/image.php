@@ -24,6 +24,185 @@ define('MIME_PNG', 'image/png');
 class KunenaImage extends Image
 {
     /**
+     * Whether this server can read and write (resize) images of a type: GIF, JPEG and PNG through Joomla's image
+     * library; WebP and AVIF here, when PHP's GD has them (AVIF: PHP 8.1 or newer, built with it). The same check on
+     * every Joomla 3.x, Joomla 3.x UTD included (its Media Manager uses the same GD functions).
+     *
+     * @param   integer|string  $type  IMAGETYPE_* constant or a file extension
+     *
+     * @return  boolean
+     *
+     * @since 5.3.0
+     */
+    public static function canProcess($type)
+    {
+        if (is_string($type)) {
+            $type = strtolower(trim($type));
+            $map  = array('gif' => IMAGETYPE_GIF, 'jpg' => IMAGETYPE_JPEG, 'jpeg' => IMAGETYPE_JPEG, 'png' => IMAGETYPE_PNG, 'webp' => IMAGETYPE_WEBP);
+
+            if ($type === 'avif') {
+                return defined('IMAGETYPE_AVIF') && static::canProcess(IMAGETYPE_AVIF);
+            }
+
+            if (!isset($map[$type])) {
+                return false;
+            }
+
+            $type = $map[$type];
+        }
+
+        switch ((int) $type) {
+            case IMAGETYPE_GIF:
+                return function_exists('imagecreatefromgif');
+
+            case IMAGETYPE_JPEG:
+                return function_exists('imagecreatefromjpeg');
+
+            case IMAGETYPE_PNG:
+                return function_exists('imagecreatefrompng');
+
+            case IMAGETYPE_WEBP:
+                return function_exists('imagecreatefromwebp') && function_exists('imagewebp');
+        }
+
+        return defined('IMAGETYPE_AVIF') && (int) $type === IMAGETYPE_AVIF
+            && function_exists('imagecreatefromavif') && function_exists('imageavif');
+    }
+
+    /**
+     * Image properties, also for AVIF files on PHP versions whose getimagesize() doesn't know AVIF yet.
+     *
+     * @param   string  $path  File
+     *
+     * @return  stdClass  width, height, type, attributes, bits, channels, mime, filesize, orientation
+     *
+     * @since 5.3.0
+     */
+    public static function getImageFileProperties($path)
+    {
+        try {
+            return parent::getImageFileProperties($path);
+        } catch (RuntimeException $e) {
+            if (!static::isAvifFile($path) || !static::canProcess('avif')) {
+                throw $e;
+            }
+        }
+
+        $handle = @imagecreatefromavif($path);
+
+        if (!$handle) {
+            throw new RuntimeException('Unable to get properties for the image.');
+        }
+
+        $width  = imagesx($handle);
+        $height = imagesy($handle);
+
+        if (PHP_VERSION_ID < 80000) {
+            imagedestroy($handle);
+        }
+
+        return (object) array(
+            'width'       => $width,
+            'height'      => $height,
+            'type'        => IMAGETYPE_AVIF,
+            'attributes'  => 'width="' . $width . '" height="' . $height . '"',
+            'bits'        => null,
+            'channels'    => null,
+            'mime'        => 'image/avif',
+            'filesize'    => filesize($path),
+            'orientation' => $width > $height ? 'landscape' : ($width < $height ? 'portrait' : 'square'),
+        );
+    }
+
+    /**
+     * @param   string  $path  File
+     *
+     * @return  boolean  The file is an AVIF image (by its signature)
+     *
+     * @since 5.3.0
+     */
+    protected static function isAvifFile($path)
+    {
+        $head = is_file($path) ? (string) @file_get_contents($path, false, null, 0, 16) : '';
+
+        return in_array(substr($head, 4, 8), array('ftypavif', 'ftypavis'), true);
+    }
+
+    /**
+     * Loads an image: WebP and AVIF here, the other types through Joomla's image library.
+     *
+     * @param   string  $path  File
+     *
+     * @return  void
+     *
+     * @since 5.3.0
+     */
+    public function loadFile($path)
+    {
+        if (!file_exists($path)) {
+            throw new InvalidArgumentException('The image file does not exist.');
+        }
+
+        $properties = static::getImageFileProperties($path);
+        $readers    = array('image/webp' => 'imagecreatefromwebp', 'image/avif' => 'imagecreatefromavif');
+
+        if (!isset($readers[$properties->mime])) {
+            parent::loadFile($path);
+
+            return;
+        }
+
+        if (!static::canProcess($properties->type)) {
+            throw new RuntimeException('This server cannot process ' . $properties->mime . ' images.');
+        }
+
+        $this->destroy();
+
+        $handle = @call_user_func($readers[$properties->mime], $path);
+
+        if (!$handle) {
+            throw new RuntimeException('Unable to process the ' . $properties->mime . ' image.');
+        }
+
+        // Keep the transparency
+        imagealphablending($handle, false);
+        imagesavealpha($handle, true);
+
+        $this->handle = $handle;
+        $this->path   = $path;
+    }
+
+    /**
+     * Saves the image: WebP and AVIF here (with transparency), the other types through Joomla's image library.
+     *
+     * @param   string   $path     File
+     * @param   integer  $type     IMAGETYPE_*
+     * @param   array    $options  quality (1-100 for WebP and AVIF)
+     *
+     * @return  boolean
+     *
+     * @since 5.3.0
+     */
+    public function toFile($path, $type = IMAGETYPE_JPEG, array $options = array())
+    {
+        $quality = isset($options['quality']) ? max(1, min(100, (int) $options['quality'])) : 85;
+
+        if ((int) $type === IMAGETYPE_WEBP && static::canProcess(IMAGETYPE_WEBP)) {
+            imagesavealpha($this->getHandle(), true);
+
+            return imagewebp($this->getHandle(), $path, $quality);
+        }
+
+        if (defined('IMAGETYPE_AVIF') && (int) $type === IMAGETYPE_AVIF && static::canProcess(IMAGETYPE_AVIF)) {
+            imagesavealpha($this->getHandle(), true);
+
+            return imageavif($this->getHandle(), $path, $quality);
+        }
+
+        return parent::toFile($path, $type, $options);
+    }
+
+    /**
      * Copies a rectangular portion of an image to another image. Used when imagecopyresampled isn't available
      *
      * @param   mixed $dst_image dst image

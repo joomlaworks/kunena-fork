@@ -29,6 +29,7 @@
     --kb-primary-fg: var(--kunena-primary-foreground, var(--kb-surface));
     --kb-ring:       var(--kunena-ring, color-mix(in srgb, var(--kb-fg) 40%, var(--kb-surface)));
     --kb-danger:     var(--kunena-destructive, #dc2626);
+    --kb-success:    var(--kunena-success, #16a34a);
     --kb-radius:     var(--kunena-radius, 0.5rem);
     --kb-shadow:     0 10px 30px -10px rgba(0, 0, 0, .25), 0 2px 6px rgba(0, 0, 0, .06);
     --kb-cat:        var(--kb-border);
@@ -41,6 +42,7 @@
     --kb-page:       var(--kb-auto-bg, #09090b);
     --kb-fg:         var(--kunena-foreground, var(--kb-auto-fg, #fafafa));
     --kb-danger:     var(--kunena-destructive, #f87171);
+    --kb-success:    var(--kunena-success, #4ade80);
     --kb-shadow:     0 10px 30px -10px rgba(0, 0, 0, .7);
     color-scheme:    dark;
 }
@@ -52,6 +54,7 @@
         --kb-page:       var(--kb-auto-bg, #09090b);
         --kb-fg:         var(--kunena-foreground, var(--kb-auto-fg, #fafafa));
         --kb-danger:     var(--kunena-destructive, #f87171);
+        --kb-success:    var(--kunena-success, #4ade80);
         --kb-shadow:     0 10px 30px -10px rgba(0, 0, 0, .7);
         color-scheme:    dark;
     }
@@ -62,6 +65,7 @@
     --kb-page:       var(--kb-auto-bg, #ffffff);
     --kb-fg:         var(--kunena-foreground, var(--kb-auto-fg, #09090b));
     --kb-danger:     var(--kunena-destructive, #dc2626);
+    --kb-success:    var(--kunena-success, #16a34a);
     --kb-shadow:     0 10px 30px -10px rgba(0, 0, 0, .25), 0 2px 6px rgba(0, 0, 0, .06);
     color-scheme:    light;
 }
@@ -194,6 +198,7 @@
 .kb-chip--solid {background:var(--kb-muted);border-color:transparent;color:var(--kb-fg);}
 .kb-chip--role {font-size:.6875rem;text-transform:uppercase;letter-spacing:.06em;}
 .kb-chip--cat::before {content:"";width:.5rem;height:.5rem;border-radius:2px;background:var(--kb-cat);}
+.kb-chip--resolved {border-color:color-mix(in srgb, var(--kb-success) 45%, transparent);color:var(--kb-success);}
 
 .kb-alert {padding:.75rem 1rem;border:1px solid var(--kb-border);border-radius:var(--kb-radius);background:var(--kb-muted);font-size:.875rem;}
 .kb-empty {padding:2rem 1rem;text-align:center;color:var(--kb-muted-fg);border:1px dashed var(--kb-border);border-radius:var(--kb-radius);}

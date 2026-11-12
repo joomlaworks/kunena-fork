@@ -652,6 +652,11 @@ class KunenaUpload
             $this->splitFilename(basename(str_replace('\\', '/', (string) $fileInput['name'])));
         }
 
+        // WebP and AVIF images are resized like the others: refused when this server's PHP can't process them
+        if (in_array($file->ext, array('webp', 'avif'), true) && !KunenaImage::canProcess($file->ext)) {
+            throw new RuntimeException(Text::sprintf('COM_KUNENA_UPLOAD_ERROR_IMAGE_TYPE_UNSUPPORTED', strtoupper($file->ext)), 400);
+        }
+
         $file->error       = $fileInput['error'];
         $file->destination = $destination . '.' . $file->ext;
         $file->success     = false;
@@ -666,9 +671,8 @@ class KunenaUpload
                 throw new RuntimeException(Text::_('COM_KUNENA_UPLOAD_ERROR_AVATAR_EXCEED_LIMIT_IN_CONFIGURATION'), 500);
             }
 
-            $avatartypes = array();
-            $avatartypes = strtolower(KunenaConfig::getInstance()->avatartypes);
-            $a           = explode(', ', $avatartypes);
+            // Commas with or without spaces ("gif, jpg" or "gif,jpg")
+            $a = array_values(array_filter(array_map('trim', explode(',', strtolower((string) KunenaConfig::getInstance()->avatartypes))), 'strlen'));
 
             if (!in_array($file->ext, $a, true)) {
                 throw new RuntimeException(Text::sprintf('COM_KUNENA_UPLOAD_ERROR_EXTENSION_FILE', implode(', ', $a)), 500);

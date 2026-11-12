@@ -42,6 +42,7 @@ Summary of changes:
 - **Blackadder**, the new default frontend template: clean and monochrome, no Bootstrap, adapting to the site template's fonts, colours and light/dark scheme
 - **Baldrick AI**, the forum's AI first responder: answers questions nobody from the staff has answered, with Anthropic or any OpenAI-compatible API, and unpublishes spam
 - **Structured data, Open Graph and X cards** for threads, profiles and the forum's pages, so search engines understand discussions and shared links look right
+- **Resolved threads and automatic locking** after a number of days without replies (globally and per category)
 - **Tools that save hours:** a moderation queue across categories, Empty Trash in one click, Sample Data in one click, and a much faster Recount on large forums
 - **Command line** (Joomla 3.x UTD): empty the trash, install the sample data and run Baldrick AI from a terminal or a cron job
 - **No "Powered by Kunena" credits** in the frontend
@@ -52,6 +53,8 @@ Every change is described in detail in [CHANGELOG.md](CHANGELOG.md).
 - **Forum (frontend):**
   - Blackadder, the new default template: one stylesheet and one plain-JavaScript file, Bootstrap Icons as SVG, Discourse-like category and thread lists, threads with one reply box, a lightbox for attached images, and every page redone (posting, profiles, search, moderation...); it takes the site template's fonts and colours, follows its light/dark scheme (tested on Joomla 3.x UTD's Hammond, Finch and Rookwood) and can be themed with CSS variables. Upgraded sites keep their template; Crypsis remains available
   - Moderation queue: moderators see how many posts await approval (account menu) and list them all in one place, across categories, with bulk approve, delete and move
+  - Resolved threads: the thread starter and moderators mark a thread as resolved from the reply form, and it shows a "Resolved" label in the thread and the lists (unchecking it in a later reply reopens the thread)
+  - Automatic locking: threads without a reply for a number of days are locked (Configuration > Users, and per category); moderators can still reply, which opens the thread again
 - **Baldrick AI**, the forum's AI first responder (plugin "Kunena - Baldrick AI"):
   - Answers new questions, and old questions revived after a while (configurable), that no administrator or moderator has answered, and follows up when the poster replies to it (also configurable)
   - A cheap model sorts each question first; clear questions get an answer from a more capable model, based on related public threads of the forum; broad ones get a canned "have you searched the forum?" reply; spam is unpublished
@@ -77,6 +80,7 @@ Every change is described in detail in [CHANGELOG.md](CHANGELOG.md).
 - One package installs everything: the component, its media, the library, the System, Quick Icon and Console plugins, the Latest, Login, Search and Stats modules, the Kunena Discuss and Search plugins, and Baldrick AI
 - Runs cleanly on PHP 7.1 to 8.5
 - CAPTCHA comes from the "Default Captcha" of Joomla's Global Configuration, and fails closed: if a CAPTCHA is required but none is configured, posting is refused instead of silently allowed
+- WebP and AVIF images for avatars and attachments (resized like the others, where the server's PHP supports them), and documents and media (Office/OpenDocument files, MP3, MP4, WebM...) in the default attachment types
 - Faster banning: the ban form preselects "block the account" and the removal of the spammer's posts, signature, avatar and profile
 - Tools > Recount is fast on large forums: 3 to 4 seconds for 200,000 posts on MariaDB, MySQL and PostgreSQL, where a single batch could take over 20 minutes before
 - Crypsis works with any site template: Bootstrap 2.3's CSS is loaded scoped to the forum, so it no longer looks unstyled on templates not built on Bootstrap 2
@@ -117,7 +121,7 @@ Install the package over your existing Kunena 5.2 site, as above. The old "Kunen
 
 The plugin **Kunena - Baldrick AI** is enabled on installation but does nothing until it has an API key (Kunena Fork's administrator pages remind you). In **Extensions > Plugins > Kunena - Baldrick AI**:
 
-1. **Step 1 (triage)**: choose the API type, leave the base URL empty for Anthropic's or OpenAI's own API (or enter a compatible endpoint, e.g. Qwen: `https://dashscope-intl.aliyuncs.com/compatible-mode/v1`, or its Anthropic-compatible `.../apps/anthropic`), enter the API key, then **Fetch models** and pick a small, cheap model (e.g. `claude-haiku-5-5`). **Test** checks the connection.
+1. **Step 1 (triage)**: choose the API type, leave the base URL empty for Anthropic's or OpenAI's own API (or enter a compatible endpoint, e.g. for Qwen Cloud use the Anthropic-compatible API endpoint `https://token-plan.ap-southeast-1.maas.aliyuncs.com/apps/anthropic` or the OpenAI-compatible API endpoint `https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1`), enter the API key, then **Fetch models** and pick a small, cheap model (e.g. `claude-haiku-5-5`). **Test** checks the connection.
 2. **Step 2 (answers)**: pick a more capable model (e.g. `claude-sonnet-5-5`), on the same connection or another one.
 3. Describe your forum in **Site context** (what it is about, versions supported, documentation links, tone), review the canned replies, and choose who gets the e-mail notifications and what about (every reply and spam, or spam only; errors are always notified).
 4. Turn on **Dry run** first: Baldrick then only answers new threads started by administrators and moderators, so you can try it safely. Turn it off when you are happy.

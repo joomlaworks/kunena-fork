@@ -64,7 +64,7 @@ if (!empty($this->spacing)) : ?>
 			<?php if ($topic->ordering) : ?>
 				<?php echo $template->icon('pin-angle-fill', Text::_('COM_KUNENA_BUTTON_TOPIC_STICKY')); ?>
 			<?php endif; ?>
-			<?php if ($topic->locked) : ?>
+			<?php if ($topic->isLocked()) : ?>
 				<?php echo $template->icon('lock-fill', Text::_('COM_KUNENA_LOCKED')); ?>
 			<?php endif; ?>
 			<?php if ($template->params->get('labels')) : ?>
@@ -77,6 +77,10 @@ if (!empty($this->spacing)) : ?>
             } else {
                 echo $this->getTopicLink($topic, null, null, null, 'topictitle', $category, true, false);
             }
+
+if ($topic->isResolved() && $template->params->get('labels') != 2) {
+    echo ' <span class="kb-chip kb-chip--resolved">' . $template->icon('check2-circle') . ' ' . Text::_('KUNENA_BLACKADDER_RESOLVED') . '</span>';
+}
 ?>
 			<span class="kb-topic-flags">
 				<?php if ($userTopic->favorite) : ?><?php echo $template->icon('star-fill', Text::_('COM_KUNENA_FAVORITE')); ?><?php endif; ?>

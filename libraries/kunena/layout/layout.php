@@ -278,7 +278,7 @@ class KunenaLayout extends KunenaLayoutBase
             $con = $rel;
         }
 
-        if ($topic->locked) {
+        if ($topic->isLocked()) {
             $class .= ' locked';
         }
 

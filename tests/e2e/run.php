@@ -6,7 +6,7 @@ require __DIR__ . '/lib.php';
 $env = parse_ini_string(preg_replace('/^(\w+)=/m', '$1=', shell_exec('bash -c ". ' . __DIR__ . '/env.sh; set | grep -E \'^(DBTEST|SITES|OUT|ADMIN_USER|ADMIN_PASS)=\'"')));
 $db   = isset($argv[1]) ? $argv[1] : 'sqlite';
 $ports = array('sqlite' => 8101, 'pg' => 8102, 'mariadb' => 8103, 'pgpdo' => 8104, 'mysql' => 8105);
-$all  = array('install', 'wizard', 'admin', 'config', 'site', 'post', 'guest', 'search', 'profile', 'recent', 'moderate', 'emptytrash', 'sampledata', 'extras', 'baldrick', 'adminpages', 'tools', 'uninstall');
+$all  = array('install', 'wizard', 'admin', 'config', 'site', 'post', 'guest', 'features', 'search', 'profile', 'recent', 'moderate', 'emptytrash', 'sampledata', 'extras', 'baldrick', 'adminpages', 'tools', 'uninstall');
 $steps = isset($argv[2]) ? explode(',', $argv[2]) : $all;
 $site = $env['SITES'] . '/' . $db;
 $base = 'http://127.0.0.1:' . $ports[$db] . '/';
@@ -315,6 +315,76 @@ foreach ($steps as $step) {
                     break;
                 }
                 result('guest-post', $posted, $note);
+                break;
+            case 'features':
+                // Resolved threads, automatic locking, WebP/AVIF images, the configuration page's new settings
+                copy(__DIR__ . '/kexec.php', "$site/kexec.php");
+                $cats = isset($state['cats']) ? $state['cats'] : array(2);
+                $cid  = end($cats);
+                $tid  = isset($state['topic']) ? (int) $state['topic'] : 0;
+                $replyAs = function ($c, $resolved, $text) use ($cid, $tid) {
+                    $html = $c->get(kurl("view=topic&layout=reply&catid=$cid&id=$tid"));
+                    $box  = strpos($html, 'name="resolved"') !== false;
+                    $h    = JClient::hidden($html, 'id="postform"');
+                    $t    = JClient::token($html);
+                    $c->post(kurl('view=topic'), array_merge($h, array('task' => 'post', 'catid' => $cid, 'id' => $tid, 'subject' => 'Re: x', 'message' => $text, 'resolved' => $resolved, $t => 1)));
+
+                    return $box;
+                };
+                $labelOf = function () use ($tid) {
+                    return kexecJson('return json_encode((int) JFactory::getDbo()->setQuery("SELECT label_id FROM #__kunena_topics WHERE id = ' . $tid . '")->loadResult());');
+                };
+                // The starter/moderator gets the checkbox, a guest doesn't; a reply marks the thread resolved, another reopens it
+                $g = new JClient($base, "$out/$db-features.jar");
+                @unlink("$out/$db-features.jar");
+                $guestBox = strpos($g->get(kurl("view=topic&layout=reply&catid=$cid&id=$tid")), 'name="resolved"') !== false;
+                $box      = $replyAs($fe, 1, "Resolving reply on $db");
+                $label1   = $labelOf();
+                $page     = $g->get(kurl("view=topic&catid=$cid&id=$tid"));
+                $list     = $g->get(kurl("view=category&catid=$cid"));
+                result('resolved-mark', $tid && $box && !$guestBox && $label1 === 8 && strpos($page, 'kb-chip--resolved') !== false && strpos($list, 'kb-chip--resolved') !== false, json_encode(array($box, $guestBox, $label1)));
+                $replyAs($fe, 0, "Reopening reply on $db");
+                $label2 = $labelOf();
+                result('resolved-reopen', $label2 === 0 && strpos($g->get(kurl("view=topic&catid=$cid&id=$tid")), 'kb-chip--resolved') === false, json_encode($label2));
+
+                // Automatic locking: Kunena's setting, the category's own (0: never), moderators still reply
+                $lock = kexecJson('KunenaForum::setup(); $db = JFactory::getDbo(); $cfg = KunenaConfig::getInstance(); $guest = KunenaUserHelper::get(0); $mod = KunenaUserHelper::get(JFactory::getDbo()->setQuery("SELECT id FROM #__users WHERE username = ' . "'" . $env['ADMIN_USER'] . "'" . '")->loadResult());
+                    $db->setQuery("UPDATE #__kunena_topics SET last_post_time = " . (time() - 3 * 86400) . " WHERE id = ' . $tid . '")->execute();
+                    $r = array();
+                    $t = KunenaForumTopicHelper::get(' . $tid . ', true); $r["before"] = array($t->isAutoLocked(), $t->isAuthorised("reply", $guest));
+                    $cfg->set("autolock_days", 2); $cfg->save();
+                    $t = KunenaForumTopicHelper::get(' . $tid . ', true); $r["global"] = array($t->isAutoLocked(), $t->isLocked(), $t->isAuthorised("reply", $guest), $t->isAuthorised("reply", $mod), $t->getAutoLockDays());
+                    $c = $t->getCategory(); $p = new Joomla\\Registry\\Registry($c->params); $p->set("autolock_days", "0"); $c->params = $p->toString(); $c->save();
+                    $t = KunenaForumTopicHelper::get(' . $tid . ', true); $c = $t->getCategory(); $c->params = $p->toString(); $r["category"] = array($t->isAutoLocked(), $t->getAutoLockDays());
+                    $p->set("autolock_days", ""); $c->params = $p->toString(); $c->save();
+                    return json_encode($r);');
+                $locked = $g->get(kurl("view=topic&catid=$cid&id=$tid"));
+                kexecJson('$cfg = KunenaConfig::getInstance(); $cfg->set("autolock_days", 0); $cfg->save(); KunenaForumTopicHelper::recount(' . $tid . '); return json_encode("ok");');
+                $ok = isset($lock['global']) && $lock['before'] === array(false, true) && $lock['global'] === array(true, true, false, true, 2) && $lock['category'] === array(false, 0)
+                    && strpos($locked, 'no reply for 2 days') !== false;
+                result('autolock', $ok, json_encode($lock));
+
+                // WebP (and AVIF where PHP's GD has it): uploaded images are read, resized and written like the others
+                $img = kexecJson('$r = array("webp" => KunenaImage::canProcess("webp"), "avif" => KunenaImage::canProcess("avif"));
+                    foreach (array("webp" => IMAGETYPE_WEBP, "avif" => defined("IMAGETYPE_AVIF") ? IMAGETYPE_AVIF : 0) as $ext => $type) {
+                        if (!$r[$ext]) { continue; }
+                        $src = JPATH_SITE . "/tmp/kunena-test.$ext"; $dst = JPATH_SITE . "/tmp/kunena-test-small.$ext";
+                        $h = imagecreatetruecolor(300, 200); imagealphablending($h, false); imagesavealpha($h, true); imagefill($h, 0, 0, imagecolorallocatealpha($h, 0, 128, 255, 60));
+                        $ext === "webp" ? imagewebp($h, $src, 90) : imageavif($h, $src, 90);
+                        $i = new KunenaImage($src); $s = $i->resize(100, 100, false); $s->toFile($dst, $type, array("quality" => 80));
+                        $p = KunenaImage::getImageFileProperties($dst); $r[$ext . "_out"] = array($p->width, $p->height, $p->mime);
+                        @unlink($src); @unlink($dst);
+                    }
+                    return json_encode($r);');
+                $ok = !empty($img['webp']) && $img['webp_out'] === array(100, 67, 'image/webp') && (empty($img['avif']) || $img['avif_out'] === array(100, 67, 'image/avif'));
+                result('images-webp-avif', $ok, json_encode($img));
+
+                // Configuration: SEO and Development tabs, automatic locking, resolved threads, units beside their fields
+                $admin->get('administrator/' . kurl('view=config'));
+                $cfgPage = $admin->last;
+                result('config-new-settings', strpos($cfgPage, 'id="tab_seo"') !== false && strpos($cfgPage, 'id="tab_development"') !== false && strpos($cfgPage, 'name="cfg_autolock_days"') !== false
+                    && strpos($cfgPage, 'name="cfg_resolve_threads"') !== false && strpos($cfgPage, 'name="cfg_dev_disable_email"') !== false && substr_count($cfgPage, 'kunena-unit-field') >= 8
+                    && preg_match('/name="cfg_avatartypes"[^>]*value="[^"]*webp,avif"/', $cfgPage), 'HTTP ' . $admin->code);
                 break;
             case 'search':
                 $site_c = new JClient($base, "$out/$db-site.jar");

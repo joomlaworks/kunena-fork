@@ -1219,12 +1219,12 @@ HTML;
                 $icon           = $this->get_xml_systemicon($xml, $topic->icon_id, $topicicontype);
             }
 
-            if ($topic->locked) {
+            if ($topic->isLocked()) {
                 $topic->icon_id = 505;
                 $icon           = $this->get_xml_systemicon($xml, $topic->icon_id, $topicicontype);
             }
 
-            if ($topic->ordering && $topic->locked) {
+            if ($topic->ordering && $topic->isLocked()) {
                 $topic->icon_id = 503;
                 $icon           = $this->get_xml_systemicon($xml, $topic->icon_id, $topicicontype);
             }
@@ -1276,11 +1276,11 @@ HTML;
                 $iconid = 3;
             }
 
-            if ($topic->locked) {
+            if ($topic->isLocked()) {
                 $iconid = 4;
             }
 
-            if ($topic->ordering && $topic->locked) {
+            if ($topic->ordering && $topic->isLocked()) {
                 $iconid = 7;
             }
 
