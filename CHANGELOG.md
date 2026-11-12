@@ -760,6 +760,12 @@ category, index and user list controllers call from `prepareDocument()`:
   to every CSS and JS file of the component, its media, modules and plugins, on the site and in the administrator,
   whoever added it, just before the page's head (and Joomla 3.x UTD's preload links) is written; after an update
   browsers and proxies fetch the new files. Blackadder's files keep their change-based `t=` timestamp as well.
+- **Kunena's own stylesheets in Joomla 3.x UTD's CSS style** (its `docs/format` scripts: `css.py`, then
+  `css_prefixes.py` and `css_ie_hacks.py`): the administrator's seven stylesheets, Crypsis's `rating.css`, the four
+  modules' and Kunena Discuss's two, one rule per line; obsolete vendor prefixes and Internet Explorer hacks removed.
+  Chrome keeps exactly the same rules for each file before and after (compared through `document.styleSheets`).
+  Third-party stylesheets (CKEditor's skin and plugins, Fancybox, jsSocials, the Bootstrap datepicker and scoped
+  Bootstrap, atwho, jQuery File Upload) and the minified `-min.css` copies stay as they ship.
 - **Version line centred** at the bottom of every administrator page.
 - **Administrator font size:** Kunena's administrator pages forced 13px text (`#kunena.admin.override`); they now use
   the administrator template's size.

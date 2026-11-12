@@ -7,115 +7,49 @@
  * @link https://www.kunena.org
  **/
 
-#kunena.admin.override #dashboard-icons .btn {
-	background-image: none;
-	border-color: transparent;
-	box-shadow: none;
-}
+#kunena.admin.override #dashboard-icons .btn {background-image:none;border-color:transparent;box-shadow:none;}
 
-.kwho-guest {
-	color: #666666;
-}
+.kwho-guest {color:#666666;}
 
-.kwho-user {
-	color: #5388B4;
-}
+.kwho-user {color:#5388B4;}
 
-.kwho-moderator {
-	color: #0000FF;
-}
+.kwho-moderator {color:#0000FF;}
 
 .kwho-globalmod,
-.kwho-globalmoderator {
-	color: #800000;
-}
+.kwho-globalmoderator {color:#800000;}
 
-.kwho-admin {
-	color: #FF0000;
-}
+.kwho-admin {color:#FF0000;}
 
 .kwho-blocked,
-.kwho-banned {
-	color: #A39D49;
-}
+.kwho-banned {color:#A39D49;}
 
-.b2-3x {
-	padding-top: 10px;
-	font-size: 32px;
-}
+.b2-3x {padding-top:10px;font-size:32px;}
 
-.b2-7x {
-	padding-top: 10px;
-	font-size: 52px;
-}
+.b2-7x {padding-top:10px;font-size:52px;}
 
-.user-circle.user-default {
-	width: 32px;
-	height: 32px;
-	text-align: center;
-	font-size: 24px;
-	line-height: 1.33;
-	border-radius: 50%;
-	border: 1px solid;
-}
+.user-circle.user-default {width:32px;height:32px;text-align:center;font-size:24px;line-height:1.33;border-radius:50%;border:1px solid;}
 
-.user-circle.user-xl {
-	width: 70px;
-	height: 70px;
-	padding: 10px 16px;
-	font-size: 52px;
-	line-height: 1.33;
-	border-radius: 50%;
-	border: 1px solid;
-}
+.user-circle.user-xl {width:70px;height:70px;padding:10px 16px;font-size:52px;line-height:1.33;border-radius:50%;border:1px solid;}
 
-.icon.icon-one-fine-dot {
-	margin-right: 0;
-}
+.icon.icon-one-fine-dot {margin-right:0;}
 
-.icon.icon-one-fine-dot:before {
-	content: "\25cf";
-	font-size: 2em;
-}
+.icon.icon-one-fine-dot:before {content:"\25cf";font-size:2em;}
 
-.glyphicon.glyphicon-one-fine-dot:before {
-	content: "\25cf";
-	font-size: 1.5em;
-}
+.glyphicon.glyphicon-one-fine-dot:before {content:"\25cf";font-size:1.5em;}
 
 /* Number fields with a unit (kB, px): the field and its unit on one line */
-.kunena-unit-field {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.4em;
-	white-space: nowrap;
-}
+.kunena-unit-field {display:inline-flex;align-items:center;gap:0.4em;white-space:nowrap;}
 
-.kunena-unit-field input.ksm-field {
-	width: 7em;
-	min-width: 0;
-	margin: 0;
-}
+.kunena-unit-field input.ksm-field {width:7em;min-width:0;margin:0;}
 
 /* Settings tables (Configuration, category editor): labels and descriptions on the first text line of their field */
-#kunena .tab-pane > fieldset > .table > tbody > tr > td {
-	vertical-align: baseline;
-}
+#kunena .tab-pane > fieldset > .table > tbody > tr > td {vertical-align:baseline;}
 
 /* A textarea's baseline is its bottom edge: align it by its top, with the line it starts on */
-#kunena .tab-pane > fieldset > .table > tbody > tr > td textarea {
-	vertical-align: text-top;
-	margin-top: -0.375em;
-}
+#kunena .tab-pane > fieldset > .table > tbody > tr > td textarea {vertical-align:text-top;margin-top:-0.375em;}
 
 /* Tab bars wrap onto a second row instead of hiding tabs behind a horizontal scroll (the configuration has ten) */
-#kunena .nav-tabs {
-	flex-wrap: wrap;
-	overflow-x: visible;
-}
+#kunena .nav-tabs {flex-wrap:wrap;overflow-x:visible;}
 
 /* The version line at the bottom of every page */
-.kunena-version {
-	clear: both;
-	text-align: center;
-}
+.kunena-version {clear:both;text-align:center;}

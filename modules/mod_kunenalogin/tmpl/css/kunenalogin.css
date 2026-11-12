@@ -11,9 +11,7 @@
 /*					VERTICAL STYLE
 ----------------------------------------------------------*/
 
-.klogin-vert .center, .klogin-vert .table td.center, .klogin-vert .table th.center {
-	text-align: left !important;
-}
-.klogin-vert li {
-	list-style-type: none !important;
-}
+.klogin-vert .center,
+.klogin-vert .table td.center,
+.klogin-vert .table th.center {text-align:left !important;}
+.klogin-vert li {list-style-type:none !important;}

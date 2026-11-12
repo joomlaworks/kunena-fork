@@ -327,6 +327,11 @@ Rules:
 
 ### 4.12 Static assets
 
+- Kunena's own stylesheets (not the third-party ones in `media/kunena/core/` or the minified `-min.css` copies) follow
+  Joomla 3.x UTD's CSS style: run its `docs/format/css.py`, `css_prefixes.py` and `css_ie_hacks.py` (in that order) on
+  a changed file; all three must list nothing. Check a change by comparing the rules Chrome keeps
+  (`document.styleSheets`) before and after.
+
 - Kunena's CSS and JS files get `?v=<version>` from the System - Kunena plugin (`onBeforeCompileHead`, every asset of
   `components/com_kunena`, `media/kunena`, `mod_kunena*` and `plugins/*/kunena*`): add assets the usual way, without a
   version of your own. Bump the version (section 3.3) for a release so that browsers fetch the new files.

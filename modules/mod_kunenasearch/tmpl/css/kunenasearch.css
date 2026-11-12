@@ -8,23 +8,12 @@
  * @link https://www.kunena.org
  **/
 
-form#ksearch-form { white-space: nowrap; }
+form#ksearch-form {white-space:nowrap;}
 
-fieldset.ksearch-fieldset {
-	border: 0 none !important;
-	margin: 0 !important;
-	padding: 0 !important;
-	background-color: transparent !important;
-}
+fieldset.ksearch-fieldset {border:0 none !important;margin:0 !important;padding:0 !important;background-color:transparent !important;}
 
 legend.ksearch-legend,
-fieldset.ksearch-fieldset .ksearch-label {
-	display: none;
-	text-indent: -9999em;
-	margin: 0 !important;
-	padding: 0 !important;
-}
+fieldset.ksearch-fieldset .ksearch-label {display:none;text-indent:-9999em;margin:0 !important;padding:0 !important;}
 input,
-textarea, .uneditable-input {
-	width: auto;
-}
+textarea,
+.uneditable-input {width:auto;}
