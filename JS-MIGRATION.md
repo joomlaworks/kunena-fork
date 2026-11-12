@@ -1,10 +1,10 @@
 # JavaScript migration guide: from jQuery to vanilla JS
 
-This is a plan, not a record of finished work. It covers what Kunena's JavaScript consists of, which parts depend on
+This is a plan, not a record of finished work. It covers what Kunena Fork's JavaScript consists of, which parts depend on
 jQuery or on third-party widgets, and how to rewrite it in plain JavaScript in safe steps. Read [AGENTS.md](AGENTS.md)
 first, especially section 4.7 (JavaScript rules) and section 5 (testing).
 
-Inventory as of 5.3.0 (2026-11-10). Line counts exclude minified copies.
+Inventory as of 5.3.0 (2026-11-12). Line counts exclude minified copies.
 
 ## 1. Where things stand
 

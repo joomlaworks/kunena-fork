@@ -215,6 +215,45 @@ abstract class KunenaHtmlParser
     }
 
     /**
+     * Converts post BBCode to plain text: keeps code and link targets, drops hidden and confidential parts, quotes and
+     * media (used by Baldrick AI and the structured data).
+     *
+     * @param   string  $text  BBCode
+     *
+     * @return  string
+     *
+     * @since 5.3.0
+     */
+    public static function plainText($text)
+    {
+        $text = str_replace(array("\r\n", "\r"), "\n", (string) $text);
+
+        // Content not everyone may read, and repeated content
+        $text = preg_replace('#\[(confidential|hide|quote|spoiler)[^\]]*\].*?\[/\1\]#isu', '', $text);
+        $text = preg_replace('#\[(img|video|attachment|instagram|tweet|soundcloud|map|ebay|article)[^\]]*\].*?\[/\1\]#isu', '', $text);
+
+        // Links: "text (target)"
+        $text = preg_replace_callback(
+            '#\[url=([^\]]+)\](.*?)\[/url\]#isu',
+            function ($m) {
+                $target = trim($m[1], " \"'");
+                $label  = trim($m[2]);
+
+                return $label === '' || $label === $target ? $target : $label . ' (' . $target . ')';
+            },
+            $text
+        );
+
+        $text = preg_replace('#\[\*\]#u', "\n- ", $text);
+        $text = preg_replace('#\[/?[a-z][a-z0-9]*(=[^\]]*)?\]#iu', '', $text);
+        $text = html_entity_decode($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $text = preg_replace("#[ \t]+\n#u", "\n", $text);
+        $text = preg_replace("#\n{3,}#u", "\n\n", $text);
+
+        return trim((string) $text);
+    }
+
+    /**
      * @param   string $txt    text
      * @param   int    $len    len
      * @param   bool   $html   html

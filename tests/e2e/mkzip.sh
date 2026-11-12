@@ -10,6 +10,6 @@ else
   cp -a "$KUNENA_REPO"/. "$TMP/kunena-main/"
 fi
 # .gitattributes export-ignore
-(cd "$TMP/kunena-main" && rm -rf .git .claude tests .php-cs-fixer.dist.php .php-cs-fixer.cache .gitattributes .gitignore AGENTS.md JS-MIGRATION.md)
+(cd "$TMP/kunena-main" && rm -rf .git .claude tests docs .php-cs-fixer.dist.php .php-cs-fixer.cache .gitattributes .gitignore AGENTS.md JS-MIGRATION.md)
 rm -f "$DBTEST/kunena-main.zip"; (cd "$TMP" && zip -qr "$DBTEST/kunena-main.zip" kunena-main)
 rm -rf "$TMP"; ls -la "$DBTEST/kunena-main.zip"

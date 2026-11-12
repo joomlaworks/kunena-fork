@@ -32,6 +32,13 @@ abstract class KunenaEmail
     {
         $config = KunenaFactory::getConfig();
 
+        // Development: no e-mails, a line in Kunena's log instead
+        if (static::isDisabled()) {
+            Log::add(sprintf('E-mail not sent (Kunena > Configuration > Development): "%s" to %d recipient(s)', (string) $mail->Subject, count($receivers)), Log::INFO, 'kunena');
+
+            return true;
+        }
+
         if (!empty($config->email_recipient_count)) {
             $email_recipient_count = $config->email_recipient_count;
         } else {
@@ -78,5 +85,15 @@ abstract class KunenaEmail
         }
 
         return $success;
+    }
+
+    /**
+     * @return  boolean  Kunena sends no e-mails (Kunena > Configuration > Development)
+     *
+     * @since 5.3.0
+     */
+    public static function isDisabled()
+    {
+        return (bool) KunenaFactory::getConfig()->get('dev_disable_email', 0);
     }
 }

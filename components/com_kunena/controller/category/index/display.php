@@ -14,7 +14,6 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\Registry\Registry;
 
@@ -348,11 +347,6 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
         $config = Factory::getConfig();
         $robots = $config->get('robots');
 
-        if (JFile::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader)) {
-            $image = Uri::base() . KunenaConfig::getInstance()->emailheader;
-            $this->setMetaData('og:image', $image, 'property');
-        }
-
         if ($robots == 'noindex, follow') {
             $this->setMetaData('robots', 'noindex, follow');
         } elseif ($robots == 'index, nofollow') {
@@ -378,10 +372,6 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
                 $this->setTitle($title);
             }
 
-            $this->setMetaData('og:type', 'article', 'property');
-            $this->setMetaData('og:description', $title, 'property');
-            $this->setMetaData('og:title', $title, 'property');
-
             if (!empty($params_keywords)) {
                 $keywords = $params->get('menu-meta_keywords');
                 $this->setKeywords($keywords);
@@ -403,5 +393,8 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
                 $this->setMetaData('robots', $robots);
             }
         }
+
+        // OpenGraph / X tags from the page's title and description
+        KunenaSeo::page();
     }
 }

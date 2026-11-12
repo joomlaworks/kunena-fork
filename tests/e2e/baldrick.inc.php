@@ -161,6 +161,13 @@ result('bk-requests', $ok, json_encode(array_map(function ($r) {
 $fe->get(kurl("view=topic&catid=$cid&id=$t2"));
 list($ok, $note) = check($fe, $step, 'bk-thread', 'MOCK-ANSWER');
 result('bk-thread-page', $ok && strpos($fe->last, 'Replied by Baldrick AI, my lord, using a cunning model (...and do remember that AI can make mistakes, so double check responses)') !== false && strpos($fe->last, 'evil.example') === false, $note);
+// Structured data marks Baldrick's reply as written by an AI model, and only it
+$seo     = seoData($fe->last);
+$aiMarks = array();
+foreach (isset($seo['nodes']['DiscussionForumPosting']['comment']) ? $seo['nodes']['DiscussionForumPosting']['comment'] : array() as $comment) {
+    $aiMarks[] = isset($comment['digitalSourceType']) ? $comment['digitalSourceType'] : '';
+}
+result('bk-seo-ai', $aiMarks === array('https://schema.org/TrainedAlgorithmicMediaDigitalSource') && empty($seo['nodes']['DiscussionForumPosting']['digitalSourceType']), json_encode($aiMarks));
 
 // The notification e-mail: first post and last posts, newest first, plain text
 clearstatcache();
@@ -315,8 +322,20 @@ clearstatcache();
 $mail = is_file($mailLog) ? file_get_contents($mailLog) : '';
 result('bk-notify-spam-only', $ln && $ln[0]['action'] === 'replied' && strpos($ln[0]['message'], 'E-mail') === false && strpos($mail, 'Quiet answer question') === false, json_encode($ln));
 result('bk-notify-error', $qe && $qe[0]['status'] === 'failed' && $le && strpos($le[0]['message'], 'E-mail sent to 1.') !== false && strpos($mail, 'Baldrick could not answer: Failing provider question') !== false, json_encode(array($qe, $le)));
+// Kunena > Configuration > Development > "Don't send e-mails": the answer is posted, the e-mail isn't, the log says why
+$devMail = function ($on) {
+    kexecJson('$c = KunenaConfig::getInstance(); $c->set("dev_disable_email", ' . (int) $on . '); $c->save(); JFactory::getCache("com_kunena", "output")->clean(); return json_encode("ok");');
+};
+$devMail(1);
+$td = newTopic($mc, $cid, 'Development mail question', 'How do I hide the frobnicator widget on mobile screens only?');
+$cli('kunena:baldrick:process -n');
+$devMail(0);
+$ld = $logOf($td);
+clearstatcache();
+$mail = is_file($mailLog) ? file_get_contents($mailLog) : '';
+result('bk-dev-no-mail', $ld && $ld[0]['action'] === 'replied' && strpos($ld[0]['message'], 'turned off in Kunena > Configuration > Development') !== false && strpos($mail, 'Development mail question') === false, json_encode($ld));
 // The member's extra posts would make them a "trusted author" for later spam checks
-kexecJson('JFactory::getDbo()->setQuery("UPDATE #__kunena_messages SET hold = 2 WHERE thread IN (' . (int) $tn . ', ' . (int) $te . ') AND userid != " . (int) KunenaBaldrick::getUserId())->execute(); return json_encode("ok");');
+kexecJson('JFactory::getDbo()->setQuery("UPDATE #__kunena_messages SET hold = 2 WHERE thread IN (' . (int) $tn . ', ' . (int) $te . ', ' . (int) $td . ') AND userid != " . (int) KunenaBaldrick::getUserId())->execute(); return json_encode("ok");');
 
 // 9. Automatic processing: a background request to the site itself right after the page is sent
 $configure(array('processing' => 'auto'));
@@ -559,6 +578,6 @@ PHP
 result('bk-library', $x === 'ok', json_encode($x));
 
 shell_exec('pkill -f ' . escapeshellarg("php -S 127.0.0.1:$mockPort") . ' 2>/dev/null');
-foreach (array('mailer=mail', 'mailonline=1') as $setting) {
+foreach (array('mailer=sendmail', 'sendmail=' . "$out/sendmail-$db.sh", 'mailonline=1') as $setting) {
     shell_exec('cd ' . escapeshellarg($site) . ' && php cli/joomla.php config:set ' . escapeshellarg($setting) . ' -n -q 2>&1');
 }

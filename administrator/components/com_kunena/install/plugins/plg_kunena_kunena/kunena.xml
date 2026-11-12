@@ -3,7 +3,7 @@
 <extension version="2.5" type="plugin" group="kunena" method="upgrade">
     <name>plg_kunena_kunena</name>
     <version>5.3.0</version>
-    <creationDate>2026-11-10</creationDate>
+    <creationDate>2026-11-12</creationDate>
     <author>Kunena Team</author>
     <authorEmail>Kunena@kunena.org</authorEmail>
     <authorUrl>https://www.kunena.org</authorUrl>

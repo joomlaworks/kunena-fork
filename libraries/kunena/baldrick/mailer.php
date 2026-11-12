@@ -144,6 +144,13 @@ abstract class KunenaBaldrickMailer
         $config = Factory::getConfig();
         $sent   = 0;
 
+        // Development: no e-mails (the activity log says so)
+        if (KunenaEmail::isDisabled()) {
+            static::$errors[] = 'sending e-mails is turned off in Kunena > Configuration > Development';
+
+            return 0;
+        }
+
         foreach ($recipients as $recipient) {
             $mailer = Factory::getMailer();
             $mailer->setSender(array($config->get('mailfrom'), $config->get('fromname')));

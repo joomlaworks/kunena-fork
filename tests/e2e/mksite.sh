@@ -28,6 +28,11 @@ esac
 php cli/joomla.php config:set error_reporting=maximum -n -q || true
 php cli/joomla.php config:set sef=0 -n -q || true
 php cli/joomla.php config:set log_path="$SITE/administrator/logs" -n -q || true
+# Never the system's sendmail: e-mails go to $OUT/<db>-mail.log (a misconfigured local MTA can block a request for ever)
+mkdir -p "$OUT"
+printf '#!/bin/sh\ncat >> "%s"\necho ----MAIL-END---- >> "%s"\n' "$OUT/$DB-mail.log" "$OUT/$DB-mail.log" > "$OUT/sendmail-$DB.sh"
+chmod 755 "$OUT/sendmail-$DB.sh"
+for setting in mailonline=1 mailer=sendmail "sendmail=$OUT/sendmail-$DB.sh"; do php cli/joomla.php config:set "$setting" -n -q || true; done
 php cli/joomla.php site:info 2>&1 | grep -i -E 'database|driver' | head -5
 # Log every failed query (errors Kunena may catch and hide) to administrator/logs/kunena-test-db-errors.php
 for f in includes/framework.php administrator/includes/framework.php; do

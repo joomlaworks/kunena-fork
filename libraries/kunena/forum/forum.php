@@ -305,7 +305,7 @@ abstract class KunenaForum
         }
 
         self::$version_major = substr(self::$version, 0, 3);
-        self::$version_date  = ('2026-11-10' == '@' . 'kunenaversiondate' . '@') ? Factory::getDate()->format('Y-m-d') : '2026-11-10';
+        self::$version_date  = ('2026-11-12' == '@' . 'kunenaversiondate' . '@') ? Factory::getDate()->format('Y-m-d') : '2026-11-12';
         self::$version_name  = ('Tharsis' == '@' . 'kunenaversionname' . '@') ? 'Git Repository' : 'Tharsis';
     }
 

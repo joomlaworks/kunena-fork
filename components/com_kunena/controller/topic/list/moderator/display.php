@@ -58,7 +58,7 @@ class ComponentKunenaControllerTopicListModeratorDisplay extends ComponentKunena
             }
 
             $controller = BaseController::getInstance("kunena");
-            $controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=moderator&Itemid={$itemidfix}", false));
+            $controller->setRedirect(KunenaRoute::_(KunenaRoute::withItemid($itemidfix, array('view' => 'topics', 'layout' => 'moderator')), false));
             $controller->redirect();
         }
 

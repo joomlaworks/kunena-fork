@@ -1048,6 +1048,38 @@ abstract class KunenaRoute
     }
 
     /**
+     * The current page's address with a menu item: for the redirects of pages requested without one ("SEF redirect"),
+     * keeping the request's own Kunena parameters (page, post, list mode...), which those redirects used to drop: a link
+     * to page 2 of a thread without an Itemid ended on page 1.
+     *
+     * @param   integer  $itemid    Menu item
+     * @param   array    $defaults  Parameters to use when the request has none of its own
+     *
+     * @return  string  Non-SEF URL (route it with KunenaRoute::_())
+     *
+     * @since 5.3.0
+     */
+    public static function withItemid($itemid, array $defaults = array())
+    {
+        $input = Factory::getApplication()->input;
+        $vars  = $defaults;
+
+        foreach (array('view' => 'cmd', 'layout' => 'cmd', 'mode' => 'cmd', 'catid' => 'int', 'id' => 'int', 'mesid' => 'int',
+            'userid' => 'int', 'limitstart' => 'int', 'limit' => 'int', 'sel' => 'int', 'defaultmenu' => 'int') as $name => $filter) {
+            $value = $input->get($name, null, $filter);
+
+            if ($value !== null && $value !== '' && $value !== 0) {
+                $vars[$name] = $value;
+            }
+        }
+
+        $vars = array('option' => 'com_kunena') + $vars;
+        $vars['Itemid'] = (int) $itemid;
+
+        return 'index.php?' . http_build_query($vars, '', '&');
+    }
+
+    /**
      * @param   KunenaForumTopic    $topic    topic
      * @param   bool                $xhtml    xhtml
      * @param   null                $action   actions

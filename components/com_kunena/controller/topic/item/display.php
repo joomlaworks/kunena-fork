@@ -14,9 +14,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\MVC\Controller\BaseController;
-use Joomla\CMS\Object\CMSObject;
 
 /**
  * Class ComponentKunenaControllerTopicItemDisplay
@@ -86,7 +84,7 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
         if (!$Itemid && $format != 'feed' && KunenaConfig::getInstance()->sef_redirect) {
             $itemid     = KunenaRoute::fixMissingItemID();
             $controller = BaseController::getInstance("kunena");
-            $controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=topic&catid={$catid}&id={$id}&Itemid={$itemid}", false));
+            $controller->setRedirect(KunenaRoute::_(KunenaRoute::withItemid($itemid), false));
             $controller->redirect();
         }
 
@@ -196,55 +194,6 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
         // Get user data, captcha & quick reply.
         $this->userTopic  = $this->topic->getUserTopic();
         $this->quickReply = $this->topic->isAuthorised('reply') && $this->me->exists() && KunenaConfig::getInstance()->quickreply;
-
-        $subject = KunenaHtmlParser::parseText($this->topic->displayField('subject'));
-
-        $data                           = new CMSObject();
-        $data->{'@context'}             = "https://schema.org";
-        $data->{'@type'}                = "DiscussionForumPosting";
-        $data->{'id'}                   = Joomla\CMS\Uri\Uri::getInstance()->toString(array('scheme', 'host', 'port')) . $this->topic->getPermaUrl();
-        $data->{'discussionUrl'}        = $this->topic->getPermaUrl();
-        $data->{'headline'}             = $subject;
-        $data->{'image'}                = $this->docImage();
-        $data->{'datePublished'}        = $this->topic->getFirstPostTime()->toISO8601();
-        $data->{'dateModified'}         = Factory::getDate($this->message->modified_time)->toISO8601();
-        $data->{'author'}               = array();
-        $tmp                            = new CMSObject();
-        $tmp->{'@type'}                 = "Person";
-        $tmp->{'name'}                  = $this->topic->getLastPostAuthor()->username;
-        $data->{'author'}               = $tmp;
-        $data->interactionStatistic     = array();
-        $tmp2                           = new CMSObject();
-        $tmp2->{'@type'}                = "InteractionCounter";
-        $tmp2->{'interactionType'}      = "InteractionCounter";
-        $tmp2->{'userInteractionCount'} = $this->topic->getReplies();
-        $data->interactionStatistic     = $tmp2;
-        $tmp3                           = new CMSObject();
-        $tmp3->{'@type'}                = "ImageObject";
-        $tmp3->{'url'}                  = $this->docImage();
-        $data->publisher                = array();
-        $tmp4                           = new CMSObject();
-        $tmp4->{'@type'}                = "Organization";
-        $tmp4->{'name'}                 = $this->config->board_title;
-        $tmp4->{'logo'}                 = $tmp3;
-        $data->publisher                = $tmp4;
-        $data->mainEntityOfPage         = array();
-        $tmp5                           = new CMSObject();
-        $tmp5->{'@type'}                = "WebPage";
-        $tmp5->{'name'}                 = Joomla\CMS\Uri\Uri::getInstance()->toString(array('scheme', 'host', 'port')) . $this->topic->getPermaUrl();
-        $data->mainEntityOfPage         = $tmp5;
-
-        if ($this->category->allow_ratings && $this->config->ratingenabled && KunenaForumTopicRateHelper::getCount($this->topic->id) > 0) {
-            $data->aggregateRating  = array();
-            $tmp3                   = new CMSObject();
-            $tmp3->{'@type'}        = "AggregateRating";
-            $tmp3->{'itemReviewed'} = $this->headerText;
-            $tmp3->{'ratingValue'}  = KunenaForumTopicRateHelper::getSelected($this->topic->id) > 0 ? KunenaForumTopicRateHelper::getSelected($this->topic->id) : 5;
-            $tmp3->{'reviewCount'}  = KunenaForumTopicRateHelper::getCount($this->topic->id);
-            $data->aggregateRating  = $tmp3;
-        }
-
-        KunenaTemplate::getInstance()->addScriptDeclaration(json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP), 'application/ld+json');
     }
 
     /**
@@ -420,68 +369,7 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
      */
     protected function prepareDocument()
     {
-        $image = '';
-        $doc   = Factory::getDocument();
-        $this->setMetaData('og:url', Uri::current(), 'property');
-        $this->setMetaData('og:type', 'article', 'property');
-        $this->setMetaData('og:title', $this->topic->displayField('subject'), 'property');
-        $this->setMetaData('profile:username', $this->topic->getAuthor()->username, 'property');
-
-        $image = $this->docImage();
-
-        $message = KunenaHtmlParser::parseText($this->topic->first_post_message);
-        $matches = preg_match("/\[img]http(s?):\/\/.*\/img]/iu", $message, $title);
-
-        if ($matches) {
-            $image = substr($title[0], 5, -6);
-        }
-
-        if ($this->topic->attachments > 0) {
-            $attachments = KunenaAttachmentHelper::getByMessage($this->topic->first_post_id);
-            $item        = array();
-
-            foreach ($attachments as $attach) {
-                $object           = new stdClass();
-                $object->path     = $attach->getUrl();
-                $object->image    = $attach->isImage();
-                $object->filename = $attach->filename;
-                $object->folder   = $attach->folder;
-                $item             = $object;
-            }
-
-            $attach = $item;
-
-            if ($attach) {
-                if (JFile::exists(JPATH_SITE . '/' . $attach->folder . '/' . $attach->filename)) {
-                    if ($attach->image) {
-                        if (KunenaConfig::getInstance()->attachment_protection) {
-                            $url      = $attach->path;
-                            $protocol = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
-                            $image    = $protocol . $_SERVER['SERVER_NAME'] . $url;
-                        } else {
-                            $image = $attach->path;
-                        }
-                    }
-                }
-            }
-        }
-
-        $first = KunenaHtmlParser::stripBBCode($this->topic->first_post_message, 160);
-
-        if (!$first) {
-            $first = $this->topic->subject;
-        }
-
-        $multispaces_replaced = preg_replace('/\s+/', ' ', $first);
-
-        $this->setMetaData('og:description', $multispaces_replaced, 'property');
-        $this->setMetaData('og:image', $image, 'property');
-        $this->setMetaData('article:published_time', $this->topic->getFirstPostTime()->toISO8601(), 'property');
-        $this->setMetaData('article:section', $this->topic->getCategory()->name, 'property');
-        $this->setMetaData('twitter:card', 'summary', 'name');
-        $this->setMetaData('twitter:title', $this->topic->displayField('subject'), 'name');
-        $this->setMetaData('twitter:image', $image, 'property');
-        $this->setMetaData('twitter:description', $multispaces_replaced);
+        $doc = Factory::getDocument();
 
         $config = Factory::getConfig();
         $robots = $config->get('robots');
@@ -564,31 +452,8 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
                 $this->setDescription($small);
             }
         }
-    }
 
-    /**
-     * Prepare document.
-     *
-     * @throws Exception
-     * @throws null
-     * @since Kunena
-     */
-    protected function docImage()
-    {
-        $image = '';
-
-        if (JFile::exists(JPATH_SITE . '/media/kunena/avatars/' . KunenaFactory::getUser($this->topic->getAuthor()->id)->avatar)) {
-            $image = Uri::root() . 'media/kunena/avatars/' . KunenaFactory::getUser($this->topic->getAuthor()->id)->avatar;
-        } elseif ($this->topic->getAuthor()->avatar == null) {
-            if (JFile::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader)) {
-                $image = Uri::base() . KunenaConfig::getInstance()->emailheader;
-            } else {
-                $image = Uri::base() . '/media/kunena/email/hero-wide.png';
-            }
-        } else {
-            $image = $this->topic->getAuthor()->getAvatarURL('Profile', '200');
-        }
-
-        return $image;
+        // Structured data and the OpenGraph / X tags (after the description above)
+        KunenaSeo::topic($this->topic, $this->category, (array) $this->messages, $this->pagination);
     }
 }

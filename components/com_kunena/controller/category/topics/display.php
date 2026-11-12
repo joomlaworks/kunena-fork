@@ -13,7 +13,6 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\MVC\Controller\BaseController;
 
 /**
@@ -92,7 +91,7 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
         if (!$Itemid && $format != 'feed' && KunenaConfig::getInstance()->sef_redirect) {
             $itemid     = KunenaRoute::fixMissingItemID();
             $controller = BaseController::getInstance("kunena");
-            $controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=category&catid={$catid}&Itemid={$itemid}", false));
+            $controller->setRedirect(KunenaRoute::_(KunenaRoute::withItemid($itemid), false));
             $controller->redirect();
         }
 
@@ -222,11 +221,6 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
         $config    = Factory::getConfig();
         $robots    = $config->get('robots');
 
-        if (JFile::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader)) {
-            $image = Uri::base() . KunenaConfig::getInstance()->emailheader;
-            $this->setMetaData('og:image', $image, 'property');
-        }
-
         if ($robots == 'noindex, follow') {
             $this->setMetaData('robots', 'noindex, follow');
         } elseif ($robots == 'index, nofollow') {
@@ -303,5 +297,8 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
                 $this->setMetaData('robots', $robots);
             }
         }
+
+        // OpenGraph / X tags from the page's title and description
+        KunenaSeo::page((string) $this->category->name);
     }
 }

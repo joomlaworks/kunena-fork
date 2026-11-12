@@ -268,12 +268,6 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 
     protected function prepareDocument()
     {
-        $this->setMetaData('og:url', Uri::current(), 'property');
-
-        if (JFile::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader)) {
-            $image = Uri::base() . KunenaConfig::getInstance()->emailheader;
-            $this->setMetaData('og:image', $image, 'property');
-        }
 
         $page       = $this->pagination->pagesCurrent;
         $total      = $this->pagination->pagesTotal;
@@ -283,13 +277,6 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
         $robots    = $config->get('robots');
         $app       = Factory::getApplication();
         $menu_item = $app->getMenu()->getActive();
-
-        $this->setMetaData('og:url', Uri::current(), 'property');
-
-        if (JFile::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader)) {
-            $image = Uri::base() . KunenaConfig::getInstance()->emailheader;
-            $this->setMetaData('og:image', $image, 'property');
-        }
 
         if ($robots == 'noindex, follow') {
             $this->setMetaData('robots', 'noindex, follow');
@@ -316,10 +303,6 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
                 $this->setTitle($headerText);
             }
 
-            $this->setMetaData('og:type', 'article', 'property');
-            $this->setMetaData('og:description', $headerText, 'property');
-            $this->setMetaData('og:title', $headerText, 'property');
-
             if (!empty($params_keywords)) {
                 $keywords = $params->get('menu-meta_keywords');
                 $this->setKeywords($keywords);
@@ -341,5 +324,8 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
                 $this->setMetaData('robots', $robots);
             }
         }
+
+        // OpenGraph / X tags from the page's title and description
+        KunenaSeo::page();
     }
 }

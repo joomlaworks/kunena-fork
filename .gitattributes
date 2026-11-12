@@ -18,4 +18,5 @@
 /.gitignore            export-ignore
 /AGENTS.md             export-ignore
 /JS-MIGRATION.md       export-ignore
+/docs                  export-ignore
 /tests                 export-ignore

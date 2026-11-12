@@ -989,6 +989,59 @@ abstract class KunenaForumCategoryHelper
 
         return $original;
     }
+
+    /**
+     * Published categories guests can read, by the rules of Kunena's Joomla access integration (view levels or user
+     * groups). Not KunenaAccess::getAllowedCategories(): it caches in the session and needs a web application.
+     *
+     * @return  integer[]  Category ids, sorted
+     *
+     * @since 5.3.0
+     */
+    public static function getGuestReadable()
+    {
+        static $ids = null;
+
+        if ($ids !== null) {
+            return $ids;
+        }
+
+        // The rules of Kunena's Joomla access integration (view levels or user groups), for a guest. Not
+        // KunenaAccess::getAllowedCategories(): it caches in the session and needs a web application.
+        $categories = KunenaForumCategoryHelper::getCategories(false, false, 'none');
+
+        // Kunena isn't set up yet (no categories loaded): nothing to cache
+        if (!is_array($categories)) {
+            return array();
+        }
+
+        $levels   = array_map('intval', (array) \Joomla\CMS\Access\Access::getAuthorisedViewLevels(0));
+        $groupsR  = array_map('intval', (array) \Joomla\CMS\Access\Access::getGroupsByUser(0, true));
+        $groups   = array_map('intval', (array) \Joomla\CMS\Access\Access::getGroupsByUser(0, false));
+        $ids      = array();
+
+        foreach ($categories as $category) {
+            if ((int) $category->published !== 1) {
+                continue;
+            }
+
+            if ($category->accesstype === 'joomla.level') {
+                $allowed = in_array((int) $category->access, $levels, true);
+            } elseif ($category->accesstype === 'joomla.group') {
+                $allowed = in_array((int) $category->pub_access, $category->pub_recurse ? $groupsR : $groups, true);
+            } else {
+                $allowed = false;
+            }
+
+            if ($allowed) {
+                $ids[] = (int) $category->id;
+            }
+        }
+
+        sort($ids);
+
+        return $ids;
+    }
 }
 
 KunenaForumCategoryHelper::initialize();

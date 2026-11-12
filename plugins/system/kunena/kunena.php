@@ -222,4 +222,22 @@ class plgSystemKunena extends \Joomla\CMS\Plugin\CMSPlugin
 
         return $capabilities;
     }
+
+    /**
+     * Joomla 3.x UTD's structured data plugin is about to write the page's tags: Kunena's values for the forum pages
+     * (threads, profiles, lists) replace its generic ones and join its graph.
+     *
+     * @param   string  $context  Page context (option.view)
+     * @param   object  $data     opengraph, x, graph (changed in place)
+     *
+     * @return  void
+     *
+     * @since 5.3.0
+     */
+    public function onStructuredDataBeforeRender($context, $data)
+    {
+        if (class_exists('KunenaSeo')) {
+            KunenaSeo::render($context, $data);
+        }
+    }
 }

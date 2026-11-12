@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extensionset name="Kunena Fork" description="Kunena Fork Extensions List">
+    <extension name="Kunena Fork" element="com_kunena" type="component" version="5.3.0" detailsurl="https://joomlaworks.github.io/kunena-fork/update.xml"/>
+</extensionset>

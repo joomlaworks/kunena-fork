@@ -1385,6 +1385,36 @@ class KunenaConfig extends CMSObject
     public $minimal_user_posts_add_url_image = 10;
 
     /**
+     * @var    integer  Google structured data (JSON-LD) on thread and profile pages
+     * @since  5.3.0
+     */
+    public $seo_structured_data = 1;
+
+    /**
+     * @var    integer  OpenGraph and X (Twitter) card tags
+     * @since  5.3.0
+     */
+    public $seo_social_tags = 1;
+
+    /**
+     * @var    string  Image shared when a page has none of its own (path from the site's root, or a URL)
+     * @since  5.3.0
+     */
+    public $seo_share_image = '';
+
+    /**
+     * @var    string  The site's X account (twitter:site)
+     * @since  5.3.0
+     */
+    public $seo_x_site = '';
+
+    /**
+     * @var    integer  Development: send no e-mails (subscriptions, reports, mentions, Baldrick AI's notifications)
+     * @since  5.3.0
+     */
+    public $dev_disable_email = 0;
+
+    /**
      * @since Kunena
      */
     public function __construct()

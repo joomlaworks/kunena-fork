@@ -50,6 +50,10 @@ HTMLHelper::_('behavior.tabstate');
 										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_A_BASICS'); ?></a>
 									</li>
 									<li>
+										<a href="#tab_seo"
+										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_CFG_TAB_SEO'); ?></a>
+									</li>
+									<li>
 										<a href="#tab_frontend"
 										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_A_FRONTEND'); ?></a>
 									</li>
@@ -88,6 +92,10 @@ HTMLHelper::_('behavior.tabstate');
 									<li>
 										<a href="#tab_menu"
 										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_ADMIN_MENU_SETTINGS'); ?></a>
+									</li>
+									<li>
+										<a href="#tab_development"
+										   data-toggle="tab"><?php echo Text::_('COM_KUNENA_CFG_TAB_DEVELOPMENT'); ?></a>
 									</li>
 								</ul>
 
@@ -168,11 +176,6 @@ Check back soon!') : echo 'class="changed"'; endif; ?>>
 													<td><?php echo $this->lists ['enablerss'] ?></td>
 													<td><?php echo Text::_('COM_KUNENA_A_RSS_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->debug != 0) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_DEBUG_MODE') ?></td>
-													<td><?php echo $this->lists ['debug'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_DEBUG_MODE_DESC') ?></td>
-												</tr>
 												<tr <?php if ($this->config->fallback_english != 1) : echo 'class="changed"'; endif; ?>>
 													<td><?php echo Text::_('COM_KUNENA_CFG_FALLBACK_ENGLISH') ?></td>
 													<td><?php echo $this->lists ['fallback_english'] ?></td>
@@ -182,6 +185,33 @@ Check back soon!') : echo 'class="changed"'; endif; ?>>
 											</table>
 										</fieldset>
 
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CACHING_SETTINGS') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->cache != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_CACHE') ?></td>
+													<td><?php echo $this->lists ['cache'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_CACHE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->cache_time != 60) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_CACHE_TIME') ?></td>
+													<td><?php echo $this->lists ['cache_time'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_CACHE_TIME_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+									</div>
+
+									<div class="tab-pane" id="tab_seo">
 										<fieldset>
 											<legend><?php echo Text::_('COM_KUNENA_SEO_SETTINGS') ?></legend>
 											<table class="table table-striped">
@@ -214,30 +244,25 @@ if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGA
 													<td><?php echo $this->lists ['sef_redirect'] ?></td>
 													<td><?php echo Text::_('COM_KUNENA_SEF_REDIRECT_DESC') ?></td>
 												</tr>
-												</tbody>
-											</table>
-										</fieldset>
-
-										<fieldset>
-											<legend><?php echo Text::_('COM_KUNENA_CACHING_SETTINGS') ?></legend>
-											<table class="table table-striped">
-												<thead>
-												<tr>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
-													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
-													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												<tr <?php if ($this->config->seo_structured_data != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_STRUCTURED_DATA') ?></td>
+													<td><?php echo $this->lists ['seo_structured_data'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_STRUCTURED_DATA_DESC') ?></td>
 												</tr>
-												</thead>
-												<tbody>
-												<tr <?php if ($this->config->cache != 1) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CFG_CACHE') ?></td>
-													<td><?php echo $this->lists ['cache'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CFG_CACHE_DESC') ?></td>
+												<tr <?php if ($this->config->seo_social_tags != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_SOCIAL_TAGS') ?></td>
+													<td><?php echo $this->lists ['seo_social_tags'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_SOCIAL_TAGS_DESC') ?></td>
 												</tr>
-												<tr <?php if ($this->config->cache_time != 60) : echo 'class="changed"'; endif; ?>>
-													<td><?php echo Text::_('COM_KUNENA_CFG_CACHE_TIME') ?></td>
-													<td><?php echo $this->lists ['cache_time'] ?></td>
-													<td><?php echo Text::_('COM_KUNENA_CFG_CACHE_TIME_DESC') ?></td>
+												<tr <?php if ($this->config->seo_share_image != '') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_SHARE_IMAGE') ?></td>
+													<td><input name="cfg_seo_share_image" type="text" value="<?php echo $this->escape($this->config->seo_share_image) ?>" placeholder="images/forum-share.jpg"></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_SHARE_IMAGE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->seo_x_site != '') : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_X_SITE') ?></td>
+													<td><input name="cfg_seo_x_site" type="text" value="<?php echo $this->escape($this->config->seo_x_site) ?>" placeholder="@example"></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_SEO_X_SITE_DESC') ?></td>
 												</tr>
 												</tbody>
 											</table>
@@ -1688,6 +1713,33 @@ echo Text::sprintf('COM_KUNENA_A_FILESIZE_DESC',
 													    valign="top"><?php echo Text::_('COM_KUNENA_A_SEARCHID_DESC'); ?></td>
 												</tr>
 												</thead>
+											</table>
+										</fieldset>
+									</div>
+
+									<div class="tab-pane" id="tab_development">
+										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_DEVELOPMENT_SETTINGS') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->debug != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_DEBUG_MODE') ?></td>
+													<td><?php echo $this->lists ['debug'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_DEBUG_MODE_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->dev_disable_email != 0) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_DEV_DISABLE_EMAIL') ?></td>
+													<td><?php echo $this->lists ['dev_disable_email'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_DEV_DISABLE_EMAIL_DESC') ?></td>
+												</tr>
+												</tbody>
 											</table>
 										</fieldset>
 									</div>

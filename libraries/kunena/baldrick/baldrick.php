@@ -677,40 +677,7 @@ abstract class KunenaBaldrick
      */
     public static function getPublicCategories()
     {
-        static $ids = null;
-
-        if ($ids !== null) {
-            return $ids;
-        }
-
-        // The rules of Kunena's Joomla access integration (view levels or user groups), for a guest. Not
-        // KunenaAccess::getAllowedCategories(): it caches in the session and needs a web application.
-        $levels   = array_map('intval', (array) \Joomla\CMS\Access\Access::getAuthorisedViewLevels(0));
-        $groupsR  = array_map('intval', (array) \Joomla\CMS\Access\Access::getGroupsByUser(0, true));
-        $groups   = array_map('intval', (array) \Joomla\CMS\Access\Access::getGroupsByUser(0, false));
-        $ids      = array();
-
-        foreach (KunenaForumCategoryHelper::getCategories(false, false, 'none') as $category) {
-            if ((int) $category->published !== 1) {
-                continue;
-            }
-
-            if ($category->accesstype === 'joomla.level') {
-                $allowed = in_array((int) $category->access, $levels, true);
-            } elseif ($category->accesstype === 'joomla.group') {
-                $allowed = in_array((int) $category->pub_access, $category->pub_recurse ? $groupsR : $groups, true);
-            } else {
-                $allowed = false;
-            }
-
-            if ($allowed) {
-                $ids[] = (int) $category->id;
-            }
-        }
-
-        sort($ids);
-
-        return $ids;
+        return KunenaForumCategoryHelper::getGuestReadable();
     }
 
     /**
@@ -927,31 +894,7 @@ abstract class KunenaBaldrick
      */
     public static function plainText($text)
     {
-        $text = str_replace(array("\r\n", "\r"), "\n", (string) $text);
-
-        // Content not everyone may read, and repeated content
-        $text = preg_replace('#\[(confidential|hide|quote|spoiler)[^\]]*\].*?\[/\1\]#isu', '', $text);
-        $text = preg_replace('#\[(img|video|attachment|instagram|tweet|soundcloud|map|ebay|article)[^\]]*\].*?\[/\1\]#isu', '', $text);
-
-        // Links: "text (target)"
-        $text = preg_replace_callback(
-            '#\[url=([^\]]+)\](.*?)\[/url\]#isu',
-            function ($m) {
-                $target = trim($m[1], " \"'");
-                $label  = trim($m[2]);
-
-                return $label === '' || $label === $target ? $target : $label . ' (' . $target . ')';
-            },
-            $text
-        );
-
-        $text = preg_replace('#\[\*\]#u', "\n- ", $text);
-        $text = preg_replace('#\[/?[a-z][a-z0-9]*(=[^\]]*)?\]#iu', '', $text);
-        $text = html_entity_decode($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-        $text = preg_replace("#[ \t]+\n#u", "\n", $text);
-        $text = preg_replace("#\n{3,}#u", "\n\n", $text);
-
-        return trim((string) $text);
+        return KunenaHtmlParser::plainText($text);
     }
 
     /**

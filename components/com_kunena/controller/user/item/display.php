@@ -13,7 +13,6 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\MVC\Controller\BaseController;
 
 /**
@@ -120,7 +119,7 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
             if (!$userid) {
                 $controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=user&Itemid={$itemidfix}", false));
             } else {
-                $controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=user&userid={$userid}&Itemid={$itemidfix}", false));
+                $controller->setRedirect(KunenaRoute::_(KunenaRoute::withItemid($itemidfix, array('view' => 'user', 'userid' => $userid)), false));
             }
 
             $controller->redirect();
@@ -138,36 +137,10 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
      */
     protected function prepareDocument()
     {
-        $this->setMetaData('profile:username', $this->profile->getName(), 'property');
-
-        if ($this->profile->getGender() == 1) {
-            $this->setMetaData('profile:gender', Text::_('COM_KUNENA_MYPROFILE_GENDER_MALE'), 'property');
-        } elseif ($this->profile->getGender() == 2) {
-            $this->setMetaData('profile:gender', Text::_('COM_KUNENA_MYPROFILE_GENDER_FEMALE'), 'property');
-        } else {
-            $this->setMetaData('profile:gender', Text::_('COM_KUNENA_MYPROFILE_GENDER_UNKNOWN'), 'property');
-        }
-
         $app       = Factory::getApplication();
         $menu_item = $app->getMenu()->getActive();
         $config    = Factory::getConfig();
         $robots    = $config->get('robots');
-        $image     = '';
-
-        $this->setMetaData('og:url', Uri::current(), 'property');
-        $this->setMetaData('og:type', 'profile', 'property');
-
-        if (JFile::exists(JPATH_SITE . '/media/kunena/avatars/' . KunenaFactory::getUser($this->profile->id)->avatar)) {
-            $image = Uri::root() . 'media/kunena/avatars/' . KunenaFactory::getUser($this->profile->id)->avatar;
-        } elseif ($this->profile->avatar == null || KunenaConfig::getInstance()->avatar_type && KunenaFactory::getUser($this->profile->id)->avatar == null) {
-            if (JFile::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader)) {
-                $image = Uri::base() . KunenaConfig::getInstance()->emailheader;
-            }
-        } else {
-            $image = $this->profile->getAvatarURL('Profile', '200');
-        }
-
-        $this->setMetaData('og:image', $image, 'property');
 
         if ($robots == 'noindex, follow') {
             $this->setMetaData('robots', 'noindex, follow');
@@ -193,9 +166,6 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
                 $title = Text::sprintf('COM_KUNENA_VIEW_USER_DEFAULT', $this->profile->getName());
                 $this->setTitle($title);
             }
-
-            $this->setMetaData('og:description', $title, 'property');
-            $this->setMetaData('og:title', $this->profile->getName(), 'property');
 
             if (!empty($params_keywords)) {
                 $keywords = $params->get('menu-meta_keywords');
@@ -224,5 +194,8 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
                 $this->setMetaData('robots', $robots);
             }
         }
+
+        // Structured data (ProfilePage) and the OpenGraph / X tags
+        KunenaSeo::profile($this->profile);
     }
 }

@@ -6,7 +6,7 @@ change: [CHANGELOG.md](CHANGELOG.md).
 
 ## 1. What this is
 
-A maintained fork of **Kunena 5.2.14** (forum component for Joomla), released as **5.3.0** (2026-11-10).
+**Kunena Fork**: a maintained fork of **Kunena 5.2.14** (forum component for Joomla), released as **5.3.0** (2026-11-12).
 
 | Target | Supported |
 |---|---|
@@ -35,7 +35,7 @@ components/com_kunena/                  frontend: controllers/ (task controllers
 libraries/kunena/                       the Kunena framework (KunenaForum*, KunenaUser*, KunenaBbcode, ...);
                                         has its own manifest libraries/kunena/kunena.xml
                                         (forum/trash.php: Empty Trash; sampledata/: Sample Data generator + data set;
-                                        baldrick/: Baldrick AI, see 4.6)
+                                        baldrick/: Baldrick AI, see 4.6; seo/: structured data and sharing tags, 4.10)
 media/kunena/                           CSS/JS/images, plus upload folders (attachments, avatars, ...) with .htaccess
 plugins/system/kunena/                  System - Kunena plugin (own manifest)
 plugins/quickicon/kunena/               Quick Icon - Kunena plugin (own manifest)
@@ -44,6 +44,8 @@ plugins/content/kunenadiscuss/          Content - Kunena Discuss (article discus
 plugins/search/kunena/                  Search - Kunena (com_search plugin, function-based; own manifest)
 plugins/kunena/baldrick/                Kunena - Baldrick AI (AI first responder: events, settings form; own manifest)
 modules/mod_kunena{latest,login,search,stats}/  site modules (own manifests)
+docs/                                   Joomla update server files (update.xml, collection.xml), published with GitHub Pages
+                                        at https://joomlaworks.github.io/kunena-fork/ (not part of the package; export-ignored)
 tests/                                  test tooling (not part of the package; export-ignored)
 AGENTS.md README.md CHANGELOG.md CLI-GUIDE.md LICENSE.txt .php-cs-fixer.dist.php .gitattributes .gitignore
 JS-MIGRATION.md                         plan for rewriting Kunena's JavaScript without jQuery (inventory, order, rules)
@@ -101,9 +103,13 @@ the Installer.
    `administrator/components/com_kunena/install/plugins/*/*.xml`, the templates' `config/*.xml`,
    `media/kunena/labels/labels.xml`, `media/kunena/topic_icons/default/*.xml`, and the three strings in
    `KunenaForum::buildVersion()` / `isDev()` (`libraries/kunena/forum/forum.php`). A quick way:
-   `grep -rl "5\.3\.0\|2026-11-10" --include=*.xml --include=*.php .`
+   `grep -rl "5\.3\.0\|2026-11-12" --include=*.xml --include=*.php .`
 2. Add a `<version>` entry at the end of `install/kunena.install.upgrade.xml` (with any upgrade queries/PHP files).
-3. Update CHANGELOG.md and README.md.
+3. Set the new version in `docs/update.xml` and `docs/collection.xml` (Joomla's updater compares it with the installed
+   one; the download is the ZIP of `main`, so update them when `main` holds the release). `targetplatform` stays
+   `3\.(9|[1-9][0-9])\.`: Joomla 3.9 and every later 3.x (Joomla 3.x UTD) release; the manifest's `<updateservers>`
+   points to `https://joomlaworks.github.io/kunena-fork/update.xml`.
+4. Update CHANGELOG.md and README.md.
 
 ## 4. Rules for code changes
 
@@ -293,6 +299,22 @@ Rules:
   for the preview, `layout=categorytemplatetext`); attachments travel as `attachments[id]` (known) and
   `attachment[id]` (kept), new poll options as `polloptionsID[newNNN]` (saved in key order).
 
+### 4.10 Structured data, Open Graph and X (`libraries/kunena/seo/seo.php`)
+
+- All search engine and sharing metadata goes through `KunenaSeo`: display controllers call `KunenaSeo::topic()`,
+  `::profile()` or `::page()` at the end of `prepareDocument()`. Don't write `og:`/`twitter:` meta or JSON-LD anywhere
+  else.
+- Describe only what the page shows to a guest: published posts of categories guests can read
+  (`KunenaForumCategoryHelper::getGuestReadable()`), the posts on the current page; follow Google's documentation for
+  `DiscussionForumPosting` / `ProfilePage` (no unsupported types such as `aggregateRating`).
+- On Joomla 3.x UTD with its "System - Structured Data" plugin enabled (`KunenaSeo::viaPlatform()`), values are handed
+  to it through `onStructuredDataBeforeRender` (System - Kunena plugin -> `KunenaSeo::render()`): Kunena's tags replace
+  the generic ones and its nodes join the plugin's `@graph`. Otherwise Kunena writes them itself; JSON-LD always as a
+  custom tag of its own (`addCustomTag()`), never `addScriptDeclaration()` (Joomla merges same-type declarations).
+- Settings: Kunena > Configuration > SEO (`seo_structured_data`, `seo_social_tags`, `seo_share_image`, `seo_x_site`).
+- Development and test sites: Configuration > Development > "Don't send e-mails" (`dev_disable_email`); new code that
+  sends mail checks `KunenaEmail::isDisabled()` (or goes through `KunenaEmail::send()`, which does).
+
 ## 5. Verifying changes
 
 Run the checks that match the change; all of them before a release. Paths are relative to the repository root.
@@ -375,6 +397,8 @@ tests/e2e/containers.sh down
   JavaScript error.
 - Sites are built in `$WORKDIR/sites/<db>` and served on ports 8101 (sqlite), 8102 (pg), 8103 (mariadb), 8104
   (pgpdo), 8105 (mysql); administrator login `admin` / `Admin12345678`. Pages and logs go to `$WORKDIR/out`.
+- Test sites never use the system's mailer: `mksite.sh` points Joomla to a fake sendmail that appends every e-mail to
+  `$WORKDIR/out/<db>-mail.log` (a local MTA that can't queue mail would block a request for ever).
 - `tests/e2e/sync.sh <db>` copies the repository over an installed test site for quick iteration.
 - Test sites receive a helper (`kexec.php`) that evaluates posted PHP: test sites only, never on a real site. The
   scripts refuse to work on a site containing symbolic links, so that an installation can never write through links

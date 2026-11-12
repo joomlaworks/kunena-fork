@@ -520,6 +520,10 @@ class KunenaAdminModelConfig extends KunenaModel
 
         $lists ['sef_redirect'] = HTMLHelper::_('select.genericlist', $yesno, 'cfg_sef_redirect', 'class="inputbox" size="1"', 'value', 'text', $this->config->sef_redirect);
 
+        $lists ['seo_structured_data'] = HTMLHelper::_('select.genericlist', $yesno, 'cfg_seo_structured_data', 'class="inputbox" size="1"', 'value', 'text', $this->config->seo_structured_data);
+        $lists ['seo_social_tags']     = HTMLHelper::_('select.genericlist', $yesno, 'cfg_seo_social_tags', 'class="inputbox" size="1"', 'value', 'text', $this->config->seo_social_tags);
+        $lists ['dev_disable_email']   = HTMLHelper::_('select.genericlist', $yesno, 'cfg_dev_disable_email', 'class="inputbox" size="1"', 'value', 'text', $this->config->dev_disable_email);
+
         $user_edit_poll   = array();
         $user_edit_poll[] = HTMLHelper::_('select.option', '1', Text::_('COM_KUNENA_CONFIG_POLL_ALLOW_USER_EDIT_POLL_ALLOW'));
         $user_edit_poll[] = HTMLHelper::_('select.option', '0', Text::_('COM_KUNENA_CONFIG_POLL_ALLOW_USER_EDIT_POLL_DISALLOW'));

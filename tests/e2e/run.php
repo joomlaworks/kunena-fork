@@ -60,6 +60,29 @@ function kexecJson($code)
 
     return preg_match('/^string\(\d+\) "(.*)"\s*$/s', $r, $m) ? json_decode($m[1], true) : array('error' => substr(strip_tags($r), 0, 800));
 }
+/**
+ * The page's JSON-LD (number of blocks, nodes by @type, also inside @graph) and its OpenGraph / X tags
+ */
+function seoData($html)
+{
+    $data = array('blocks' => 0, 'nodes' => array(), 'meta' => array());
+    preg_match_all('#<script type="application/ld\+json">(.*?)</script>#s', $html, $m);
+    foreach ($m[1] as $json) {
+        $data['blocks']++;
+        $doc = json_decode($json, true);
+        foreach (isset($doc['@graph']) ? $doc['@graph'] : array($doc) as $node) {
+            if (isset($node['@type'])) {
+                $data['nodes'][$node['@type']] = $node;
+            }
+        }
+    }
+    preg_match_all('#<meta (?:property|name)="((?:og|twitter|article):[^"]+)" content="([^"]*)"#', $html, $m, PREG_SET_ORDER);
+    foreach ($m as $tag) {
+        $data['meta'][$tag[1]] = html_entity_decode($tag[2], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
+
+    return $data;
+}
 function newTopic($c, $cid, $subject, $message)
 {
     $html = $c->get(kurl("view=topic&layout=create&catid=$cid"));
@@ -241,6 +264,27 @@ foreach ($steps as $step) {
                     $fe->get(kurl("view=topic&catid=$cid&id=$tid"));
                     list($ok, $note) = check($fe, 'post', 'topic-view', "A reply on $db");
                     result('topic-view', $ok, $note);
+
+                    // Structured data and sharing tags, as a search engine (a guest) sees them: one JSON-LD graph
+                    // (Kunena's node joins Joomla 3.x UTD's) with the thread and the reply, OpenGraph and X tags
+                    $g = new JClient($base, "$out/$db-seo.jar");
+                    @unlink("$out/$db-seo.jar");
+                    $page  = $g->get(kurl("view=topic&catid=$cid&id=$tid"));
+                    $seo   = seoData($page);
+                    $post  = isset($seo['nodes']['DiscussionForumPosting']) ? $seo['nodes']['DiscussionForumPosting'] : array();
+                    $reply = isset($post['comment'][0]) ? $post['comment'][0] : array();
+                    // (a moderator's "Re: ..." reply renames the thread: Kunena's allow_change_subject)
+                    $ok    = $seo['blocks'] === 1 && $post && strpos($post['headline'], $subject) !== false && strpos($post['text'], 'Hello world') === 0
+                        && !empty($post['author']['name']) && !empty($post['datePublished']) && strpos($post['url'], 'http') === 0
+                        && $reply && strpos($reply['text'], "A reply on $db") === 0 && strpos($reply['url'], '#') !== false
+                        && $post['interactionStatistic'][0]['interactionType'] === 'https://schema.org/CommentAction'
+                        && isset($seo['meta']['og:title']) && $seo['meta']['og:title'] === $post['headline'] && $seo['meta']['og:type'] === 'article'
+                        && isset($seo['meta']['twitter:card']) && strpos($seo['meta']['og:description'], 'Hello world') === 0;
+                    result('seo-topic', $ok, json_encode(array('blocks' => $seo['blocks'], 'types' => array_keys($seo['nodes']), 'meta' => $seo['meta'])));
+
+                    // A link without a menu item (Itemid) is redirected to one, keeping its page: it used to land on page 1
+                    $g->get("index.php?option=com_kunena&view=topic&catid=$cid&id=$tid&limit=1&limitstart=1");
+                    result('itemid-redirect-page', strpos($g->lastUrl, 'Itemid=') !== false && strpos($g->lastUrl, 'limitstart=1') !== false && strpos($g->lastUrl, 'limit=1') !== false, $g->lastUrl);
                 }
                 break;
             case 'guest':

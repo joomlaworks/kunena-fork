@@ -1,9 +1,9 @@
 # Changelog
 
-All notable changes to this fork of Kunena are documented here. For a short overview see [README.md](README.md); for
+All notable changes to Kunena Fork, this fork of Kunena, are documented here. For a short overview see [README.md](README.md); for
 how the code base is organised and how to work on it, see [AGENTS.md](AGENTS.md).
 
-## [5.3.0] - 2026-11-10
+## [5.3.0] - 2026-11-12
 
 Based on Kunena 5.2.14 (2022-12-14), the last release of Kunena for Joomla 3.x.
 
@@ -47,10 +47,15 @@ Quick Icon plugins). The repository is now a single installable package whose la
 - Removed from the repository: the original package folder, `COPYRIGHT.php`. `LICENSE.txt` (GNU GPL v3) is kept at the
   root.
 - New `.php-cs-fixer.dist.php`, `.gitattributes`, `.gitignore`.
+- **Updates through Joomla's updater:** the manifest registers Kunena Fork's update server,
+  `https://joomlaworks.github.io/kunena-fork/update.xml` (`docs/update.xml` and `docs/collection.xml`, published with
+  GitHub Pages and left out of the installable ZIP). It offers the ZIP of `main` to Joomla 3.9 and every later Joomla 3.x
+  release (`targetplatform` `3\.(9|[1-9][0-9])\.`, so Joomla 3.x UTD's future versions are covered), PHP 7.1 or newer.
+
 
 ### 2. Version and requirements
 
-- Version **5.3.0**, release date **2026-11-10** in every manifest (component, library, plugins, bundled Kunena
+- Version **5.3.0**, release date **2026-11-12** in every manifest (component, library, plugins, bundled Kunena
   plugins, templates, labels/topic icon sets), in `KunenaForum::version()` and as a new entry of
   `install/kunena.install.upgrade.xml`. Copyright years updated to 2008 - 2026.
 - **Joomla 3.x: 3.9 to 3.18** (Joomla 3.x UTD); the installer accepts Joomla 3.9.0 or newer (3.18.0 recommended) and
@@ -298,6 +303,10 @@ permissions) let bots inject content into categories where guests could not even
   (PHP 8.1+ deprecation in Joomla's `select.php`); it now has a proper id.
 - Installing from Joomla 3.x UTD's command line (`php cli/joomla.php extension:install`) works (the installer script
   no longer calls the router outside the administrator).
+- **Links without a menu item lost their page:** Kunena redirects a page requested without an `Itemid` (Configuration >
+  "SEF Redirect") to one, but rebuilt the address with only a few parameters, so a link to page 2 of a thread, to a
+  post (`mesid`) or with its own page size landed on page 1. `KunenaRoute::withItemid()` now keeps the request's Kunena
+  parameters (view, layout, mode, ids, `limitstart`, `limit`...) for the thread, category, profile and list pages.
 - **Third-party integration plugins removed**: the Kunena plugins for AltaUserPoints, JomSocial ("Community"),
   EasyProfile, EasySocial, EasyBlog and UddeIM are no longer shipped. The installation wizard uninstalls them from
   existing sites (with their language files and JomSocial's `jomsocial_rule.xml`); Community Builder, Gravatar, Joomla,
@@ -663,7 +672,49 @@ compatibility and are no longer updated. Blackadder and Crypsis can't be uninsta
   - PHP 8 messages: the custom page read a configuration setting that doesn't exist (`custom_id`), the avatar upload
     and the BBCode parser passed `null` to `preg_match()`, the posting form measured a missing editor setting.
 
-### 18. Test tooling (`tests/`, not part of the package)
+### 18. Search engines and social networks (JoomlaWorks Ltd.)
+
+Kunena 5.2's thread page wrote a `DiscussionForumPosting` block and Open Graph / Twitter tags that Google's rules
+reject or ignore: no text and no replies, the thread's *last* poster as its author, an invalid `interactionType`, an
+`aggregateRating` (not supported for forum posts), a relative `discussionUrl`, a 1970 `dateModified` for unedited
+posts, the same data on every page of a thread, `og:url` with whatever query string the visitor used, share images
+built from the request's host name, `twitter:image` with the wrong attribute and the author's login name and gender as
+`profile:` tags. All of it is replaced by one class, `KunenaSeo` (`libraries/kunena/seo/`), which the thread, profile,
+category, index and user list controllers call from `prepareDocument()`:
+
+- **Threads:** `DiscussionForumPosting` with the thread starter as author (name and profile URL), the first post's full
+  text (`KunenaHtmlParser::plainText()`: no hidden, confidential or quoted parts), its first attached image, dates,
+  `isPartOf` (the category), `commentCount` and `interactionStatistic` (`CommentAction` for the replies, `ViewAction`
+  for the views), and the replies shown on the page as `Comment` (author, date, text, image, URL with the post's
+  anchor). On the later pages of a thread, `url` stays the first page's, as Google asks. Baldrick AI's posts carry
+  `digitalSourceType` = `TrainedAlgorithmicMediaDigitalSource` (content written by an AI model).
+- **Profiles:** `ProfilePage` with the member (display name, profile URL, uploaded avatar, number of posts as
+  `agentInteractionStatistic`, join date), only when guests may see profiles.
+- **Only what guests can read:** threads of categories guests can't read get no structured data
+  (`KunenaForumCategoryHelper::getGuestReadable()`, moved there from Baldrick AI, which uses it for its retrieval).
+- **Open Graph and X cards** on every forum page: type, title (without the site's name), description, canonical URL
+  (the page's own on later pages), site name, locale, image (the thread's first attached image, the member's avatar or
+  the default share image; a large image card when there is one), `article:` dates and section for threads, and the
+  site's X account.
+- **Joomla 3.x UTD:** its core plugin "System - Structured Data & Social Tags" writes these tags for every page and
+  skips a family another extension already wrote. Kunena no longer competes with it: through its
+  `onStructuredDataBeforeRender` event (handled by the System - Kunena plugin), Kunena's values replace the plugin's
+  generic ones on the forum pages and its nodes join the plugin's graph (publisher, website, breadcrumbs): one
+  JSON-LD graph and one set of tags per page. Where the plugin is missing or disabled (Joomla 3.9/3.10), Kunena writes
+  its own tags and a JSON-LD block of its own (a custom tag: Joomla merges script declarations of one type into a
+  single element, which would join several JSON documents into invalid JSON).
+- **Settings** in Kunena > Configuration > SEO (a new tab, with the existing SEO settings): structured data on/off,
+  Open Graph and X tags on/off (for sites where an SEO extension writes them), default share image, X account.
+
+### 19. Configuration: Development tab
+
+- **Kunena > Configuration > Development**, the last tab, for development and test sites: Kunena's debug mode (moved
+  from Basics) and **"Don't send e-mails"**: Kunena sends no e-mails at all (subscriptions, reports, mentions:
+  `KunenaEmail::send()`; Baldrick AI's notifications), and writes a line to Kunena's log for each one instead; Baldrick
+  AI's activity log says why no notification went out. Joomla's own e-mails (registration, password reset) are not
+  affected.
+
+### 20. Test tooling (`tests/`, not part of the package)
 
 - `tests/tools/classload.sh <joomla-3.x checkout>`: loads every Kunena class under Joomla's class loader and reports
   PHP messages, exceptions and fatal errors raised by Kunena code.
@@ -679,13 +730,13 @@ compatibility and are no longer updated. Blackadder and Crypsis can't be uninsta
 
 - PHP lint: 0 errors on PHP 7.1, 7.4, 8.0, 8.1, 8.2, 8.3, 8.4 and 8.5. PHPCompatibility (7.1-8.5): only known false
   positives (version-guarded calls). PHP CS Fixer (@PSR12): 0 files to fix.
-- Class-load check against Joomla 3.x UTD 3.18 on PHP 8.5: 387 class files, 0 messages.
+- Class-load check against Joomla 3.x UTD 3.18 on PHP 8.5: 363 class files, 0 messages.
 - End-to-end on Joomla 3.x UTD 3.18, PHP 8.5, installing the GitHub-style ZIP:
 
 | Scenario set | SQLite 3.45 | PostgreSQL 16 (`postgresql`) | PostgreSQL 16 (`pgsql`, PDO) | MariaDB 11.4 | MySQL 8.4 |
 |---|---|---|---|---|---|
-| Install, wizard, administrator, frontend, posting, guests, search, profiles, lists, moderation, Empty Trash and Sample Data (admin + CLI), integrated modules and plugins, Baldrick AI against a mock provider (47), Tools, uninstall; Blackadder as the default template (127) | pass | pass | pass | pass | pass |
-| Reinstall over existing tables, posting, purge (18) | pass | pass | pass | pass | pass |
+| Install, wizard, administrator, frontend, posting, guests, search, profiles, lists, moderation, Empty Trash and Sample Data (admin + CLI), integrated modules and plugins, structured data and sharing tags, Baldrick AI against a mock provider, Tools, uninstall; Blackadder as the default template (136) | pass | pass | pass | pass | pass |
+| Reinstall over existing tables, posting, structured data, purge (20) | pass | pass | pass | pass | pass |
 | Failed SQL queries / PHP messages from Kunena code | 0 / 0 | 0 / 0 | 0 / 0 | 0 / 0 | 0 / 0 |
 
   CAPTCHA and credits (SQLite): IconCaptcha rendered and enforced, fail-closed without a CAPTCHA plugin, wrong/right
