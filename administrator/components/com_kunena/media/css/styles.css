@@ -113,3 +113,9 @@
 	flex-wrap: wrap;
 	overflow-x: visible;
 }
+
+/* The version line at the bottom of every page */
+.kunena-version {
+	clear: both;
+	text-align: center;
+}

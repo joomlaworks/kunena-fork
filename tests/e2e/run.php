@@ -385,6 +385,14 @@ foreach ($steps as $step) {
                 result('config-new-settings', strpos($cfgPage, 'id="tab_seo"') !== false && strpos($cfgPage, 'id="tab_development"') !== false && strpos($cfgPage, 'name="cfg_autolock_days"') !== false
                     && strpos($cfgPage, 'name="cfg_resolve_threads"') !== false && strpos($cfgPage, 'name="cfg_dev_disable_email"') !== false && substr_count($cfgPage, 'kunena-unit-field') >= 8
                     && preg_match('/name="cfg_avatartypes"[^>]*value="[^"]*webp,avif"/', $cfgPage), 'HTTP ' . $admin->code);
+
+                // Cache busting: Kunena's stylesheets and scripts carry the version (site and administrator); the version line is centred
+                $version = kexecJson('return json_encode(KunenaForum::version());');
+                $sitePage = $g->get(kurl("view=category&catid=$cid"));
+                $ok = is_string($version) && preg_match('#blackadder\.css\?[^"]*v=' . preg_quote($version, '#') . '#', $sitePage) && preg_match('#blackadder\.js\?[^"]*v=' . preg_quote($version, '#') . '#', $sitePage)
+                    && preg_match('#media/css/styles\.css\?v=' . preg_quote($version, '#') . '#', $cfgPage) && strpos($cfgPage, 'class="kunena-version small"') !== false
+                    && !preg_match('#(com_kunena|media/kunena)/[^"?]+\.(css|js)"#', $sitePage . $cfgPage);
+                result('assets-versioned', $ok, json_encode($version));
                 break;
             case 'search':
                 $site_c = new JClient($base, "$out/$db-site.jar");

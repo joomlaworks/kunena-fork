@@ -240,4 +240,64 @@ class plgSystemKunena extends \Joomla\CMS\Plugin\CMSPlugin
             KunenaSeo::render($context, $data);
         }
     }
+
+    /**
+     * Cache busting: Kunena's stylesheets and scripts (component, media, modules, plugins; site and administrator) get
+     * the version in their address (?v=5.3.0), so browsers and proxies fetch them again after an update. Done once here,
+     * for every asset whoever added it, before the head (and its preload links) is written.
+     *
+     * @return  void
+     *
+     * @since 5.3.0
+     */
+    public function onBeforeCompileHead()
+    {
+        $doc = \Joomla\CMS\Factory::getDocument();
+
+        if ($doc->getType() !== 'html' || !class_exists('KunenaForum')) {
+            return;
+        }
+
+        $version = rawurlencode((string) KunenaForum::version());
+
+        if ($version === '') {
+            return;
+        }
+
+        foreach (array('_styleSheets', '_scripts') as $list) {
+            if (empty($doc->$list) || !is_array($doc->$list)) {
+                continue;
+            }
+
+            $assets = array();
+
+            foreach ($doc->$list as $url => $attribs) {
+                $assets[static::versionedUrl((string) $url, $version)] = $attribs;
+            }
+
+            $doc->$list = $assets;
+        }
+    }
+
+    /**
+     * @param   string  $url      Asset address
+     * @param   string  $version  Kunena's version (URL-encoded)
+     *
+     * @return  string  The address with ?v=<version> when it is one of Kunena's files on this site
+     *
+     * @since 5.3.0
+     */
+    protected static function versionedUrl($url, $version)
+    {
+        $path = (string) parse_url($url, PHP_URL_PATH);
+        $host = (string) parse_url($url, PHP_URL_HOST);
+
+        if (!preg_match('#(^|/)(components/com_kunena|media/kunena|modules/mod_kunena[a-z]*|plugins/[a-z]+/kunena[a-z]*)/#', $path)
+            || ($host !== '' && strcasecmp($host, (string) \Joomla\CMS\Uri\Uri::getInstance()->getHost()) !== 0)
+            || preg_match('/[?&]v=/', $url)) {
+            return $url;
+        }
+
+        return $url . (strpos($url, '?') === false ? '?' : '&') . 'v=' . $version;
+    }
 }

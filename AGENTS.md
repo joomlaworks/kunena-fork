@@ -325,6 +325,12 @@ Rules:
 - Images: `KunenaImage` (not Joomla's `Image`) reads, resizes and writes WebP and AVIF; check `KunenaImage::canProcess()`
   before accepting a format.
 
+### 4.12 Static assets
+
+- Kunena's CSS and JS files get `?v=<version>` from the System - Kunena plugin (`onBeforeCompileHead`, every asset of
+  `components/com_kunena`, `media/kunena`, `mod_kunena*` and `plugins/*/kunena*`): add assets the usual way, without a
+  version of your own. Bump the version (section 3.3) for a release so that browsers fetch the new files.
+
 ## 5. Verifying changes
 
 Run the checks that match the change; all of them before a release. Paths are relative to the repository root.

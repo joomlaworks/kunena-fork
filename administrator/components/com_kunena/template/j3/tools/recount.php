@@ -72,7 +72,7 @@ Factory::getDocument()->addScript(Uri::root() . 'administrator\components\com_ku
 		</form>
 	</div>
 
-	<div class="pull-right small">
+	<div class="kunena-version small">
 		<?php echo KunenaAdminVersion::getLongVersionHTML(); ?>
 	</div>
 </div>

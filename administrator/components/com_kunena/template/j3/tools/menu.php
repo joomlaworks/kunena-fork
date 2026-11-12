@@ -81,7 +81,7 @@ use Joomla\CMS\Language\Text;
 			<?php echo $this->loadTemplateFile('trashmenuconfirmation'); ?>
 		</form>
 	</div>
-	<div class="pull-right small">
+	<div class="kunena-version small">
 		<?php echo KunenaAdminVersion::getLongVersionHTML(); ?>
 	</div>
 </div>

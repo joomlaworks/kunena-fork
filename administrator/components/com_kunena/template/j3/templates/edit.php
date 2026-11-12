@@ -131,7 +131,7 @@ if (is_file($path))
 				</div>
 		</form>
 	</div>
-	<div class="pull-right small">
+	<div class="kunena-version small">
 		<?php echo KunenaAdminVersion::getLongVersionHTML(); ?>
 	</div>
 </div>

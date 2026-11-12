@@ -299,7 +299,7 @@ echo $this->escape($triage['model']) . ' &rarr; ' . $this->escape($answer['model
         <?php endif; ?>
     </div>
 
-    <div class="pull-right small">
+    <div class="kunena-version small">
         <?php echo KunenaAdminVersion::getLongVersionHTML(); ?>
     </div>
 </div>

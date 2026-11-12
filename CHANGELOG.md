@@ -756,6 +756,11 @@ category, index and user list controllers call from `prepareDocument()`:
 - **Settings tables aligned:** in the configuration and the category editor, labels and descriptions sat 7-8 pixels
   above the text of their fields (top-aligned cells); the cells now share their text baseline (a textarea by its first
   line).
+- **Cache busting for every Kunena stylesheet and script:** the System - Kunena plugin adds the version (`?v=5.3.0`)
+  to every CSS and JS file of the component, its media, modules and plugins, on the site and in the administrator,
+  whoever added it, just before the page's head (and Joomla 3.x UTD's preload links) is written; after an update
+  browsers and proxies fetch the new files. Blackadder's files keep their change-based `t=` timestamp as well.
+- **Version line centred** at the bottom of every administrator page.
 - **Administrator font size:** Kunena's administrator pages forced 13px text (`#kunena.admin.override`); they now use
   the administrator template's size.
 

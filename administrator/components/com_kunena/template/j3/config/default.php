@@ -1939,7 +1939,7 @@ if ($this->config->legacy_urls == 1): echo ' ' . Text::_('COM_KUNENA_CONFIG_LEGA
 			<div class="clearfix"></div>
 		</div>
 	</div>
-	<div class="pull-right small">
+	<div class="kunena-version small">
 		<?php echo KunenaAdminVersion::getLongVersionHTML(); ?>
 	</div>
 </div>

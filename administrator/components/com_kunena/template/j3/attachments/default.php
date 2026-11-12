@@ -227,7 +227,7 @@ else :
 		</div>
 	</div>
 
-	<div class="pull-right small">
+	<div class="kunena-version small">
 		<?php echo KunenaAdminVersion::getLongVersionHTML(); ?>
 	</div>
 </div>
