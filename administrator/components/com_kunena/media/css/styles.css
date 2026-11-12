@@ -96,3 +96,14 @@
 	min-width: 0;
 	margin: 0;
 }
+
+/* Settings tables (Configuration, category editor): labels and descriptions on the first text line of their field */
+#kunena .tab-pane > fieldset > .table > tbody > tr > td {
+	vertical-align: baseline;
+}
+
+/* A textarea's baseline is its bottom edge: align it by its top, with the line it starts on */
+#kunena .tab-pane > fieldset > .table > tbody > tr > td textarea {
+	vertical-align: text-top;
+	margin-top: -0.375em;
+}

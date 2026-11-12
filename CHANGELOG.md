@@ -752,6 +752,9 @@ category, index and user list controllers call from `prepareDocument()`:
   sessions, moderation log), **Users** (users and profiles, subscriptions, avatars (from Avatars), the user list (from
   Extra)), **Third-Party Services** (eBay, X/Twitter and Google Maps keys, from BBCode) and **Development**. The settings
   themselves are unchanged.
+- **Settings tables aligned:** in the configuration and the category editor, labels and descriptions sat 7-8 pixels
+  above the text of their fields (top-aligned cells); the cells now share their text baseline (a textarea by its first
+  line).
 - **Administrator font size:** Kunena's administrator pages forced 13px text (`#kunena.admin.override`); they now use
   the administrator template's size.
 
