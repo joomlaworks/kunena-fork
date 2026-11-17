@@ -42,15 +42,19 @@ $job = function ($job, $title, $desc, $fields = '', $confirm = '', $button = '',
     ?>
 	<form class="kunena-maintenance-job" id="kunena-job-<?php echo $escape($job); ?>" action="<?php echo $escape($url); ?>" method="post"
 		  data-job="<?php echo $escape($job); ?>" data-working="<?php echo $escape(Text::_('COM_KUNENA_MAINTENANCE_WORKING')); ?>"<?php echo $confirm !== '' ? ' data-confirm="' . $escape($confirm) . '"' : ''; ?>>
-		<h4><?php echo $title; ?></h4>
-		<p class="kunena-maintenance-desc"><?php echo $desc; ?></p>
-		<?php if ($fields !== '') : ?>
-			<div class="kunena-maintenance-fields"><?php echo $fields; ?></div>
-		<?php endif; ?>
-		<input type="hidden" name="job" value="<?php echo $escape($job); ?>"/>
-		<?php echo $token; ?>
-		<button type="submit" class="btn <?php echo $escape($class); ?>"><?php echo $button !== '' ? $button : Text::_('COM_KUNENA_MAINTENANCE_RUN'); ?></button>
-		<div class="kunena-maintenance-result" role="status" aria-live="polite" hidden></div>
+		<div class="kunena-maintenance-main">
+			<h4><?php echo $title; ?></h4>
+			<p class="kunena-maintenance-desc"><?php echo $desc; ?></p>
+			<?php if ($fields !== '') : ?>
+				<div class="kunena-maintenance-fields"><?php echo $fields; ?></div>
+			<?php endif; ?>
+			<div class="kunena-maintenance-result" role="status" aria-live="polite" hidden></div>
+		</div>
+		<div class="kunena-maintenance-action">
+			<input type="hidden" name="job" value="<?php echo $escape($job); ?>"/>
+			<?php echo $token; ?>
+			<button type="submit" class="btn <?php echo $escape($class); ?>"><?php echo $button !== '' ? $button : Text::_('COM_KUNENA_MAINTENANCE_RUN'); ?></button>
+		</div>
 	</form>
 	<?php
 };
@@ -129,7 +133,7 @@ $select = function ($id, $name, array $options, $selected, $label) use ($escape,
 		        'purge_re',
 		        Text::_('COM_KUNENA_A_PURGE_RE_STATEMENTS'),
 		        Text::_('COM_KUNENA_MAINTENANCE_PURGE_RE_DESC'),
-		        $field('kunena-purge-prefix', Text::_('COM_KUNENA_MAINTENANCE_PURGE_RE_PREFIX'), '<input type="text" id="kunena-purge-prefix" name="prefix" value="Re:" class="input-small" required="required"/>'),
+		        $field('kunena-purge-prefix', Text::_('COM_KUNENA_MAINTENANCE_PURGE_RE_PREFIX'), '<input type="text" id="kunena-purge-prefix" name="prefix" value="Re:" class="ksm-field kunena-maintenance-wide" maxlength="255" required="required"/>', 'kunena-maintenance-field--block'),
 		        Text::_('COM_KUNENA_MAINTENANCE_CONFIRM')
 		    );
 		    $job(

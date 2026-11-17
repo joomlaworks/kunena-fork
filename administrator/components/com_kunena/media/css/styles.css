@@ -54,11 +54,15 @@
 /* Maintenance: one job after the other, its fields and Run button, its result below */
 .kunena-maintenance h3 {margin:1.5em 0 0.5em;padding-bottom:0.25em;border-bottom:1px solid rgba(128, 128, 128, 0.3);}
 
-.kunena-maintenance-job {margin:0;padding:0.75em 0 1em;border-bottom:1px solid rgba(128, 128, 128, 0.15);}
+.kunena-maintenance-job {display:grid;grid-template-columns:minmax(0, 60em) auto;gap:0 2em;align-items:start;margin:0;padding:0.75em 0 1em;border-bottom:1px solid rgba(128, 128, 128, 0.15);}
+
+.kunena-maintenance-action {padding-top:0.1em;}
+
+.kunena-maintenance-action .btn {min-width:6.5em;}
 
 .kunena-maintenance-job h4 {margin:0 0 0.25em;}
 
-.kunena-maintenance-desc {margin:0 0 0.6em;max-width:60em;opacity:0.85;}
+.kunena-maintenance-desc {margin:0 0 0.6em;opacity:0.85;}
 
 .kunena-maintenance-fields {display:flex;flex-wrap:wrap;gap:0.5em 1.5em;align-items:flex-end;margin-bottom:0.6em;}
 
@@ -66,14 +70,22 @@
 
 #kunena .kunena-maintenance-field--block {flex-basis:100%;}
 
+#kunena .kunena-maintenance-wide {width:100%;max-width:30em;height:auto;box-sizing:border-box;}
+
 #kunena .kunena-maintenance-field select,
 #kunena .kunena-maintenance-field input {margin:0;}
 
-.kunena-maintenance-result {margin:0.75em 0 0;max-width:60em;}
+.kunena-maintenance-result {margin:0.75em 0 0;}
 
 .kunena-maintenance-result ul {margin:0.5em 0 0 1.25em;}
 
 .kunena-maintenance-result table {margin:0.75em 0 0;background:transparent;}
+
+@media (max-width: 767px) {
+    .kunena-maintenance-job {grid-template-columns:minmax(0, 1fr);}
+
+    .kunena-maintenance-action {padding-top:0.5em;}
+}
 
 /* The version line at the bottom of every page */
 .kunena-version {clear:both;text-align:center;}
