@@ -706,6 +706,16 @@ category, index and user list controllers call from `prepareDocument()`:
 - **Settings** in Kunena > Configuration > SEO & Feeds (a new tab, with the existing SEO settings and RSS): structured data on/off,
   Open Graph and X tags on/off (for sites where an SEO extension writes them), default share image, X account.
 
+- **XML sitemaps** (command line only): `kunena:sitemap:generate` (Console - Kunena plugin) writes static sitemaps
+  into `media/kunena/sitemaps/`: `sitemap_index.xml`, `categories.xml` (published categories guests can read) and
+  `threads-YYYY.xml` (threads started that year, `threads-YYYY-2.xml`... past 50,000 URLs), each entry with the time of
+  its last post. The URLs are the site's SEF URLs: the command makes the site application the current one and
+  simulates the request from `live_site` (or `--live-site`) while Kunena's router builds them, then restores
+  everything. Threads are read 500 at a time and the files streamed to disk, written atomically (temporary file,
+  rename); files of years without threads are removed. Meant for cron, with the index in `robots.txt` and Google
+  Search Console. The code lives entirely in the plugin (`plugins/console/kunena/sitemap.php`). 60,000 threads:
+  6.6 seconds, 8 MB above the command's baseline memory.
+
 ### 19. Configuration: Development tab
 
 - **Kunena > Configuration > Development**, the last tab, for development and test sites: Kunena's debug mode (moved
@@ -806,7 +816,7 @@ category, index and user list controllers call from `prepareDocument()`:
 
 | Scenario set | SQLite 3.45 | PostgreSQL 16 (`postgresql`) | PostgreSQL 16 (`pgsql`, PDO) | MariaDB 11.4 | MySQL 8.4 |
 |---|---|---|---|---|---|
-| Install, wizard, administrator, frontend, posting, guests, resolved threads, automatic locking, WebP/AVIF, search, profiles, lists, moderation, Empty Trash and Sample Data (admin + CLI), integrated modules and plugins, structured data and sharing tags, Baldrick AI against a mock provider, Tools, uninstall; Blackadder as the default template (141) | pass | pass | pass | pass | pass |
+| Install, wizard, administrator, frontend, posting, guests, resolved threads, automatic locking, WebP/AVIF, search, profiles, lists, moderation, Empty Trash and Sample Data (admin + CLI), integrated modules and plugins, structured data and sharing tags, XML sitemaps, Baldrick AI against a mock provider, Tools, uninstall; Blackadder as the default template (144) | pass | pass | pass | pass | pass |
 | Reinstall over existing tables, posting, structured data, purge (20) | pass | pass | pass | pass | pass |
 | Failed SQL queries / PHP messages from Kunena code | 0 / 0 | 0 / 0 | 0 / 0 | 0 / 0 | 0 / 0 |
 

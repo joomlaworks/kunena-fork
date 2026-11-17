@@ -12,6 +12,7 @@
     <files>
         <filename plugin="kunena">kunena.php</filename>
         <filename>commands.php</filename>
+        <filename>sitemap.php</filename>
         <folder>language</folder>
     </files>
 </extension>

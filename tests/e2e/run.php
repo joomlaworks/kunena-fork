@@ -6,7 +6,7 @@ require __DIR__ . '/lib.php';
 $env = parse_ini_string(preg_replace('/^(\w+)=/m', '$1=', shell_exec('bash -c ". ' . __DIR__ . '/env.sh; set | grep -E \'^(DBTEST|SITES|OUT|ADMIN_USER|ADMIN_PASS)=\'"')));
 $db   = isset($argv[1]) ? $argv[1] : 'sqlite';
 $ports = array('sqlite' => 8101, 'pg' => 8102, 'mariadb' => 8103, 'pgpdo' => 8104, 'mysql' => 8105);
-$all  = array('install', 'wizard', 'admin', 'config', 'site', 'post', 'guest', 'features', 'search', 'profile', 'recent', 'moderate', 'emptytrash', 'sampledata', 'extras', 'baldrick', 'adminpages', 'tools', 'uninstall');
+$all  = array('install', 'wizard', 'admin', 'config', 'site', 'post', 'guest', 'features', 'search', 'profile', 'recent', 'moderate', 'emptytrash', 'sampledata', 'sitemap', 'extras', 'baldrick', 'adminpages', 'tools', 'uninstall');
 $steps = isset($argv[2]) ? explode(',', $argv[2]) : $all;
 $site = $env['SITES'] . '/' . $db;
 $base = 'http://127.0.0.1:' . $ports[$db] . '/';
@@ -668,6 +668,57 @@ PHP
                 $ok = !empty($dry['success']) && !empty($dry['data']['plan']) && !empty($in['success']) && ($in['data']['installed']['posts'] ?? 0) == 389
                     && !empty($dry2['data']['plan']) && !empty($outc['success']) && $users === 0;
                 result('sample-cli', $ok, 'install=' . json_encode($in['messages'] ?? $in) . ' remove=' . json_encode($outc['messages'] ?? $outc) . ' usersLeft=' . json_encode($users));
+                break;
+            case 'sitemap':
+                // XML sitemaps (kunena:sitemap:generate), with SEF URLs; the test sites run with sef=0 otherwise
+                $cli = function ($args) use ($site) {
+                    return json_decode(shell_exec('cd ' . escapeshellarg($site) . ' && php cli/joomla.php ' . $args . ' --format=json 2>/dev/null'), true);
+                };
+                $folder = "$site/media/kunena/sitemaps";
+                $live   = '--live-site=' . escapeshellarg(rtrim($base, '/'));
+                array_map('unlink', glob("$folder/*.xml") ?: array());
+                shell_exec('cd ' . escapeshellarg($site) . ' && php cli/joomla.php config:set sef=1 -n -q');
+                $noSite = $cli('kunena:sitemap:generate -n');
+                $dry    = $cli("kunena:sitemap:generate --dry-run $live");
+                $dryOk  = !empty($dry['success']) && !is_file("$folder/sitemap_index.xml");
+                @mkdir($folder, 0755, true);
+                file_put_contents("$folder/threads-1999.xml", '<?xml version="1.0"?><urlset/>');
+                $gen = $cli("kunena:sitemap:generate -n $live");
+                $expected = kexecJson('$db = JFactory::getDbo(); $ids = KunenaForumCategoryHelper::getGuestReadable();
+$db->setQuery("SELECT COUNT(*) FROM #__kunena_topics WHERE hold=0 AND moved_id=0 AND category_id IN (" . implode(",", array_map("intval", $ids)) . ")");
+return json_encode(array("categories" => count($ids), "threads" => (int) $db->loadResult()));');
+                $index = @simplexml_load_file("$folder/sitemap_index.xml");
+                $files = array();
+                $urls  = array();
+                $bad   = array();
+                foreach ($index ? $index->sitemap : array() as $entry) {
+                    $file = basename((string) $entry->loc);
+                    $files[$file] = 0;
+                    $set = @simplexml_load_file("$folder/$file");
+                    if (!$set || strpos((string) $entry->loc, rtrim($base, '/') . '/media/kunena/sitemaps/') !== 0 || !strtotime((string) $entry->lastmod)) {
+                        $bad[] = $file;
+                        continue;
+                    }
+                    foreach ($set->url as $u) {
+                        $files[$file]++;
+                        $urls[] = (string) $u->loc;
+                    }
+                }
+                $threads = array_sum($files) - (isset($files['categories.xml']) ? $files['categories.xml'] : 0);
+                $guest = new JClient($base, "$out/$db-sitemap.jar");
+                foreach ($urls as $u) {
+                    $guest->req($u, null, false);
+                    if (strpos($u, rtrim($base, '/') . '/index.php/') !== 0 || strpos($u, 'option=') !== false || $guest->code != 200 || $guest->problems()) {
+                        $bad[] = "$u -> {$guest->code}";
+                    }
+                }
+                $guest->req(rtrim($base, '/') . '/media/kunena/sitemaps/sitemap_index.xml', null, false);
+                $served = $guest->code == 200 && strpos($guest->last, '<sitemapindex') !== false;
+                shell_exec('cd ' . escapeshellarg($site) . ' && php cli/joomla.php config:set sef=0 -n -q');
+                $ok = empty($noSite['success']) && $dryOk && !empty($gen['success']) && $index && !$bad && $served
+                    && isset($files['categories.xml']) && $files['categories.xml'] == $expected['categories'] && $threads == $expected['threads'] && $threads > 0
+                    && !is_file("$folder/threads-1999.xml") && in_array('threads-1999.xml', (array) ($gen['data']['removed'] ?? array()));
+                result('sitemap', $ok, 'files=' . json_encode($files) . ' expected=' . json_encode($expected) . ' served=' . (int) $served . ' bad=' . json_encode(array_slice($bad, 0, 5)) . ' gen=' . json_encode($gen['messages'] ?? $gen));
                 break;
             case 'extras':
                 // The modules and plugins kunena.org used to distribute separately, now in the package

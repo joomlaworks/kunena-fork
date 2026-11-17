@@ -71,8 +71,9 @@ Every change is described in detail in [CHANGELOG.md](CHANGELOG.md).
   - Member profiles as a `ProfilePage` (name, avatar, join date, number of posts)
   - Open Graph and X card tags for threads, profiles, categories and the forum's other pages: title, description, the thread's first attached image (or a default share image) and a large image card
   - Only categories guests can read are described, and only what the page shows
+  - XML sitemaps written as static files from the command line (e.g. by cron): an index, the categories and the threads by year, with the site's SEF URLs
   - On Joomla 3.x UTD, Kunena Fork hands all of this to the core "System - Structured Data & Social Tags" plugin: one graph per page, joined with the site's own (publisher, website, breadcrumbs), and no duplicate tags. On Joomla 3.9/3.10 Kunena Fork writes the tags itself
-- **Command line** (Joomla 3.x UTD, `php cli/joomla.php list kunena`): `kunena:trash:purge`, `kunena:sampledata:install`, `kunena:sampledata:remove`, `kunena:baldrick:process`, `kunena:baldrick:index` and `kunena:baldrick:check` (tells why Baldrick would or wouldn't answer a post), all with `--dry-run`, also offered to AI assistants through Joomla 3.x UTD's MCP server. See [CLI-GUIDE.md](CLI-GUIDE.md)
+- **Command line** (Joomla 3.x UTD, `php cli/joomla.php list kunena`): `kunena:trash:purge`, `kunena:sampledata:install`, `kunena:sampledata:remove`, `kunena:baldrick:process`, `kunena:baldrick:index`, `kunena:baldrick:check` (tells why Baldrick would or wouldn't answer a post) and `kunena:sitemap:generate`, all with `--dry-run`, also offered to AI assistants through Joomla 3.x UTD's MCP server. See [CLI-GUIDE.md](CLI-GUIDE.md)
 - **Databases:** PostgreSQL 9.5+ and SQLite 3.37+ (Joomla 3.x UTD's driver), in addition to MySQL/MariaDB
 
 **Improvements:**
@@ -143,9 +144,11 @@ Structured data and the Open Graph / X card tags are on by default. In **Kunena 
 
 On Joomla 3.x UTD, the core plugin **System - Structured Data & Social Tags** writes the tags of every page; Kunena Fork gives it the forum's own (threads, profiles, categories), and the plugin's settings (site name, publisher, default image, X account) apply to everything else. Test a thread with Google's [Rich Results Test](https://search.google.com/test/rich-results).
 
+**XML sitemaps** (Joomla 3.x UTD): `php cli/joomla.php kunena:sitemap:generate --live-site=https://www.example.com` writes the forum's sitemaps into `media/kunena/sitemaps/` (an index, the categories and the threads by year, only what guests can see). Run it from cron, e.g. every 30 minutes, add `Sitemap: https://www.example.com/media/kunena/sitemaps/sitemap_index.xml` to the site's `robots.txt` and submit the same URL in Google Search Console. See [CLI-GUIDE.md](CLI-GUIDE.md#kunenasitemapgenerate).
+
 ## COMMAND LINE
 
-On Joomla 3.x UTD, Kunena Fork's tools also run from the command line (`php cli/joomla.php list kunena`): emptying the trash, installing and removing the sample data, and Baldrick AI's processing, search index and checks. See [CLI-GUIDE.md](CLI-GUIDE.md).
+On Joomla 3.x UTD, Kunena Fork's tools also run from the command line (`php cli/joomla.php list kunena`): emptying the trash, installing and removing the sample data, and Baldrick AI's processing, search index and checks, and the XML sitemaps. See [CLI-GUIDE.md](CLI-GUIDE.md).
 
 ## NOTES
 

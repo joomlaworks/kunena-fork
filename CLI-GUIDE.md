@@ -29,9 +29,11 @@ php cli/joomla.php help kunena:trash:purge          # a command's options and he
 | [`kunena:baldrick:process`](#kunenabaldrickprocess) | Processes the threads waiting for Baldrick AI | Kunena > Baldrick AI > Process the queue now |
 | [`kunena:baldrick:index`](#kunenabaldrickindex) | Creates Baldrick AI's full-text search index | Kunena > Baldrick AI > Create the search index |
 | [`kunena:baldrick:check`](#kunenabaldrickcheck) | Tells whether Baldrick AI would answer a post, and why not | - |
+| [`kunena:sitemap:generate`](#kunenasitemapgenerate) | Writes the forum's XML sitemaps | - |
 
 All of them support `--dry-run` and run with Super User rights (whoever can run the site's command line can change it
-anyway). All change the site, except `kunena:baldrick:check` without `--queue`.
+anyway). All change the site, except `kunena:baldrick:check` without `--queue`; `kunena:sitemap:generate` only writes
+files into `media/kunena/sitemaps/`.
 
 ### `kunena:trash:purge`
 
@@ -152,6 +154,45 @@ php cli/joomla.php kunena:baldrick:process
 ```
 
 JSON data: `check` (post, author, staff, answer, reason), `queued` (thread, post, reason).
+
+### `kunena:sitemap:generate`
+
+Writes the forum's XML sitemaps as static files into `media/kunena/sitemaps/`, replacing the previous ones:
+
+- `sitemap_index.xml`: the sitemap index, listing the files below with the time of their newest post;
+- `categories.xml`: every published category guests can read;
+- `threads-YYYY.xml`: the threads started in that year, newest year first (`threads-YYYY-2.xml`, `-3`... when a year
+  has more than 50,000 threads, the protocol's limit per file).
+
+Only what a guest can see is listed: published threads of categories guests can read, each by its first page, without
+the placeholders left by moved threads. The URLs are the site's own SEF URLs, built by Kunena's router with the site's
+menu items, exactly as on the pages. Files of years that no longer have threads are removed. Each file is written to a
+temporary file first and then renamed, so search engines never read half a file. Memory stays low on large forums
+(threads are read 500 at a time).
+
+The site's address isn't known on the command line: set `$live_site` in `configuration.php`, or pass Joomla 3.x UTD's
+global option `--live-site=https://www.example.com`.
+
+```bash
+php cli/joomla.php kunena:sitemap:generate --dry-run --live-site=https://www.example.com
+php cli/joomla.php kunena:sitemap:generate --live-site=https://www.example.com
+```
+
+From cron, e.g. every 30 minutes:
+
+```
+*/30 * * * * cd /path/to/site && php cli/joomla.php kunena:sitemap:generate --live-site=https://www.example.com --no-interaction --quiet
+```
+
+Then add the index to the site's `robots.txt` and submit it in Google Search Console (a sitemap stored in
+`media/kunena/sitemaps/` only covers URLs outside that folder when it is submitted one of these two ways):
+
+```
+Sitemap: https://www.example.com/media/kunena/sitemaps/sitemap_index.xml
+```
+
+JSON data: `files` (file, URLs), `sitemap` (the index's URL and the `robots.txt` line), `removed` (files removed, when
+any); with `--dry-run`, `files` and the plan.
 
 ## Options of every command
 

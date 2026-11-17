@@ -600,3 +600,99 @@ class KunenaBaldrickCheckCommand extends AbstractCommand
         return self::SUCCESS;
     }
 }
+
+/**
+ * kunena:sitemap:generate - writes the forum's XML sitemaps (index, categories, threads by year) into
+ * media/kunena/sitemaps/, e.g. from cron. The generator lives in this plugin (sitemap.php).
+ *
+ * @since 5.3.0
+ */
+#[\AllowDynamicProperties]
+class KunenaSitemapGenerateCommand extends AbstractCommand
+{
+    protected $name = 'kunena:sitemap:generate';
+
+    protected $description = 'Generate the forum\'s XML sitemaps (an index, the categories, the threads by year)';
+
+    protected $help = 'Writes static XML sitemaps into media/kunena/sitemaps/: sitemap_index.xml, categories.xml (every category '
+        . 'guests can read) and threads-YYYY.xml (the threads started that year, split every 50,000 URLs), with the site\'s '
+        . 'own SEF URLs. Only what a guest can see is listed. Needs the site\'s address: Joomla\'s live_site, or --live-site. '
+        . 'Run it from cron (e.g. every 30 minutes) and submit the index through robots.txt and Google Search Console. '
+        . '--dry-run lists the files and their number of URLs without writing them.';
+
+    protected $dryRun = true;
+
+    protected $superUser = true;
+
+    /**
+     * @param   CommandIO  $io  Input/output
+     *
+     * @return  integer  Exit code
+     *
+     * @since 5.3.0
+     */
+    protected function doExecute(CommandIO $io)
+    {
+        $io->title('Kunena: sitemaps');
+
+        if (!kunenaConsoleLoad()) {
+            $io->error('Kunena is not installed, or its installation has not been completed.');
+
+            return self::FAILURE;
+        }
+
+        require_once __DIR__ . '/sitemap.php';
+
+        KunenaForum::setup();
+
+        if (PlgConsoleKunenaSitemap::getSiteUrl() === '') {
+            $io->error('The site\'s address is unknown: set live_site in configuration.php, or pass --live-site=https://www.example.com');
+
+            return self::FAILURE;
+        }
+
+        $index = PlgConsoleKunenaSitemap::getIndexUrl();
+
+        if ($io->isDryRun()) {
+            $rows = array();
+
+            foreach (PlgConsoleKunenaSitemap::plan() as $file => $urls) {
+                $rows[] = array('file' => $file, 'urls' => $urls);
+            }
+
+            $io->table(array('file' => 'Sitemap', 'urls' => 'URLs'), $rows, 'files');
+            $io->plan(
+                sprintf('Write %d sitemaps and their index into %s', count($rows), PlgConsoleKunenaSitemap::FOLDER),
+                array('action' => 'write', 'folder' => PlgConsoleKunenaSitemap::FOLDER, 'index' => $index)
+            );
+
+            return self::SUCCESS;
+        }
+
+        try {
+            $result = PlgConsoleKunenaSitemap::generate();
+        } catch (Exception $e) {
+            $io->error($e->getMessage());
+
+            return self::FAILURE;
+        }
+
+        $rows = array();
+
+        foreach ($result['files'] as $file => $urls) {
+            $rows[] = array('file' => $file, 'urls' => $urls);
+        }
+
+        $io->table(array('file' => 'Sitemap', 'urls' => 'URLs'), $rows, 'files');
+        $io->definitionList(array('Index' => $index, 'robots.txt' => 'Sitemap: ' . $index), 'sitemap');
+
+        if ($result['removed']) {
+            $io->setData('removed', $result['removed']);
+            $io->text('Removed (no threads left): ' . implode(', ', $result['removed']));
+        }
+
+        $io->success(sprintf('%d URLs in %d sitemaps, written in %.1f seconds.', $result['urls'], count($result['files']), $result['seconds']));
+
+        return self::SUCCESS;
+    }
+}

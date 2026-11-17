@@ -39,7 +39,8 @@ libraries/kunena/                       the Kunena framework (KunenaForum*, Kune
 media/kunena/                           CSS/JS/images, plus upload folders (attachments, avatars, ...) with .htaccess
 plugins/system/kunena/                  System - Kunena plugin (own manifest)
 plugins/quickicon/kunena/               Quick Icon - Kunena plugin (own manifest)
-plugins/console/kunena/                 Console - Kunena plugin: Joomla 3.x UTD command line commands (own manifest)
+plugins/console/kunena/                 Console - Kunena plugin: Joomla 3.x UTD command line commands (own manifest;
+                                        sitemap.php: the XML sitemaps, written into media/kunena/sitemaps/, see 4.10)
 plugins/content/kunenadiscuss/          Content - Kunena Discuss (article discussions in the forum; own manifest)
 plugins/search/kunena/                  Search - Kunena (com_search plugin, function-based; own manifest)
 plugins/kunena/baldrick/                Kunena - Baldrick AI (AI first responder: events, settings form; own manifest)
@@ -312,6 +313,11 @@ Rules:
   the generic ones and its nodes join the plugin's `@graph`. Otherwise Kunena writes them itself; JSON-LD always as a
   custom tag of its own (`addCustomTag()`), never `addScriptDeclaration()` (Joomla merges same-type declarations).
 - Settings: Kunena > Configuration > SEO & Feeds (`seo_structured_data`, `seo_social_tags`, `seo_share_image`, `seo_x_site`).
+- XML sitemaps: `kunena:sitemap:generate` only (command line, from cron), all code in the Console - Kunena plugin
+  (`PlgConsoleKunenaSitemap`, `plugins/console/kunena/sitemap.php`; Kunena itself is unchanged: it reaches the router's
+  and the topic helper's caches through reflection to keep memory flat). Static files in `media/kunena/sitemaps/`
+  (git-ignored): `sitemap_index.xml`, `categories.xml`, `threads-YYYY[-N].xml`; same guest-only rules as above; SEF
+  URLs built with the site application made current and `$_SERVER` simulated from `live_site` (`--live-site`).
 - Development and test sites: Configuration > Development > "Don't send e-mails" (`dev_disable_email`); new code that
   sends mail checks `KunenaEmail::isDisabled()` (or goes through `KunenaEmail::send()`, which does).
 
@@ -399,10 +405,11 @@ tests/e2e/containers.sh down
   merge, trash purge), Empty Trash (administrator AJAX tool: trashed thread and post with attachment files removed,
   live posts and counters intact; `kunena:trash:purge` with and without `--dry-run`), Sample Data (install over AJAX,
   every count and counter checked, 17 frontend pages rendered, staff-only category hidden from visitors, removal
-  keeping a thread another user replied to, no orphans or files left, CLI with and without `--dry-run`), the
-  integrated extensions (all seven installed at the package version with the plugins enabled, the four modules
-  rendered in a template position, forum posts found by com_search, a Kunena Discuss reply creating the forum thread,
-  a guest's reply refused without the Global Configuration CAPTCHA), Baldrick AI (against the mock provider
+  keeping a thread another user replied to, no orphans or files left, CLI with and without `--dry-run`), XML
+  sitemaps (`kunena:sitemap:generate` with SEF URLs: every listed URL answers 200 to a guest, counts match the
+  guest-readable categories and threads, stale files removed), the integrated extensions (all seven installed at the
+  package version with the plugins enabled, the four modules rendered in a template position, forum posts found by
+  com_search, a Kunena Discuss reply creating the forum thread, a guest's reply refused without the Global Configuration CAPTCHA), Baldrick AI (against the mock provider
   `baldrick-mock.php`, e-mails captured by a fake sendmail: notice without a key, settings page, fetch models / test
   connection, dry run, answer with related threads and relative links, request for details with translation, canned
   reply, not-a-question, spam thread and spam reply unpublished, revived threads, staff replies, retry on overload,
