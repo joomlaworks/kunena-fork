@@ -43,7 +43,7 @@ $job = function ($job, $title, $desc, $fields = '', $confirm = '', $button = '',
 	<form class="kunena-maintenance-job" id="kunena-job-<?php echo $escape($job); ?>" action="<?php echo $escape($url); ?>" method="post"
 		  data-job="<?php echo $escape($job); ?>" data-working="<?php echo $escape(Text::_('COM_KUNENA_MAINTENANCE_WORKING')); ?>"<?php echo $confirm !== '' ? ' data-confirm="' . $escape($confirm) . '"' : ''; ?>>
 		<div class="kunena-maintenance-main">
-			<h4><?php echo $title; ?></h4>
+			<div class="kunena-maintenance-name"><?php echo $title; ?></div>
 			<p class="kunena-maintenance-desc"><?php echo $desc; ?></p>
 			<?php if ($fields !== '') : ?>
 				<div class="kunena-maintenance-fields"><?php echo $fields; ?></div>
@@ -89,6 +89,7 @@ $select = function ($id, $name, array $options, $selected, $label) use ($escape,
 			<div class="alert alert-error"><?php echo Text::_('COM_KUNENA_MAINTENANCE_NOT_ALLOWED'); ?></div>
 		<?php else : ?>
 			<h3><?php echo Text::_('COM_KUNENA_A_RECOUNT'); ?></h3>
+			<div class="kunena-maintenance-group">
 			<?php
             $job('recount_topics', Text::_('COM_KUNENA_A_RECOUNT_TOPICS'), Text::_('COM_KUNENA_A_RECOUNT_TOPICS_DESC'));
 		    $job('recount_usertopics', Text::_('COM_KUNENA_A_RECOUNT_USERTOPICS'), Text::_('COM_KUNENA_A_RECOUNT_USERTOPICS_DESC'));
@@ -96,16 +97,20 @@ $select = function ($id, $name, array $options, $selected, $label) use ($escape,
 		    $job('recount_users', Text::_('COM_KUNENA_A_RECOUNT_USERS'), Text::_('COM_KUNENA_A_RECOUNT_USERS_DESC'));
 		    $job('recount_polls', Text::_('COM_KUNENA_MAINTENANCE_RECOUNT_POLLS'), Text::_('COM_KUNENA_MAINTENANCE_RECOUNT_POLLS_DESC'));
 		    ?>
+			</div>
 
 			<h3><?php echo Text::_('COM_KUNENA_SYNC_USERS'); ?></h3>
+			<div class="kunena-maintenance-group">
 			<?php
 		    $job('users_add', Text::_('COM_KUNENA_SYNC_USERS_ADD'), Text::_('COM_KUNENA_SYNC_USERS_ADD_DESC'));
 		    $job('users_remove', Text::_('COM_KUNENA_SYNC_USERS_DEL'), Text::_('COM_KUNENA_SYNC_USERS_DEL_DESC'), '', Text::_('COM_KUNENA_MAINTENANCE_CONFIRM'));
 		    $job('users_rename', Text::_('COM_KUNENA_SYNC_USERS_RENAME'), Text::_('COM_KUNENA_SYNC_USERS_RENAME_DESC'));
 		    $job('users_lifetime', Text::_('COM_KUNENA_SYNC_USERS_DELLIFE'), Text::_('COM_KUNENA_MAINTENANCE_LIFETIME_DESC'), '', Text::_('COM_KUNENA_MAINTENANCE_LIFETIME_CONFIRM'), '', 'btn-danger');
 		    ?>
+			</div>
 
 			<h3><?php echo Text::_('COM_KUNENA_CFG_SECTION_USERNAMES'); ?></h3>
+			<div class="kunena-maintenance-group">
 			<?php
 		    $job(
 		        'names_preview',
@@ -126,8 +131,10 @@ $select = function ($id, $name, array $options, $selected, $label) use ($escape,
 		        'btn-danger'
 		    );
 		    ?>
+			</div>
 
 			<h3><?php echo Text::_('COM_KUNENA_MAINTENANCE_POSTS'); ?></h3>
+			<div class="kunena-maintenance-group">
 			<?php
 		    $job(
 		        'purge_re',
@@ -173,8 +180,10 @@ $select = function ($id, $name, array $options, $selected, $label) use ($escape,
 		        'btn-danger'
 		    );
 		    ?>
+			</div>
 
 			<h3 id="emptytrash"><?php echo Text::_('COM_KUNENA_MAINTENANCE_TRASH'); ?></h3>
+			<div class="kunena-maintenance-group">
 			<?php
 		    $job(
 		        'empty_trash',
@@ -187,6 +196,7 @@ $select = function ($id, $name, array $options, $selected, $label) use ($escape,
 		        'btn-danger'
 		    );
 		    ?>
+			</div>
 		<?php endif; ?>
 	</div>
 

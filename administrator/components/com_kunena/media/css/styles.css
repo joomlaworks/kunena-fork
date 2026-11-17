@@ -51,20 +51,24 @@
 /* Tab bars wrap onto a second row instead of hiding tabs behind a horizontal scroll (the configuration has ten) */
 #kunena .nav-tabs {flex-wrap:wrap;overflow-x:visible;}
 
-/* Maintenance: one job after the other, its fields and Run button, its result below */
-.kunena-maintenance h3 {margin:1.5em 0 0.5em;padding-bottom:0.25em;border-bottom:1px solid rgba(128, 128, 128, 0.3);}
+/* Maintenance: sections of jobs; each job its name, description, fields and result, its button centred in a second column */
+.kunena-maintenance h3 {margin:1.75em 0 0.6em;font-size:1.35em;}
 
-.kunena-maintenance-job {display:grid;grid-template-columns:minmax(0, 60em) auto;gap:0 2em;align-items:start;margin:0;padding:0.75em 0 1em;border-bottom:1px solid rgba(128, 128, 128, 0.15);}
+.kunena-maintenance-group {border:1px solid rgba(128, 128, 128, 0.35);border-radius:4px;}
 
-.kunena-maintenance-action {padding-top:0.1em;}
+.kunena-maintenance-job {display:grid;grid-template-columns:minmax(0, 1fr) auto;gap:0 2em;align-items:center;margin:0;padding:0.85em 1em;}
+
+.kunena-maintenance-job + .kunena-maintenance-job {border-top:1px solid rgba(128, 128, 128, 0.35);}
+
+.kunena-maintenance-main {max-width:60em;}
+
+.kunena-maintenance-name {margin:0 0 0.2em;font-weight:bold;}
 
 .kunena-maintenance-action .btn {min-width:6.5em;}
 
-.kunena-maintenance-job h4 {margin:0 0 0.25em;}
+.kunena-maintenance-desc {margin:0;opacity:0.85;}
 
-.kunena-maintenance-desc {margin:0 0 0.6em;opacity:0.85;}
-
-.kunena-maintenance-fields {display:flex;flex-wrap:wrap;gap:0.5em 1.5em;align-items:flex-end;margin-bottom:0.6em;}
+.kunena-maintenance-fields {display:flex;flex-wrap:wrap;gap:0.5em 1.5em;align-items:flex-end;margin:0.6em 0 0;}
 
 #kunena .kunena-maintenance-field {display:inline-flex;flex-direction:column;gap:0.25em;margin:0;}
 
@@ -84,7 +88,7 @@
 @media (max-width: 767px) {
     .kunena-maintenance-job {grid-template-columns:minmax(0, 1fr);}
 
-    .kunena-maintenance-action {padding-top:0.5em;}
+    .kunena-maintenance-action {padding-top:0.75em;}
 }
 
 /* The version line at the bottom of every page */
