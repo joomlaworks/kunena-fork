@@ -30,6 +30,7 @@ php cli/joomla.php help kunena:trash:purge          # a command's options and he
 | [`kunena:baldrick:index`](#kunenabaldrickindex) | Creates Baldrick AI's full-text search index | Kunena > Baldrick AI > Create the search index |
 | [`kunena:baldrick:check`](#kunenabaldrickcheck) | Tells whether Baldrick AI would answer a post, and why not | - |
 | [`kunena:sitemap:generate`](#kunenasitemapgenerate) | Writes the forum's XML sitemaps | - |
+| [`kunena:users:normalize`](#kunenausersnormalize) | Rewrites usernames and names that break the rules | Kunena > Tools > Normalise Usernames & Names |
 
 All of them support `--dry-run` and run with Super User rights (whoever can run the site's command line can change it
 anyway). All change the site, except `kunena:baldrick:check` without `--queue`; `kunena:sitemap:generate` only writes
@@ -197,6 +198,25 @@ Sitemap: https://www.example.com/media/kunena/sitemaps/sitemap_index.xml
 
 JSON data: `files` (file, URLs), `sitemap` (the index's URL and the `robots.txt` line), `removed` (files removed, when
 any); with `--dry-run`, `files` and the plan.
+
+### `kunena:users:normalize`
+
+Rewrites the usernames and names of existing accounts that break the rules in Kunena > Configuration > Members >
+Usernames & Names (usernames: letters A to Z, digits and dashes; names: letters of any alphabet, digits, spaces and
+`. , ' - & ( )`; both starting with a letter or a digit). Characters that aren't allowed become dashes in usernames
+(accented and Greek letters are written in Latin letters: "Φώτης" becomes "Fotis") and spaces in names, and leading
+symbols are removed. A username another account already has gets the account's ID added (`maria-lopez-1234`).
+
+Only usernames and names change. Members whose username changes must log in with the new one (Joomla's "Forgot your
+username?" sends it to them). Make a backup first and look at `--dry-run`'s list.
+
+```bash
+php cli/joomla.php kunena:users:normalize --dry-run
+php cli/joomla.php kunena:users:normalize
+```
+
+JSON data: `counts` (accounts, usernames, names); `changes` (with `--dry-run`) or `changed`: id, username and name, as
+`old -> new` where they change.
 
 ## Options of every command
 

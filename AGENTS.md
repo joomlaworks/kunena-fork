@@ -199,7 +199,8 @@ by `PlgConsoleKunena::onGetConsoleCommands()`, loaded only inside that handler s
 Joomla). Follow UTD's CLI-GUIDE.md: `kunena:<noun>:<verb>` names, output only through `$io`, `--dry-run` support
 (`$dryRun = true`, `$io->plan()`), confirmation only when `$io->isInteractive()`. Keep the logic in library classes
 shared with the administrator (e.g. `kunena:trash:purge` and Tools > Empty Trash both use `KunenaForumTrash`;
-`kunena:sampledata:install|remove` and Tools > Sample Data use `KunenaSampledata`; `kunena:baldrick:process` and
+`kunena:sampledata:install|remove` and Tools > Sample Data use `KunenaSampledata`; `kunena:users:normalize` and Tools >
+Normalise Usernames & Names use `KunenaUserNormalizer`; `kunena:baldrick:process` and
 Kunena > Baldrick AI > "Process the queue now" use `KunenaBaldrickEngine`). On the command line Kunena's
 "current user" is not the Super User the command runs as, so library code which checks the current user's rights
 (e.g. `KunenaUser::save()` for other users) refuses: write through the tables where that is intended.
@@ -323,6 +324,10 @@ Rules:
   (git-ignored): `sitemap_index.xml`, `categories.xml`, `threads-YYYY[-N].xml`, `profiles[-N].xml` (members with posts,
   enabled and not banned, only with `pubprofile`); same guest-only rules as above; SEF URLs built with the site
   application made current and `$_SERVER` simulated from `live_site` (`--live-site`).
+- Usernames and names (`KunenaUserNormalizer`, Configuration > Members `user_names_strict` / `user_names_leading`, on by
+  default): usernames `[A-Za-z0-9-]`, names letters/digits/spaces and `. , ' ’ - & ( )`, both starting with a letter or
+  digit; enforced by the System - Kunena plugin's `onUserBeforeSave` for new accounts and changed values only. Code that
+  creates accounts (sample data, Baldrick AI, tests) must use valid usernames and names.
 - Profiles for guests: what members write about themselves (website, social accounts, location, gender, birthdate,
   "about me", signature) is shown to logged-in users only, through `KunenaUser::detailsVisible()` (the getters
   `getSignature()`, `getPersonalText()`, `getWebsiteURL()`, `socialButtons()`, `profileIcon()` return nothing to guests;
@@ -419,7 +424,9 @@ tests/e2e/containers.sh down
   sitemaps (`kunena:sitemap:generate` with SEF URLs: every listed URL answers 200 to a guest, counts match the
   guest-readable categories, threads and members with posts, stale files removed), profiles for guests (a member's
   spam website, social account, location and signature hidden from guests on the profile and under posts, shown to
-  the logged-in member; `noindex` without posts), the integrated extensions (all seven installed at the
+  the logged-in member; `noindex` without posts), usernames and names (CLI dry run, the Tools page's AJAX normalisation
+  with a collision and Greek transliteration, a new account refused and accepted in Joomla's user manager), the
+  integrated extensions (all seven installed at the
   package version with the plugins enabled, the four modules rendered in a template position, forum posts found by
   com_search, a Kunena Discuss reply creating the forum thread, a guest's reply refused without the Global Configuration CAPTCHA), Baldrick AI (against the mock provider
   `baldrick-mock.php`, e-mails captured by a fake sendmail: notice without a key, settings page, fetch models / test

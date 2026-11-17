@@ -549,6 +549,8 @@ class KunenaAdminModelConfig extends KunenaModel
             '<form>'
             . '<field name="cfg_debug" type="radio" class="btn-group btn-group-yesno" default="0"><option value="1">JYES</option><option value="0">JNO</option></field>'
             . '<field name="cfg_dev_disable_email" type="radio" class="btn-group btn-group-yesno" default="0"><option value="1">JYES</option><option value="0">JNO</option></field>'
+            . '<field name="cfg_user_names_strict" type="radio" class="btn-group btn-group-yesno" default="1"><option value="1">JYES</option><option value="0">JNO</option></field>'
+            . '<field name="cfg_user_names_leading" type="radio" class="btn-group btn-group-yesno" default="1"><option value="1">JYES</option><option value="0">JNO</option></field>'
             . '<field name="cfg_seo_share_image" type="media" preview="tooltip" class="input-xlarge"/>'
             . '<field name="cfg_emailheader" type="media" preview="tooltip" class="input-xlarge"/>'
             . '<field name="cfg_defaultavatar" type="media" preview="tooltip" class="input-xlarge"/>'
@@ -557,6 +559,8 @@ class KunenaAdminModelConfig extends KunenaModel
         );
         $form->setValue('cfg_debug', null, (string) (int) $this->config->debug);
         $form->setValue('cfg_dev_disable_email', null, (string) (int) $this->config->dev_disable_email);
+        $form->setValue('cfg_user_names_strict', null, (string) (int) $this->config->user_names_strict);
+        $form->setValue('cfg_user_names_leading', null, (string) (int) $this->config->user_names_leading);
         $form->setValue('cfg_seo_share_image', null, (string) $this->config->seo_share_image);
         $form->setValue('cfg_emailheader', null, (string) $this->config->emailheader);
         $form->setValue('cfg_defaultavatar', null, (string) $this->config->defaultavatar);
@@ -564,6 +568,8 @@ class KunenaAdminModelConfig extends KunenaModel
 
         $lists ['debug']             = $form->getInput('cfg_debug');
         $lists ['dev_disable_email'] = $form->getInput('cfg_dev_disable_email');
+        $lists ['user_names_strict'] = $form->getInput('cfg_user_names_strict');
+        $lists ['user_names_leading'] = $form->getInput('cfg_user_names_leading');
         $lists ['seo_share_image']   = $form->getInput('cfg_seo_share_image');
         $lists ['emailheader']       = $form->getInput('cfg_emailheader');
         $lists ['defaultavatar']     = $form->getInput('cfg_defaultavatar');

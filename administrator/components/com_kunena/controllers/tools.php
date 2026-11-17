@@ -1002,6 +1002,90 @@ class KunenaAdminControllerTools extends KunenaController
     }
 
     /**
+     * Normalise usernames and names: rewrite the accounts which break the rules of Configuration > Members > Usernames &
+     * Names (AJAX, in batches).
+     *
+     * Request: task=normalizenames&format=json&step=init|run plus a form token. Answers JSON with the progress
+     * ("status"), a message, and "done" once every account was read.
+     *
+     * @return void
+     *
+     * @throws Exception
+     * @since 5.5.0 (JoomlaWorks Ltd.)
+     */
+    public function normalizenames()
+    {
+        KunenaFactory::loadLanguage('com_kunena.views', 'admin');
+
+        if (!Session::checkToken('request')) {
+            $this->setResponse(array('success' => false, 'header' => Text::_('COM_KUNENA_AJAX_ERROR'), 'message' => Text::_('COM_KUNENA_ERROR_TOKEN')), true);
+
+            return;
+        }
+
+        if (!Factory::getUser()->authorise('core.admin', 'com_kunena')) {
+            $this->setResponse(array('success' => false, 'header' => Text::_('COM_KUNENA_AJAX_ERROR'), 'message' => Text::_('COM_KUNENA_NORMALIZENAMES_NOT_ALLOWED')), true);
+
+            return;
+        }
+
+        $state = $this->app->getUserState('com_kunena.admin.normalizenames', null);
+
+        if ($this->input->getCmd('step', 'run') === 'init' || !is_array($state)) {
+            $counts = KunenaUserNormalizer::count();
+            $state  = array('total' => $counts['accounts'], 'after' => 0, 'accounts' => 0, 'usernames' => 0, 'names' => 0);
+        }
+
+        try {
+            $result = KunenaUserNormalizer::normalize(100, $state['after']);
+        } catch (Exception $e) {
+            $this->app->setUserState('com_kunena.admin.normalizenames', null);
+            $this->setResponse(array('success' => false, 'header' => Text::_('COM_KUNENA_AJAX_ERROR'), 'message' => $e->getMessage()), true);
+
+            return;
+        }
+
+        foreach ($result['changed'] as $change) {
+            $state['accounts']++;
+            $state['usernames'] += $change[2] !== null ? 1 : 0;
+            $state['names'] += $change[3] !== null ? 1 : 0;
+        }
+
+        $state['after'] = $result['last'];
+
+        if ($result['last']) {
+            $this->app->setUserState('com_kunena.admin.normalizenames', $state);
+            $this->setResponse(
+                array(
+                    'success' => true,
+                    'done'    => false,
+                    'status'  => sprintf('%d%%', min(99, (int) floor(100 * $state['accounts'] / max(1, $state['total'])))),
+                    'message' => Text::sprintf('COM_KUNENA_NORMALIZENAMES_PROGRESS', $state['accounts'], $state['total']),
+                    'errors'  => array(),
+                ),
+                true
+            );
+
+            return;
+        }
+
+        $this->app->setUserState('com_kunena.admin.normalizenames', null);
+        $this->setResponse(
+            array(
+                'success'   => true,
+                'done'      => true,
+                'status'    => '100%',
+                'message'   => Text::sprintf('COM_KUNENA_NORMALIZENAMES_DONE', $state['accounts'], $state['usernames'], $state['names']),
+                'errors'    => array(),
+                'accounts'  => $state['accounts'],
+                'usernames' => $state['usernames'],
+                'names'     => $state['names'],
+            ),
+            true
+        );
+    }
+
+    /**
      * Method to just redirect to main manager in case of use of cancel button
      *
      * @return void

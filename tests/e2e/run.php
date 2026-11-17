@@ -6,7 +6,7 @@ require __DIR__ . '/lib.php';
 $env = parse_ini_string(preg_replace('/^(\w+)=/m', '$1=', shell_exec('bash -c ". ' . __DIR__ . '/env.sh; set | grep -E \'^(DBTEST|SITES|OUT|ADMIN_USER|ADMIN_PASS)=\'"')));
 $db   = isset($argv[1]) ? $argv[1] : 'sqlite';
 $ports = array('sqlite' => 8101, 'pg' => 8102, 'mariadb' => 8103, 'pgpdo' => 8104, 'mysql' => 8105);
-$all  = array('install', 'wizard', 'admin', 'config', 'site', 'post', 'guest', 'features', 'search', 'profile', 'recent', 'moderate', 'emptytrash', 'sampledata', 'sitemap', 'profiles', 'extras', 'baldrick', 'adminpages', 'tools', 'uninstall');
+$all  = array('install', 'wizard', 'admin', 'config', 'site', 'post', 'guest', 'features', 'search', 'profile', 'recent', 'moderate', 'emptytrash', 'sampledata', 'sitemap', 'profiles', 'usernames', 'extras', 'baldrick', 'adminpages', 'tools', 'uninstall');
 $steps = isset($argv[2]) ? explode(',', $argv[2]) : $all;
 $site = $env['SITES'] . '/' . $db;
 $base = 'http://127.0.0.1:' . $ports[$db] . '/';
@@ -772,6 +772,71 @@ $db->setQuery("DELETE FROM #__user_usergroup_map WHERE user_id=' . (int) $p['qui
                 result('profile-member', $mok && count($memberProfile) == 4, "$mnote shown=" . json_encode($memberProfile));
                 result('signature-guest', $p['thread'] && !$guestTopic && in_array('spam-sig.example', $memberTopic), 'guest=' . json_encode($guestTopic) . ' member=' . json_encode($memberTopic));
                 result('profile-noposts', $quietNoindex, 'HTTP ' . $guest->code);
+                break;
+            case 'usernames':
+                // Usernames: ASCII letters, digits and dashes; names: letters, digits, spaces and . , ' - & ( ); both start
+                // with a letter or digit (Configuration > Members, on by default). Normalising existing accounts (Tools and
+                // CLI), and the check on new/changed accounts (System - Kunena plugin, here through Joomla's user manager)
+                $clean = '$db = JFactory::getDbo(); $db->setQuery("SELECT id FROM #__users WHERE email LIKE " . $db->quote("%@usernames.invalid"));
+foreach ($db->loadColumn() as $old) { foreach (array("#__user_usergroup_map" => "user_id", "#__users" => "id", "#__kunena_users" => "userid") as $t => $c) { $db->setQuery("DELETE FROM " . $t . " WHERE " . $c . "=" . (int) $old)->execute(); } }';
+                $setup = kexecJson($clean . '
+$ids = array();
+foreach (array("a" => array("__bad_user__", "Bad Name \u{2714}"), "b" => array("007.david@gmail.com", "David"), "c" => array("collide.me", "_Collide"), "d" => array("collide-me", "Collide Me"), "e" => array("\u{03a6}\u{03ce}\u{03c4}\u{03b7}\u{03c2}", "\u{03a6}\u{03ce}\u{03c4}\u{03b7}\u{03c2} \u{0395}\u{03c5}\u{03b1}\u{03b3}\u{03b3}\u{03ad}\u{03bb}\u{03bf}\u{03c5}")) as $k => $v) {
+  $u = (object) array("name" => $v[1], "username" => $v[0], "email" => "u-" . $k . "@usernames.invalid", "password" => "", "block" => 0, "sendEmail" => 0, "registerDate" => JFactory::getDate()->toSql(), "lastvisitDate" => $db->getNullDate(), "activation" => "", "params" => "{}", "lastResetTime" => $db->getNullDate(), "resetCount" => 0, "otpKey" => "", "otep" => "", "requireReset" => 0);
+  $db->insertObject("#__users", $u, "id"); $ids[$k] = (int) $u->id;
+}
+return json_encode(array("ids" => $ids, "counts" => KunenaUserNormalizer::count()));');
+                $ids = isset($setup['ids']) ? $setup['ids'] : array();
+                $state = function () use ($ids) {
+                    return kexecJson('$db = JFactory::getDbo(); $db->setQuery("SELECT id, username, name FROM #__users WHERE id IN (' . implode(',', array_map('intval', $ids ?: array(0))) . ')"); $r = array(); foreach ($db->loadObjectList() as $o) { $r[$o->id] = array($o->username, $o->name); } return json_encode($r);');
+                };
+                $before = $state();
+                $cli = function ($args) use ($site) {
+                    return json_decode(shell_exec('cd ' . escapeshellarg($site) . ' && php cli/joomla.php ' . $args . ' --format=json 2>/dev/null'), true);
+                };
+                $dry = $cli('kunena:users:normalize --dry-run');
+                $dryIds = array_map(function ($r) {
+                    return (int) $r['id'];
+                }, isset($dry['data']['changes']) ? $dry['data']['changes'] : array());
+                $ok = count($ids) == 5 && $setup['counts']['accounts'] >= 4 && $state() == $before && !array_diff(array($ids['a'], $ids['b'], $ids['c'], $ids['e']), $dryIds) && !in_array($ids['d'], $dryIds);
+                result('names-dryrun', $ok, 'counts=' . json_encode(isset($setup['counts']) ? $setup['counts'] : $setup) . ' dry=' . json_encode($dryIds));
+                // Tools page and its AJAX task
+                $html = $admin->get('administrator/' . kurl('view=tools&layout=normalizenames'));
+                save('normalizenames-page', $html);
+                result('names-page', $admin->code == 200 && strpos($html, 'kunena-normalizenames-start') !== false && strpos($html, '007.david@gmail.com') !== false && strpos($html, 'Warning:') === false, "HTTP {$admin->code}");
+                $url = preg_match('#data-url="([^"]+)"#', $html, $m) ? html_entity_decode($m[1]) : '';
+                $last = null;
+                for ($i = 0, $stepName = 'init'; $url && $i < 50; $i++, $stepName = 'run') {
+                    $last = json_decode($admin->post('administrator/' . $url, array('step' => $stepName)), true);
+                    if (!$last || empty($last['success']) || !empty($last['done'])) {
+                        break;
+                    }
+                }
+                $after = $state();
+                $left = kexecJson('return json_encode(KunenaUserNormalizer::count());');
+                $want = array(
+                    $ids['a'] => array('bad-user', 'Bad Name'),
+                    $ids['b'] => array('007-david-gmail-com', 'David'),
+                    $ids['c'] => array('collide-me-' . $ids['c'], 'Collide'),
+                    $ids['d'] => array('collide-me', 'Collide Me'),
+                    $ids['e'] => array('Fotis', $before[$ids['e']][1]),
+                );
+                $ok = $last && !empty($last['done']) && $after == $want && $left['accounts'] === 0;
+                result('names-normalize', $ok, 'last=' . json_encode($last) . ' after=' . json_encode($after, JSON_UNESCAPED_UNICODE) . ' left=' . json_encode($left));
+                // New accounts through Joomla's user manager: refused with Kunena's message, accepted when valid
+                $form = function ($username, $email) use ($admin) {
+                    $page = $admin->get('administrator/index.php?option=com_users&task=user.add');
+                    $token = JClient::token($page);
+                    $data = array('jform' => array('name' => 'Valid Name', 'username' => $username, 'email' => $email, 'password' => 'Abcdefgh12345!', 'password2' => 'Abcdefgh12345!',
+                        'groups' => array(2), 'block' => 0, 'sendEmail' => 0, 'requireReset' => 0, 'id' => 0), 'task' => 'user.apply', $token => 1);
+                    return $admin->post('administrator/index.php?option=com_users&layout=edit&id=0', http_build_query($data));
+                };
+                $refused = $form('bad.user', 'u-f@usernames.invalid');
+                $accepted = $form('good-user', 'u-g@usernames.invalid');
+                $made = kexecJson('$db = JFactory::getDbo(); $db->setQuery("SELECT username FROM #__users WHERE email LIKE " . $db->quote("%@usernames.invalid") . " AND email IN (" . $db->quote("u-f@usernames.invalid") . "," . $db->quote("u-g@usernames.invalid") . ")"); return json_encode($db->loadColumn());');
+                $ok = stripos($refused, 'Usernames may only contain') !== false && $made == array('good-user');
+                result('names-register', $ok, 'refusedMsg=' . (int) (stripos($refused, 'Usernames may only contain') !== false) . ' made=' . json_encode($made));
+                kexecJson($clean . ' return json_encode(true);');
                 break;
             case 'extras':
                 // The modules and plugins kunena.org used to distribute separately, now in the package

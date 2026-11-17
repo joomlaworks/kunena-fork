@@ -696,3 +696,116 @@ class KunenaSitemapGenerateCommand extends AbstractCommand
         return self::SUCCESS;
     }
 }
+
+/**
+ * kunena:users:normalize: rewrite the usernames and names which break the rules of Configuration > Members > Usernames &
+ * Names, like Kunena > Tools > Normalise Usernames & Names.
+ *
+ * @since 5.5.0
+ */
+#[\AllowDynamicProperties]
+class KunenaUsersNormalizeCommand extends AbstractCommand
+{
+    protected $name = 'kunena:users:normalize';
+
+    protected $description = 'Normalise usernames and names that break Kunena\'s rules (Configuration > Members)';
+
+    protected $help = 'Rewrites the usernames and names of existing accounts that break the rules in Kunena > Configuration > '
+        . 'Members > Usernames & Names, like Kunena > Tools > Normalise Usernames & Names: characters that aren\'t allowed '
+        . 'become dashes in usernames (accented and Greek letters written in Latin letters) and spaces in names, leading '
+        . 'symbols are removed, and a username another account already has gets the account\'s ID added. Members whose '
+        . 'username changes must log in with the new one. Asks for a confirmation when the command is interactive; '
+        . '--dry-run lists every change without writing it.';
+
+    protected $dryRun = true;
+
+    protected $superUser = true;
+
+    /**
+     * @param   CommandIO  $io  Input/output
+     *
+     * @return  integer  Exit code
+     *
+     * @since 5.5.0
+     */
+    protected function doExecute(CommandIO $io)
+    {
+        $io->title('Kunena: Normalise Usernames & Names');
+
+        if (!kunenaConsoleLoad() || !class_exists('KunenaUserNormalizer')) {
+            $io->error('Kunena is not installed, or its installation has not been completed.');
+
+            return self::FAILURE;
+        }
+
+        if (!KunenaUserNormalizer::isEnabled()) {
+            $io->setData('changed', array());
+            $io->success('Both rules are off in Kunena > Configuration > Members: there is nothing to normalise.');
+
+            return self::SUCCESS;
+        }
+
+        $counts = KunenaUserNormalizer::count();
+        $io->definitionList(
+            array(
+                'Accounts to change'  => $counts['accounts'],
+                'Usernames to change' => $counts['usernames'],
+                'Names to change'     => $counts['names'],
+            ),
+            'counts'
+        );
+
+        if (!$counts['accounts']) {
+            $io->setData('changed', array());
+            $io->success('Every username and name follows the rules.');
+
+            return self::SUCCESS;
+        }
+
+        if ($io->isDryRun()) {
+            $result = KunenaUserNormalizer::normalize(0, 0, true);
+            $io->table(array('id' => 'ID', 'username' => 'Username', 'name' => 'Name'), static::rows($result['changed']), 'changes');
+            $io->plan(
+                sprintf('Rewrite %d usernames and %d names (%d accounts)', $counts['usernames'], $counts['names'], $counts['accounts']),
+                array('action' => 'update', 'type' => 'users', 'count' => $counts['accounts'])
+            );
+
+            return self::SUCCESS;
+        }
+
+        if ($io->isInteractive() && !$io->confirm(sprintf('Rewrite %d usernames and %d names? Members whose username changes must log in with the new one. This cannot be undone.', $counts['usernames'], $counts['names']), false)) {
+            $io->warning('Cancelled.');
+
+            return self::REFUSED;
+        }
+
+        $result = KunenaUserNormalizer::normalize(0);
+        $rows   = static::rows($result['changed']);
+        $io->table(array('id' => 'ID', 'username' => 'Username', 'name' => 'Name'), $rows, 'changed');
+        $io->success(sprintf('%d accounts changed.', count($rows)));
+
+        return self::SUCCESS;
+    }
+
+    /**
+     * @param   array  $changes  id => [username, name, newUsername, newName]
+     *
+     * @return  array  Table rows ("old -> new" where something changes)
+     *
+     * @since 5.5.0
+     */
+    protected static function rows(array $changes)
+    {
+        $rows = array();
+
+        foreach ($changes as $id => $change) {
+            $rows[] = array(
+                'id'       => (int) $id,
+                'username' => $change[2] !== null ? $change[0] . ' -> ' . $change[2] : $change[0],
+                'name'     => $change[3] !== null ? $change[1] . ' -> ' . $change[3] : $change[1],
+            );
+        }
+
+        return $rows;
+    }
+}

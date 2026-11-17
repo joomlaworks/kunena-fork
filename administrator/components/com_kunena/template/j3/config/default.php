@@ -889,6 +889,30 @@ echo Text::sprintf('COM_KUNENA_A_FILESIZE_DESC',
 									</div>
 									<div class="tab-pane" id="tab_members">
 										<fieldset>
+											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_USERNAMES') ?></legend>
+											<table class="table table-striped">
+												<thead>
+												<tr>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_TITLE') ?></th>
+													<th width="25%"><?php echo Text::_('COM_KUNENA_TABLEHEAD_OPTION') ?></th>
+													<th><?php echo Text::_('COM_KUNENA_TABLEHEAD_DESCRIPTION') ?></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr <?php if ($this->config->user_names_strict != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_USER_NAMES_STRICT') ?></td>
+													<td><?php echo $this->lists ['user_names_strict'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_USER_NAMES_STRICT_DESC') ?></td>
+												</tr>
+												<tr <?php if ($this->config->user_names_leading != 1) : echo 'class="changed"'; endif; ?>>
+													<td><?php echo Text::_('COM_KUNENA_CFG_USER_NAMES_LEADING') ?></td>
+													<td><?php echo $this->lists ['user_names_leading'] ?></td>
+													<td><?php echo Text::_('COM_KUNENA_CFG_USER_NAMES_LEADING_DESC') ?></td>
+												</tr>
+												</tbody>
+											</table>
+										</fieldset>
+										<fieldset>
 											<legend><?php echo Text::_('COM_KUNENA_CFG_SECTION_PROFILES') ?></legend>
 											<table class="table table-striped">
 												<thead>

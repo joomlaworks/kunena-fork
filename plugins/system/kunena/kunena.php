@@ -76,6 +76,45 @@ class plgSystemKunena extends \Joomla\CMS\Plugin\CMSPlugin
     }
 
     /**
+     * Usernames and names follow Kunena's rules (Configuration > Members > Usernames & Names): checked when an account
+     * is created or its username/name changes (registration, profile edits, the user manager); accounts which don't
+     * change them are left alone (Tools > Normalise Usernames & Names deals with those).
+     *
+     * @param   array    $old    The account before saving
+     * @param   boolean  $isNew  New account
+     * @param   array    $new    The account to save
+     *
+     * @return  boolean
+     *
+     * @throws  RuntimeException  The username or name breaks a rule (Joomla shows the message)
+     *
+     * @since 5.5.0
+     */
+    public function onUserBeforeSave($old, $isNew, $new)
+    {
+        if (!class_exists('KunenaUserNormalizer') || !KunenaUserNormalizer::isEnabled()) {
+            return true;
+        }
+
+        $username = isset($new['username']) ? (string) $new['username'] : '';
+        $name     = isset($new['name']) ? (string) $new['name'] : '';
+        $checkU   = $isNew || !isset($old['username']) || (string) $old['username'] !== $username;
+        $checkN   = $isNew || !isset($old['name']) || (string) $old['name'] !== $name;
+
+        if (($checkU && KunenaUserNormalizer::usernameError($username) !== null) || ($checkN && KunenaUserNormalizer::nameError($name) !== null)) {
+            // The messages live in Kunena's shared language file, which Joomla's user pages don't load
+            KunenaFactory::loadLanguage('com_kunena.libraries', 'admin');
+
+            throw new RuntimeException(implode(' ', array_filter(array(
+                $checkU ? KunenaUserNormalizer::usernameError($username) : null,
+                $checkN ? KunenaUserNormalizer::nameError($name) : null,
+            ))));
+        }
+
+        return true;
+    }
+
+    /**
      * @param   mixed   $user    User
      * @param   boolean $isnew   Is new
      * @param   boolean $success Success

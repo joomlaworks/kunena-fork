@@ -43,6 +43,10 @@ use Joomla\CMS\Language\Text;
 					<i class="icon-big icon-loop"></i><br/>
 					<span><?php echo Text::_('COM_KUNENA_A_RECOUNT'); ?></span>
 				</a>
+				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=normalizenames">
+					<i class="icon-big icon-users"></i><br/>
+					<span><?php echo Text::_('COM_KUNENA_NORMALIZENAMES'); ?></span>
+				</a>
 				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=emptytrash">
 					<i class="icon-big icon-trash"></i><br/>
 					<span><?php echo Text::_('COM_KUNENA_EMPTYTRASH'); ?></span>

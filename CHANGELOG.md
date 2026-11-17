@@ -27,18 +27,38 @@ how the code base is organised and how to work on it, see [AGENTS.md](AGENTS.md)
 
 - **Sitemaps:** `profiles.xml` (`profiles-2.xml`... past 50,000) lists the profiles of members with posts, an enabled
   account and no ban in force, when guests may see profiles; it is removed when they no longer may.
+- **Usernames and names with common characters only** (JoomlaWorks Ltd.): Configuration > Members > Usernames & Names,
+  two settings, both on by default:
+  - "Common characters only": usernames may use ASCII letters, digits and dashes (`[A-Za-z0-9-]`); names may use
+    letters of any alphabet, digits, spaces and `. , ' ’ - & ( )`;
+  - "Start with a letter or a digit": no leading `_`, `-`, `.`, `@`... (the trick to appear first in member lists).
+  The System - Kunena plugin checks them in `onUserBeforeSave` whenever an account is created or its username or name
+  changes (registration, profile edits, the user manager, the command line), with Joomla showing the reason; accounts
+  that change neither are left alone. The rules live in `KunenaUserNormalizer` (`libraries/kunena/user/normalizer.php`).
+- **Tools > Normalise Usernames & Names** and `kunena:users:normalize` (`--dry-run` lists every change): rewrite the
+  existing accounts which break the rules. Disallowed characters become dashes in usernames (accented, Greek and other
+  letters transliterated with PHP's intl, Greek as Greeks write it: "Φώτης" -> "Fotis"; iconv or Joomla's
+  transliteration otherwise) and spaces in names; leading symbols are removed; usernames shorter than 2 characters get
+  the account's ID, empty ones become `user-<id>`; a username another account already has (compared without case)
+  gets `-<id>`. Examples: `__carletto75__` -> `carletto75`, `007.david@gmail.com` -> `007-david-gmail-com`,
+  "Daniel Correa ✔" -> "Daniel Correa". Only `#__users` (and the session's copy of the username) is written, in
+  batches over AJAX; the page shows the counts and the first 50 changes. Members whose username changes log in with
+  the new one (Joomla's "Forgot your username?" sends it to them).
+- Sample Data's accounts use dashes (`maria-lopez`), as the new rules want.
 
 ### Test results (5.5.0)
 
 - PHP lint: 0 errors on PHP 7.1, 7.4, 8.0, 8.1, 8.2, 8.3, 8.4 and 8.5. PHP CS Fixer (@PSR12): 0 files to fix.
-- Class-load check against Joomla 3.x UTD 3.18 on PHP 8.5: 364 class files, 0 messages.
-- End-to-end on Joomla 3.x UTD 3.18, PHP 8.5, on SQLite 3.45 and PostgreSQL 16: 149 and 20
+- Class-load check against Joomla 3.x UTD 3.18 on PHP 8.5: 365 class files, 0 messages.
+- End-to-end on Joomla 3.x UTD 3.18, PHP 8.5, on SQLite 3.45 and PostgreSQL 16: 153 and 20
   scenarios pass, no failed SQL queries, no PHP messages from Kunena code. The new
   `profiles` scenario fills a member's website, social account, location and signature with spam and checks that
   guests see none of it on the profile or under the member's posts, that the member sees all of it when logged in, and
   that a profile without posts is `noindex`; the `sitemap` scenario checks `profiles.xml` against the members with
-  posts. Both scenarios are now part of `tests/e2e/matrix.sh` (in 5.4.0 the sitemap scenario was run on its own, on
-  SQLite only).
+  posts. The new `usernames` scenario creates accounts breaking the rules, checks the CLI's dry run, the Tools page and
+  its AJAX task (results, a username collision, Greek transliteration, nothing left to change), and a new account
+  refused and accepted through Joomla's user manager. These scenarios are now part of `tests/e2e/matrix.sh` (in 5.4.0
+  the sitemap scenario was run on its own, on SQLite only).
 
 ---
 

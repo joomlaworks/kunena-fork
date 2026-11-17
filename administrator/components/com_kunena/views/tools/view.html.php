@@ -161,6 +161,24 @@ class KunenaAdminViewTools extends KunenaView
     }
 
     /**
+     * Tools > Normalise Usernames & Names
+     *
+     * @return void
+     * @since 5.5.0 (JoomlaWorks Ltd.)
+     */
+    public function displayNormalizenames()
+    {
+        $this->namesEnabled = KunenaUserNormalizer::isEnabled();
+        $this->namesCounts  = KunenaUserNormalizer::count();
+        $this->namesPreview = KunenaUserNormalizer::normalize(50, 0, true)['changed'];
+        $this->canNormalize = Factory::getUser()->authorise('core.admin', 'com_kunena');
+        JToolbarHelper::title(Text::_('COM_KUNENA') . ': ' . Text::_('COM_KUNENA_NORMALIZENAMES'), 'tools');
+        JToolbarHelper::spacer();
+        JToolbarHelper::cancel();
+        $this->display();
+    }
+
+    /**
      * @since Kunena
      */
     public function displayRecount()
