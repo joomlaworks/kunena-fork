@@ -1,4 +1,4 @@
-Kunena Fork 5.3 for Joomla 3.x & Joomla 3.x UTD
+Kunena Fork 5.4 for Joomla 3.x & Joomla 3.x UTD
 ===============================================
 
 Kunena Fork is a native forum component for Joomla. This repository is a maintained fork of **Kunena 5.2.14**, the last release of Kunena for Joomla 3.x & [Joomla 3.x UTD](https://j3xutd.joomlaworks.net), modernised for current PHP versions, hardened and packaged as a single installable extension.
@@ -9,7 +9,7 @@ Kunena Fork is a native forum component for Joomla. This repository is a maintai
 
 ---
 
-- **Version:** 5.3.0 - released November 12th, 2026
+- **Version:** 5.4.0 - released November 17th, 2026
 - **Joomla:** 3.x, from 3.9 to 3.18 - built and tested for [Joomla 3.x UTD](https://j3xutd.joomlaworks.net)
 - **PHP:** 7.1 to 8.5 (7.4 or newer recommended)
 - **Databases:** MySQL 5.5.3+ / MariaDB, PostgreSQL 9.5+, SQLite 3.37+ (Joomla 3.x UTD's SQLite driver)
@@ -19,6 +19,7 @@ Kunena Fork is a native forum component for Joomla. This repository is a maintai
 
 ## CONTENTS
 - [Changelog](#changelog)
+  - [Version 5.4.0 - released November 17th, 2026](#version-540---released-november-17th-2026)
   - [Version 5.3.0 - released November 12th, 2026](#version-530---released-november-12th-2026)
 - [How to Install](#how-to-install)
 - [How to Upgrade from Kunena 5.2.x](#how-to-upgrade-from-kunena-52x)
@@ -32,6 +33,10 @@ Kunena Fork is a native forum component for Joomla. This repository is a maintai
 ## CHANGELOG
 
 A short overview of each release. Every change is described in detail in [CHANGELOG.md](CHANGELOG.md).
+
+## Version 5.4.0 - released November 17th, 2026
+Summary of changes:
+- **XML sitemaps** for search engines: `php cli/joomla.php kunena:sitemap:generate` (Joomla 3.x UTD, e.g. from cron) writes static sitemaps into `media/kunena/sitemaps/`: an index, the categories and the threads by year, with the site's SEF URLs and only what guests can see. Add the index to `robots.txt` and submit it in Google Search Console. See [Search Engines & Social Networks](#search-engines--social-networks) and [CLI-GUIDE.md](CLI-GUIDE.md#kunenasitemapgenerate)
 
 ## Version 5.3.0 - released November 12th, 2026
 Summary of changes:
@@ -71,9 +76,8 @@ Every change is described in detail in [CHANGELOG.md](CHANGELOG.md).
   - Member profiles as a `ProfilePage` (name, avatar, join date, number of posts)
   - Open Graph and X card tags for threads, profiles, categories and the forum's other pages: title, description, the thread's first attached image (or a default share image) and a large image card
   - Only categories guests can read are described, and only what the page shows
-  - XML sitemaps written as static files from the command line (e.g. by cron): an index, the categories and the threads by year, with the site's SEF URLs
   - On Joomla 3.x UTD, Kunena Fork hands all of this to the core "System - Structured Data & Social Tags" plugin: one graph per page, joined with the site's own (publisher, website, breadcrumbs), and no duplicate tags. On Joomla 3.9/3.10 Kunena Fork writes the tags itself
-- **Command line** (Joomla 3.x UTD, `php cli/joomla.php list kunena`): `kunena:trash:purge`, `kunena:sampledata:install`, `kunena:sampledata:remove`, `kunena:baldrick:process`, `kunena:baldrick:index`, `kunena:baldrick:check` (tells why Baldrick would or wouldn't answer a post) and `kunena:sitemap:generate`, all with `--dry-run`, also offered to AI assistants through Joomla 3.x UTD's MCP server. See [CLI-GUIDE.md](CLI-GUIDE.md)
+- **Command line** (Joomla 3.x UTD, `php cli/joomla.php list kunena`): `kunena:trash:purge`, `kunena:sampledata:install`, `kunena:sampledata:remove`, `kunena:baldrick:process`, `kunena:baldrick:index` and `kunena:baldrick:check` (tells why Baldrick would or wouldn't answer a post), all with `--dry-run`, also offered to AI assistants through Joomla 3.x UTD's MCP server. See [CLI-GUIDE.md](CLI-GUIDE.md)
 - **Databases:** PostgreSQL 9.5+ and SQLite 3.37+ (Joomla 3.x UTD's driver), in addition to MySQL/MariaDB
 
 **Improvements:**

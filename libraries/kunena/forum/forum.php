@@ -166,7 +166,7 @@ abstract class KunenaForum
      */
     public static function isDev()
     {
-        if ('5.3.0' == '@' . 'kunenaversion' . '@') {
+        if ('5.4.0' == '@' . 'kunenaversion' . '@') {
             return true;
         }
 
@@ -292,21 +292,21 @@ abstract class KunenaForum
      */
     protected static function buildVersion()
     {
-        if ('5.3.0' == '@' . 'kunenaversion' . '@') {
+        if ('5.4.0' == '@' . 'kunenaversion' . '@') {
             $file = JPATH_MANIFESTS . '/packages/pkg_kunena.xml';
 
             if (file_exists($file)) {
                 $manifest      = simplexml_load_file($file);
                 self::$version = (string) $manifest->version . '-GIT';
             } else {
-                self::$version = strtoupper('5.3.0');
+                self::$version = strtoupper('5.4.0');
             }
         } else {
-            self::$version = strtoupper('5.3.0');
+            self::$version = strtoupper('5.4.0');
         }
 
         self::$version_major = substr(self::$version, 0, 3);
-        self::$version_date  = ('2026-11-12' == '@' . 'kunenaversiondate' . '@') ? Factory::getDate()->format('Y-m-d') : '2026-11-12';
+        self::$version_date  = ('2026-11-17' == '@' . 'kunenaversiondate' . '@') ? Factory::getDate()->format('Y-m-d') : '2026-11-17';
         self::$version_name  = ('Tharsis' == '@' . 'kunenaversionname' . '@') ? 'Git Repository' : 'Tharsis';
     }
 

@@ -3,6 +3,34 @@
 All notable changes to Kunena Fork, this fork of Kunena, are documented here. For a short overview see [README.md](README.md); for
 how the code base is organised and how to work on it, see [AGENTS.md](AGENTS.md).
 
+## [5.4.0] - 2026-11-17
+
+### Added
+
+- **XML sitemaps** (command line only, JoomlaWorks Ltd.): `kunena:sitemap:generate` (Console - Kunena plugin) writes static sitemaps
+  into `media/kunena/sitemaps/`: `sitemap_index.xml`, `categories.xml` (published categories guests can read) and
+  `threads-YYYY.xml` (threads started that year, `threads-YYYY-2.xml`... past 50,000 URLs), each entry with the time of
+  its last post. The URLs are the site's SEF URLs: the command makes the site application the current one and
+  simulates the request from `live_site` (or `--live-site`) while Kunena's router builds them, then restores
+  everything. Threads are read 500 at a time and the files streamed to disk, written atomically (temporary file,
+  rename); files of years without threads are removed. Meant for cron, with the index in `robots.txt` and Google
+  Search Console. The code lives entirely in the plugin (`plugins/console/kunena/sitemap.php`). 60,000 threads:
+  6.6 seconds, 8 MB above the command's baseline memory.
+
+  Documented in CLI-GUIDE.md (with a cron example and the `robots.txt` line).
+
+### Test results (5.4.0)
+
+- PHP lint: 0 errors on PHP 7.1, 7.4, 8.0, 8.1, 8.2, 8.3, 8.4 and 8.5. PHP CS Fixer (@PSR12): 0 files to fix.
+- Class-load check against Joomla 3.x UTD 3.18 on PHP 8.5: 364 class files, 0 messages.
+- End-to-end on Joomla 3.x UTD 3.18, PHP 8.5, installing the GitHub-style ZIP, on SQLite 3.45 and PostgreSQL 16: 144
+  and 20 scenarios pass, no failed SQL queries, no PHP messages from Kunena code. The new `sitemap` scenario turns on
+  SEF URLs and checks that every listed URL answers 200 to a guest, that the counts match the categories and threads
+  guests can read, that a stale file is removed and that the command refuses to run without the site's address.
+- The tests read the package's version from `kunena.xml` instead of expecting a fixed one.
+
+---
+
 ## [5.3.0] - 2026-11-12
 
 Based on Kunena 5.2.14 (2022-12-14), the last release of Kunena for Joomla 3.x.
@@ -706,16 +734,6 @@ category, index and user list controllers call from `prepareDocument()`:
 - **Settings** in Kunena > Configuration > SEO & Feeds (a new tab, with the existing SEO settings and RSS): structured data on/off,
   Open Graph and X tags on/off (for sites where an SEO extension writes them), default share image, X account.
 
-- **XML sitemaps** (command line only): `kunena:sitemap:generate` (Console - Kunena plugin) writes static sitemaps
-  into `media/kunena/sitemaps/`: `sitemap_index.xml`, `categories.xml` (published categories guests can read) and
-  `threads-YYYY.xml` (threads started that year, `threads-YYYY-2.xml`... past 50,000 URLs), each entry with the time of
-  its last post. The URLs are the site's SEF URLs: the command makes the site application the current one and
-  simulates the request from `live_site` (or `--live-site`) while Kunena's router builds them, then restores
-  everything. Threads are read 500 at a time and the files streamed to disk, written atomically (temporary file,
-  rename); files of years without threads are removed. Meant for cron, with the index in `robots.txt` and Google
-  Search Console. The code lives entirely in the plugin (`plugins/console/kunena/sitemap.php`). 60,000 threads:
-  6.6 seconds, 8 MB above the command's baseline memory.
-
 ### 19. Configuration: Development tab
 
 - **Kunena > Configuration > Development**, the last tab, for development and test sites: Kunena's debug mode (moved
@@ -816,7 +834,7 @@ category, index and user list controllers call from `prepareDocument()`:
 
 | Scenario set | SQLite 3.45 | PostgreSQL 16 (`postgresql`) | PostgreSQL 16 (`pgsql`, PDO) | MariaDB 11.4 | MySQL 8.4 |
 |---|---|---|---|---|---|
-| Install, wizard, administrator, frontend, posting, guests, resolved threads, automatic locking, WebP/AVIF, search, profiles, lists, moderation, Empty Trash and Sample Data (admin + CLI), integrated modules and plugins, structured data and sharing tags, XML sitemaps, Baldrick AI against a mock provider, Tools, uninstall; Blackadder as the default template (144) | pass | pass | pass | pass | pass |
+| Install, wizard, administrator, frontend, posting, guests, resolved threads, automatic locking, WebP/AVIF, search, profiles, lists, moderation, Empty Trash and Sample Data (admin + CLI), integrated modules and plugins, structured data and sharing tags, Baldrick AI against a mock provider, Tools, uninstall; Blackadder as the default template (141) | pass | pass | pass | pass | pass |
 | Reinstall over existing tables, posting, structured data, purge (20) | pass | pass | pass | pass | pass |
 | Failed SQL queries / PHP messages from Kunena code | 0 / 0 | 0 / 0 | 0 / 0 | 0 / 0 | 0 / 0 |
 

@@ -47,6 +47,11 @@ function check($c, $step, $name, $needle = null)
     $note = "HTTP {$c->code}" . ($p ? ' | ' . substr(implode(' || ', $p), 0, 600) : '') . ($needle !== null && stripos($html, $needle) === false ? " | missing '$needle'" : '');
     return array($ok, $note);
 }
+/** The package's version, from the repository's root manifest */
+function packageVersion()
+{
+    return (string) simplexml_load_file(dirname(__DIR__, 2) . '/kunena.xml')->version;
+}
 function kurl($q)
 {
     return 'index.php?option=com_kunena&' . $q;
@@ -734,7 +739,7 @@ PHP
                 $versions = array_unique(array_map(function ($r) {
                     return $r['version'];
                 }, (array) $x));
-                $ok = count((array) $x) == 7 && array_values($versions) == array('5.3.0') && $x['plugin:content:kunenadiscuss']['enabled'] == 1 && $x['plugin:search:kunena']['enabled'] == 1 && $x['plugin:kunena:baldrick']['enabled'] == 1;
+                $ok = count((array) $x) == 7 && array_values($versions) == array(packageVersion()) && $x['plugin:content:kunenadiscuss']['enabled'] == 1 && $x['plugin:search:kunena']['enabled'] == 1 && $x['plugin:kunena:baldrick']['enabled'] == 1;
                 result('extras-installed', $ok, json_encode($x));
                 // Modules: one published instance of each in the "sidebar" position
                 kexecJson(

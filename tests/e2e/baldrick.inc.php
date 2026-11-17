@@ -50,7 +50,7 @@ $step = 'baldrick';
 // 1. Installed with the package, enabled, without a key: the notice at the top of Kunena's administrator pages
 $x = kexecJson('$p = KunenaBaldrick::getPlugin(true); $m = JFactory::getDbo()->setQuery("SELECT manifest_cache FROM #__extensions WHERE extension_id = " . (int) $p->extension_id)->loadResult(); return json_encode(array("id" => (int) $p->extension_id, "enabled" => (int) $p->enabled, "version" => json_decode($m)->version, "configured" => KunenaBaldrick::isConfigured(), "tables" => KunenaBaldrick::hasTables()));');
 $pluginId = isset($x['id']) ? (int) $x['id'] : 0;
-result('bk-installed', $pluginId && $x['enabled'] === 1 && $x['version'] === '5.3.0' && !$x['configured'] && $x['tables'], json_encode($x));
+result('bk-installed', $pluginId && $x['enabled'] === 1 && $x['version'] === packageVersion() && !$x['configured'] && $x['tables'], json_encode($x));
 
 $admin->get('administrator/' . kurl('view=cpanel'));
 list($ok, $note) = check($admin, $step, 'bk-notice', 'Baldrick AI is active but has no API key');

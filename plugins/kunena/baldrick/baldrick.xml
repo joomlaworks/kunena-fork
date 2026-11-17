@@ -2,8 +2,8 @@
 <!DOCTYPE extension>
 <extension version="3.9" type="plugin" group="kunena" method="upgrade">
     <name>plg_kunena_baldrick</name>
-    <version>5.3.0</version>
-    <creationDate>2026-11-12</creationDate>
+    <version>5.4.0</version>
+    <creationDate>2026-11-17</creationDate>
     <author>JoomlaWorks Ltd.</author>
     <authorEmail>contact@joomlaworks.net</authorEmail>
     <authorUrl>https://www.joomlaworks.net</authorUrl>

@@ -30,7 +30,7 @@ use Joomla\CMS\Uri\Uri;
  * through robots.txt ("Sitemap: <index URL>") and Google Search Console: a sitemap only covers URLs below its own folder
  * otherwise.
  *
- * @since 5.3.0
+ * @since 5.4.0
  */
 #[\AllowDynamicProperties]
 abstract class PlgConsoleKunenaSitemap
@@ -38,21 +38,21 @@ abstract class PlgConsoleKunenaSitemap
     /**
      * Folder of the files, from the site's root
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     public const FOLDER = 'media/kunena/sitemaps';
 
     /**
      * URLs per file (the sitemaps protocol's limit)
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     public const MAX_URLS = 50000;
 
     /**
      * Threads loaded at once while their URLs are built
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     public const BATCH = 500;
 
@@ -60,7 +60,7 @@ abstract class PlgConsoleKunenaSitemap
      * @return  string  The site's address (Joomla's live_site, which the command line's --live-site sets), without a
      *                  trailing slash; '' when there is none
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     public static function getSiteUrl()
     {
@@ -72,7 +72,7 @@ abstract class PlgConsoleKunenaSitemap
     /**
      * @return  string  Absolute URL of the sitemap index
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     public static function getIndexUrl()
     {
@@ -84,7 +84,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @return  array  file name => URLs
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     public static function plan()
     {
@@ -106,7 +106,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @throws  RuntimeException  No site address, or the folder can't be written
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     public static function generate()
     {
@@ -198,7 +198,7 @@ abstract class PlgConsoleKunenaSitemap
     /**
      * @return  object[]  Published categories guests can read (id, last_post_time), in the forum's order
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function getCategories()
     {
@@ -226,7 +226,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @return  JDatabaseQuery|false  The query, false when no category is readable by guests
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function threadConditions($query)
     {
@@ -247,7 +247,7 @@ abstract class PlgConsoleKunenaSitemap
     /**
      * @return  integer[]  year => threads started that year (UTC), newest year first
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function getThreadCounts()
     {
@@ -296,7 +296,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @return  Generator
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function getThreadBatches($year)
     {
@@ -331,7 +331,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @return  integer[]  First second of the year, first second of the next one (UTC)
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function yearRange($year)
     {
@@ -344,7 +344,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @return  string  File name
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function threadFile($year, $part)
     {
@@ -359,7 +359,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @return  array  What leaveSite() restores
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function enterSite($site)
     {
@@ -399,7 +399,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @return  void
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function leaveSite(array $state)
     {
@@ -416,7 +416,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @return  void
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function resetRouting()
     {
@@ -442,7 +442,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @return  void
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function forgetRoutes()
     {
@@ -471,7 +471,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @return  void
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function forget($class, $property, ?array $keys = null)
     {
@@ -517,7 +517,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @return  string  Absolute SEF URL, with non-ASCII characters and spaces percent-encoded
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function url($link, $site)
     {
@@ -542,7 +542,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @throws  RuntimeException
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function openUrlset($file)
     {
@@ -567,7 +567,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @return  void
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function addUrl(array &$out, $url, $time)
     {
@@ -586,7 +586,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @throws  RuntimeException
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function closeUrlset(array &$out)
     {
@@ -614,7 +614,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @return  void
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function writeIndex(array $files, $site)
     {
@@ -644,7 +644,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @throws  RuntimeException
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function write($file, $content)
     {
@@ -665,7 +665,7 @@ abstract class PlgConsoleKunenaSitemap
      *
      * @return  string  XML-escaped
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected static function escape($text)
     {

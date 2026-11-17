@@ -1,6 +1,6 @@
 # Kunena Fork on the command line
 
-Kunena Fork 5.3 adds commands to Joomla 3.x UTD's command line, `php cli/joomla.php`. They do from a terminal or a cron job
+Kunena Fork adds commands to Joomla 3.x UTD's command line, `php cli/joomla.php`. They do from a terminal or a cron job
 what the matching administrator tools do, and they are also offered to AI assistants through UTD's MCP server.
 
 ## Requirements

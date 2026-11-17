@@ -6,7 +6,8 @@ change: [CHANGELOG.md](CHANGELOG.md).
 
 ## 1. What this is
 
-**Kunena Fork**: a maintained fork of **Kunena 5.2.14** (forum component for Joomla), released as **5.3.0** (2026-11-12).
+**Kunena Fork**: a maintained fork of **Kunena 5.2.14** (forum component for Joomla), first released as **5.3.0** (2026-11-12); current
+release **5.4.0** (2026-11-17).
 
 | Target | Supported |
 |---|---|
@@ -104,13 +105,16 @@ the Installer.
    `administrator/components/com_kunena/install/plugins/*/*.xml`, the templates' `config/*.xml`,
    `media/kunena/labels/labels.xml`, `media/kunena/topic_icons/default/*.xml`, and the three strings in
    `KunenaForum::buildVersion()` / `isDev()` (`libraries/kunena/forum/forum.php`). A quick way:
-   `grep -rl "5\.3\.0\|2026-11-12" --include=*.xml --include=*.php .`
+   `grep -rl "5\.4\.0\|2026-11-17" --include=*.xml --include=*.php .`
 2. Add a `<version>` entry at the end of `install/kunena.install.upgrade.xml` (with any upgrade queries/PHP files).
 3. Set the new version in `docs/update.xml` and `docs/collection.xml` (Joomla's updater compares it with the installed
-   one; the download is the ZIP of `main`, so update them when `main` holds the release). `targetplatform` stays
+   one) and point `downloadurl` to the release tag's snapshot,
+   `https://github.com/joomlaworks/kunena-fork/archive/refs/tags/v<version>.zip` (GitHub's ZIP of the tag, which
+   installs as-is). Commit, tag the commit `v<version>` and push the tag together with `main`: GitHub Pages publishes
+   `docs/` from `main`, so the update server must never announce a tag that isn't pushed yet. `targetplatform` stays
    `3\.(9|[1-9][0-9])\.`: Joomla 3.9 and every later 3.x (Joomla 3.x UTD) release; the manifest's `<updateservers>`
    points to `https://joomlaworks.github.io/kunena-fork/update.xml`.
-4. Update CHANGELOG.md and README.md.
+4. Update CHANGELOG.md and README.md (before the commit that gets the tag).
 
 ## 4. Rules for code changes
 
@@ -432,7 +436,7 @@ tests/e2e/containers.sh down
   scripts refuse to work on a site containing symbolic links, so that an installation can never write through links
   into the repository.
 
-### 5.5 Results for 5.3.0
+### 5.5 Results for 5.4.0
 
 - Lint: 0 errors on PHP 7.1, 7.4, 8.0, 8.1, 8.2, 8.3, 8.4, 8.5. PHP CS Fixer @PSR12: 0 files to fix.
 - Class-load check (Joomla 3.x UTD 3.18, PHP 8.5): no messages from Kunena code.

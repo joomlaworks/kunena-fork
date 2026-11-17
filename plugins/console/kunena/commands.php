@@ -605,7 +605,7 @@ class KunenaBaldrickCheckCommand extends AbstractCommand
  * kunena:sitemap:generate - writes the forum's XML sitemaps (index, categories, threads by year) into
  * media/kunena/sitemaps/, e.g. from cron. The generator lives in this plugin (sitemap.php).
  *
- * @since 5.3.0
+ * @since 5.4.0
  */
 #[\AllowDynamicProperties]
 class KunenaSitemapGenerateCommand extends AbstractCommand
@@ -629,7 +629,7 @@ class KunenaSitemapGenerateCommand extends AbstractCommand
      *
      * @return  integer  Exit code
      *
-     * @since 5.3.0
+     * @since 5.4.0
      */
     protected function doExecute(CommandIO $io)
     {
