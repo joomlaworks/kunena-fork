@@ -198,16 +198,21 @@ Commands live in `plugins/console/kunena/commands.php` (classes extending `Jooml
 by `PlgConsoleKunena::onGetConsoleCommands()`, loaded only inside that handler so the plugin is harmless on stock
 Joomla). Follow UTD's CLI-GUIDE.md: `kunena:<noun>:<verb>` names, output only through `$io`, `--dry-run` support
 (`$dryRun = true`, `$io->plan()`), confirmation only when `$io->isInteractive()`. Keep the logic in library classes
-shared with the administrator (e.g. `kunena:trash:purge` and Tools > Empty Trash both use `KunenaForumTrash`;
-`kunena:sampledata:install|remove` and Tools > Sample Data use `KunenaSampledata`; `kunena:users:normalize` and Tools >
+shared with the administrator (e.g. `kunena:trash:purge` and Maintenance > Empty Trash both use `KunenaForumTrash`;
+`kunena:sampledata:install|remove` and Tools > Sample Data use `KunenaSampledata`; `kunena:users:normalize` and Maintenance >
 Normalise Usernames & Names use `KunenaUserNormalizer`; `kunena:baldrick:process` and
 Kunena > Baldrick AI > "Process the queue now" use `KunenaBaldrickEngine`). On the command line Kunena's
 "current user" is not the Super User the command runs as, so library code which checks the current user's rights
 (e.g. `KunenaUser::save()` for other users) refuses: write through the tables where that is intended.
 
-Long administrator tasks run in steps over AJAX: the controller task answers JSON (`success`, `done`, `status`,
-`message`, `errors`) and the page uses `administrator/components/com_kunena/template/j3/tools/ajaxtask.js` (a button
-with the class `kunena-ajax-task` and `data-url`/`data-confirm`/`data-progress`/`data-reload`).
+Maintenance jobs live in **Kunena > Maintenance** (`view=maintenance`): one page, one job after the other (name,
+description, its own fields, a Run button, the result below it). Each job is a method of
+`KunenaAdminControllerMaintenance` registered in its `$jobs` list, behind one JSON task (`task=run&format=json`, `job`,
+`step=init|run`, form token, `core.admin` on Kunena), answering `success`, `done`, `status`, `message`, `errors` (and
+`rows`/`columns` for a table). Jobs that can take long work for `STEP_SECONDS` and keep their state in the session;
+`template/j3/maintenance/maintenance.js` (plain JavaScript, `fetch()`) calls again while `done` is false. A new job is a
+method, an entry in `$jobs` and a `$job(...)` call in `template/j3/maintenance/default.php`. Tools keeps the rest
+(Report, Sample Data, Menu Manager, Diagnostics, Uninstall); Sample Data still uses `tools/ajaxtask.js`.
 
 Kunena's object caches live for one request: code which creates posts and then trashes/deletes them in the same
 request can see stale threads (wrong counters). Tests do such steps in separate requests, as a real site does.
@@ -417,7 +422,7 @@ tests/e2e/containers.sh down
 
 - Scenarios (`tests/e2e/run.php`): install, wizard, admin pages, configuration save, frontend index/categories,
   topic + reply, guest post, search, profile/user list, recent/unread lists, moderation (delete, undelete, move,
-  merge, trash purge), Empty Trash (administrator AJAX tool: trashed thread and post with attachment files removed,
+  merge, trash purge), Empty Trash (Maintenance job in steps: trashed thread and post with attachment files removed,
   live posts and counters intact; `kunena:trash:purge` with and without `--dry-run`), Sample Data (install over AJAX,
   every count and counter checked, 17 frontend pages rendered, staff-only category hidden from visitors, removal
   keeping a thread another user replied to, no orphans or files left, CLI with and without `--dry-run`), XML
@@ -433,8 +438,10 @@ tests/e2e/containers.sh down
   connection, dry run, answer with related threads and relative links, request for details with translation, canned
   reply, not-a-question, spam thread and spam reply unpublished, revived threads, staff replies, retry on overload,
   refusal fallback, automatic background processing, administrator page, CLI, client features against the official
-  APIs), every Tools action (recount,
-  diagnostics fixes, sync users, prune, IP cleanup), uninstall, reinstall over existing tables. Single steps: `php tests/e2e/run.php <db> install,wizard,post`.
+  APIs), every Maintenance job through its JSON task (recounts, user synchronisation, lifetime bans deleted through
+  Joomla while a pending registration stays, prune, IP cleanup, RE: prefixes stripped, refusals), the old tool pages
+  redirecting to Maintenance, Diagnostics fixes, uninstall, reinstall over existing tables. Single steps:
+  `php tests/e2e/run.php <db> install,wizard,post`.
 - A run fails on any failed scenario, failed SQL query (logged by an instrumented copy of the database drivers) or
   PHP notice/warning/deprecation coming from Kunena files.
 - The scenarios use curl and never run the pages' JavaScript: `tests/e2e/jscheck.js` does, in headless Chrome

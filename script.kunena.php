@@ -288,6 +288,11 @@ class Com_KunenaInstallerScript
             $sitePath . '/template/crypsisb4/assets/js/jquery.caret-min.js',
         ];
 
+        // 5.5.0: the maintenance tools moved from Tools' sub-pages to Kunena > Maintenance
+        foreach (['prune.php', 'syncusers.php', 'recount.php', 'recount.js', 'purgerestatements.php', 'cleanupip.php', 'emptytrash.php', 'normalizenames.php'] as $file) {
+            $deadFiles[] = JPATH_ADMINISTRATOR . '/components/com_kunena/template/j3/tools/' . $file;
+        }
+
         // 5.3.0: integrations no longer shipped (the installer uninstalls the plugins themselves)
         $deadFiles[] = $sitePath . '/jomsocial_rule.xml';
 

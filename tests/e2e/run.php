@@ -56,6 +56,27 @@ function kurl($q)
 {
     return 'index.php?option=com_kunena&' . $q;
 }
+/**
+ * Runs a Kunena > Maintenance job as the page does (POST task=run&format=json, step=init then run until "done").
+ *
+ * @return array|null  The last JSON answer
+ */
+function maintenance($job, array $fields = array())
+{
+    global $admin;
+    $html = $admin->get('administrator/' . kurl('view=maintenance'));
+    $token = JClient::token($html);
+    $last = null;
+    for ($i = 0, $step = 'init'; $i < 500; $i++, $step = 'run') {
+        $body = http_build_query(array_merge($fields, array('job' => $job, 'step' => $step, $token => 1)));
+        $last = json_decode($admin->post('administrator/' . kurl('view=maintenance&task=run&format=json'), $body), true);
+        if (!$last || empty($last['success']) || !empty($last['done'])) {
+            break;
+        }
+    }
+
+    return $last;
+}
 /** Runs PHP in the test site (Kunena loaded) and decodes the JSON string it returns. */
 function kexecJson($code)
 {
@@ -509,21 +530,13 @@ PHP
                 $filesBefore = count(array_filter($files, function ($f) use ($site) {
                     return is_file("$site/$f");
                 }));
-                // The Tools page lists the counts and gives the AJAX URL
-                $html = $admin->get('administrator/' . kurl('view=tools&layout=emptytrash'));
+                // Kunena > Maintenance shows the counts; the job runs in steps (as the page's fetch() loop does)
+                $html = $admin->get('administrator/' . kurl('view=maintenance'));
                 save('emptytrash-page', $html);
-                $ok = $admin->code == 200 && strpos($html, 'kunena-emptytrash-start') !== false && strpos($html, 'Warning:') === false;
+                $ok = $admin->code == 200 && strpos($html, 'kunena-job-empty_trash') !== false && strpos($html, 'Warning:') === false;
                 result('emptytrash-page', $ok && $setup['counts']['topics'] >= 1 && $setup['counts']['messages'] >= 1, "HTTP {$admin->code} counts=" . json_encode($setup['counts']));
-                $url = preg_match('#data-url="([^"]+)"#', $html, $m) ? html_entity_decode($m[1]) : '';
-                $done = false;
-                $last = null;
-                for ($i = 0, $stepName = 'init'; $url && $i < 200; $i++, $stepName = 'run') {
-                    $last = json_decode($admin->post('administrator/' . $url, array('step' => $stepName)), true);
-                    if (!$last || empty($last['success']) || !empty($last['done'])) {
-                        $done = $last && !empty($last['done']);
-                        break;
-                    }
-                }
+                $last = maintenance('empty_trash');
+                $done = $last && !empty($last['success']) && !empty($last['done']);
                 $after = kexecJson('$db = JFactory::getDbo(); $q = function ($sql) use ($db) { $db->setQuery($sql); return (int) $db->loadResult(); };
                     $t2 = KunenaForumTopicHelper::get(' . (int) $setup['t2'] . ', true);
                     $c = KunenaForumCategoryHelper::get(' . (int) $setup['cat'] . ');
@@ -800,18 +813,13 @@ return json_encode(array("ids" => $ids, "counts" => KunenaUserNormalizer::count(
                 }, isset($dry['data']['changes']) ? $dry['data']['changes'] : array());
                 $ok = count($ids) == 5 && $setup['counts']['accounts'] >= 4 && $state() == $before && !array_diff(array($ids['a'], $ids['b'], $ids['c'], $ids['e']), $dryIds) && !in_array($ids['d'], $dryIds);
                 result('names-dryrun', $ok, 'counts=' . json_encode(isset($setup['counts']) ? $setup['counts'] : $setup) . ' dry=' . json_encode($dryIds));
-                // Tools page and its AJAX task
-                $html = $admin->get('administrator/' . kurl('view=tools&layout=normalizenames'));
-                save('normalizenames-page', $html);
-                result('names-page', $admin->code == 200 && strpos($html, 'kunena-normalizenames-start') !== false && strpos($html, '007.david@gmail.com') !== false && strpos($html, 'Warning:') === false, "HTTP {$admin->code}");
-                $url = preg_match('#data-url="([^"]+)"#', $html, $m) ? html_entity_decode($m[1]) : '';
-                $last = null;
-                for ($i = 0, $stepName = 'init'; $url && $i < 50; $i++, $stepName = 'run') {
-                    $last = json_decode($admin->post('administrator/' . $url, array('step' => $stepName)), true);
-                    if (!$last || empty($last['success']) || !empty($last['done'])) {
-                        break;
-                    }
-                }
+                // Kunena > Maintenance: the preview (nothing written), then the job in steps
+                $preview = maintenance('names_preview');
+                $previewIds = array_map(function ($r) {
+                    return (int) $r['id'];
+                }, isset($preview['rows']) ? $preview['rows'] : array());
+                result('names-page', $preview && !empty($preview['done']) && !array_diff(array($ids['a'], $ids['b'], $ids['c'], $ids['e']), $previewIds) && $state() == $before, 'preview=' . json_encode($preview, JSON_UNESCAPED_UNICODE));
+                $last = maintenance('names_normalize');
                 $after = $state();
                 $left = kexecJson('return json_encode(KunenaUserNormalizer::count());');
                 $want = array(
@@ -1008,48 +1016,51 @@ PHP
                 include __DIR__ . '/baldrick.inc.php';
                 break;
             case 'adminpages':
-                foreach (array('categories', 'users', 'attachments', 'smilies', 'ranks', 'templates', 'plugins', 'logs', 'baldrick', 'tools', 'statistics', 'trash', 'trash&layout=default&type=messages', 'categories&layout=edit&catid=2', 'tools&layout=report', 'tools&layout=diagnostics', 'tools&layout=prune', 'tools&layout=syncusers', 'tools&layout=recount', 'tools&layout=menu', 'tools&layout=purgerestatements', 'tools&layout=cleanupip') as $v) {
+                foreach (array('categories', 'users', 'attachments', 'smilies', 'ranks', 'templates', 'plugins', 'logs', 'baldrick', 'tools', 'statistics', 'trash', 'trash&layout=default&type=messages', 'categories&layout=edit&catid=2', 'tools&layout=report', 'tools&layout=diagnostics', 'tools&layout=menu', 'maintenance') as $v) {
                     $admin->get('administrator/' . kurl("view=$v"));
                     list($ok, $note) = check($admin, 'adminpages', "adm-$v");
                     result("adm-$v", $ok, $note);
                 }
+                // The maintenance tools' old pages lead to Kunena > Maintenance
                 $admin->get('administrator/' . kurl('view=tools&layout=recount'));
+                result('adm-old-tool-pages', strpos($admin->lastUrl, 'view=maintenance') !== false && strpos($admin->last, 'kunena-job-recount_topics') !== false, $admin->lastUrl);
                 break;
             case 'tools':
-                // Recount statistics (AJAX loop as the backend does it)
-                $html = $admin->get('administrator/' . kurl('view=tools&layout=recount'));
-                $t = JClient::token($html);
-                $r = $admin->post('administrator/' . kurl('view=tools&format=json'), array('task' => 'recount', 'topics' => 1, 'usertopics' => 1, 'categories' => 1, 'users' => 1, 'polls' => 1, $t => 1));
-                $ok = false;
-                $note = '';
-                for ($i = 0; $i < 50; $i++) {
-                    $j = json_decode($r, true);
-                    if (!$j) {
-                        $note = 'non-JSON: ' . substr(strip_tags($r), 0, 400);
-                        break;
-                    }
-                    if (empty($j['success'])) {
-                        $note = 'error: ' . json_encode($j);
-                        break;
-                    }
-                    if (empty($j['href']) || strpos($j['href'], 'dorecount') === false) {
-                        $ok = true;
-                        break;
-                    }
-                    $r = $admin->get(preg_replace('#^/#', '', str_replace('&amp;', '&', $j['href'])) . (strpos($j['href'], 'format=json') === false ? '&format=json' : ''));
+                // Kunena > Maintenance: the recount jobs, in steps
+                foreach (array('recount_topics', 'recount_usertopics', 'recount_categories', 'recount_users', 'recount_polls') as $job) {
+                    $r = maintenance($job);
+                    result("maint-$job", $r && !empty($r['success']) && !empty($r['done']), json_encode($r));
                 }
-                result('tools-recount', $ok, $note);
                 // Diagnostics: run every fix and delete query (nothing to repair on a healthy forum, but the SQL runs)
                 copy(__DIR__ . '/kexec.php', "$site/kexec.php");
                 $r = (new JClient($base, "$out/$db-kexec.jar"))->post('kexec.php', array('c' => '$bad = array(); foreach (KunenaForumDiagnostics::getList() as $i) { try { KunenaForumDiagnostics::count($i); KunenaForumDiagnostics::getItems($i); if (KunenaForumDiagnostics::canFix($i) && !KunenaForumDiagnostics::fix($i)) $bad[] = "fix $i"; if (KunenaForumDiagnostics::canDelete($i) && !KunenaForumDiagnostics::delete($i)) $bad[] = "delete $i"; } catch (Exception $e) { $bad[] = "$i: " . $e->getMessage(); } } return $bad ? implode(" || ", $bad) : "ok";'));
                 result('tools-diagnostics', strpos($r, '"ok"') !== false, substr(trim(strip_tags($r)), 0, 1500));
-                foreach (array('syncusers' => array('useradd' => 1, 'userrename' => 1, 'userdel' => 1, 'userdellife' => 1), 'prune' => array('prune_forum[]' => 2, 'prune_days' => 3650, 'trashdelete' => 0, 'controloptions' => 'all', 'keepsticky' => 1), 'cleanupIP' => array('cleanup_ip_days' => 3650), 'purgeReStatements' => array('re_string' => 'Re:')) as $task => $fields) {
-                    $html = $admin->get('administrator/' . kurl('view=tools'));
-                    $t = JClient::token($html);
-                    $admin->post('administrator/' . kurl('view=tools'), array_merge($fields, array('task' => $task, $t => 1)));
-                    list($ok, $note) = check($admin, 'tools', "tools-$task");
-                    result("tools-$task", $ok, $note);
+                // The other jobs (every query runs; a lifetime-banned test account is deleted through Joomla)
+                $banned = kexecJson('$db = JFactory::getDbo(); $db->setQuery("DELETE FROM #__users WHERE email=" . $db->quote("banned@maint.invalid"))->execute();
+$u = (object) array("name" => "Banned Member", "username" => "banned-member", "email" => "banned@maint.invalid", "password" => "", "block" => 1, "sendEmail" => 0, "registerDate" => JFactory::getDate()->toSql(), "lastvisitDate" => $db->getNullDate(), "activation" => "", "params" => "{}", "lastResetTime" => $db->getNullDate(), "resetCount" => 0, "otpKey" => "", "otep" => "", "requireReset" => 0);
+$db->insertObject("#__users", $u, "id"); $k = (object) array("userid" => (int) $u->id, "banned" => "9999-12-31 23:59:59"); $db->insertObject("#__kunena_users", $k);
+$p = (object) array("name" => "Pending Member", "username" => "pending-member", "email" => "pending@maint.invalid", "password" => "", "block" => 1, "sendEmail" => 0, "registerDate" => JFactory::getDate()->toSql(), "lastvisitDate" => $db->getNullDate(), "activation" => "abc", "params" => "{}", "lastResetTime" => $db->getNullDate(), "resetCount" => 0, "otpKey" => "", "otep" => "", "requireReset" => 0);
+$db->setQuery("DELETE FROM #__users WHERE email=" . $db->quote("pending@maint.invalid"))->execute(); $db->insertObject("#__users", $p, "id");
+return json_encode(array("banned" => (int) $u->id, "pending" => (int) $p->id));');
+                kexecJson('$db = JFactory::getDbo(); $db->setQuery("UPDATE #__kunena_messages SET subject=" . $db->quote("Re: RE: Seeded prefix") . " WHERE id=(SELECT MAX(id) FROM #__kunena_messages)")->execute(); return json_encode(true);');
+                foreach (array(
+                    'users_add' => array(), 'users_rename' => array(), 'users_remove' => array(), 'users_lifetime' => array(),
+                    'prune' => array('categories' => array(2), 'days' => 3650, 'delete' => 0, 'only' => 'all', 'keepsticky' => 1),
+                    'ip_posts' => array('days' => 3650), 'ip_users' => array(), 'purge_re' => array('prefix' => 'Re:'),
+                ) as $job => $fields) {
+                    $r = maintenance($job, $fields);
+                    result("maint-$job", $r && !empty($r['success']) && !empty($r['done']), json_encode($r));
                 }
+                $left = kexecJson('$db = JFactory::getDbo(); $q = function ($s) use ($db) { $db->setQuery($s); return (int) $db->loadResult(); };
+return json_encode(array("banned" => $q("SELECT COUNT(*) FROM #__users WHERE id=' . (int) $banned['banned'] . '"), "bannedProfile" => $q("SELECT COUNT(*) FROM #__kunena_users WHERE userid=' . (int) $banned['banned'] . '"),
+  "pending" => $q("SELECT COUNT(*) FROM #__users WHERE id=' . (int) $banned['pending'] . '")));');
+                result('maint-lifetime-check', $left == array('banned' => 0, 'bannedProfile' => 0, 'pending' => 1), json_encode($left));
+                $re = kexecJson('$db = JFactory::getDbo(); $db->setQuery("SELECT COUNT(*) FROM #__kunena_messages WHERE subject LIKE " . $db->quote("Re:%")); return json_encode((int) $db->loadResult());');
+                result('maint-purge-check', $re === 0, 'subjects still starting with Re: ' . json_encode($re));
+                $refused = maintenance('prune', array('days' => 30));
+                $unknown = maintenance('nope');
+                result('maint-refusals', $refused && empty($refused['success']) && $unknown && empty($unknown['success']), json_encode(array($refused, $unknown)));
+                kexecJson('$db = JFactory::getDbo(); $db->setQuery("DELETE FROM #__users WHERE email=" . $db->quote("pending@maint.invalid"))->execute(); return json_encode(true);');
                 break;
             case 'purge':
                 // Kunena > Tools > Uninstall: drops every Kunena table, then uninstalls the extension

@@ -148,6 +148,12 @@ $view = Factory::getApplication()->input->getCmd('view', 'cpanel');
 		<a href="<?php echo Route::_('index.php?option=com_kunena&view=tools'); ?>">
 			<i class="icon-tools"></i> <?php echo Text::_('COM_KUNENA_A_VIEW_TOOLS'); ?>
 		</a></li>
+	<li<?php if ($view == 'maintenance') {
+	    echo ' class="active"';
+	} ?>>
+		<a href="<?php echo Route::_('index.php?option=com_kunena&view=maintenance'); ?>">
+			<i class="icon-wrench"></i> <?php echo Text::_('COM_KUNENA_MAINTENANCE'); ?>
+		</a></li>
 	<li<?php if ($view == 'trash') {
 	    echo ' class="active"';
 	} ?>>

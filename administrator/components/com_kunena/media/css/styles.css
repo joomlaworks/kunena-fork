@@ -51,5 +51,29 @@
 /* Tab bars wrap onto a second row instead of hiding tabs behind a horizontal scroll (the configuration has ten) */
 #kunena .nav-tabs {flex-wrap:wrap;overflow-x:visible;}
 
+/* Maintenance: one job after the other, its fields and Run button, its result below */
+.kunena-maintenance h3 {margin:1.5em 0 0.5em;padding-bottom:0.25em;border-bottom:1px solid rgba(128, 128, 128, 0.3);}
+
+.kunena-maintenance-job {margin:0;padding:0.75em 0 1em;border-bottom:1px solid rgba(128, 128, 128, 0.15);}
+
+.kunena-maintenance-job h4 {margin:0 0 0.25em;}
+
+.kunena-maintenance-desc {margin:0 0 0.6em;max-width:60em;opacity:0.85;}
+
+.kunena-maintenance-fields {display:flex;flex-wrap:wrap;gap:0.5em 1.5em;align-items:flex-end;margin-bottom:0.6em;}
+
+#kunena .kunena-maintenance-field {display:inline-flex;flex-direction:column;gap:0.25em;margin:0;}
+
+#kunena .kunena-maintenance-field--block {flex-basis:100%;}
+
+#kunena .kunena-maintenance-field select,
+#kunena .kunena-maintenance-field input {margin:0;}
+
+.kunena-maintenance-result {margin:0.75em 0 0;max-width:60em;}
+
+.kunena-maintenance-result ul {margin:0.5em 0 0 1.25em;}
+
+.kunena-maintenance-result table {margin:0.75em 0 0;background:transparent;}
+
 /* The version line at the bottom of every page */
 .kunena-version {clear:both;text-align:center;}

@@ -22,7 +22,7 @@ use Joomla\Utilities\ArrayHelper;
  * records, then updates the statistics.
  *
  * The work is done in batches limited by time, so that large trashes can be emptied over several requests
- * (administrator Tools > Empty Trash) or in one go (command line: kunena:trash:purge).
+ * (administrator Maintenance > Empty Trash) or in one go (command line: kunena:trash:purge).
  *
  * @since 5.3.0
  */

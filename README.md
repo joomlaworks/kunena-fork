@@ -40,7 +40,8 @@ A short overview of each release. Every change is described in detail in [CHANGE
 Summary of changes:
 - **Public profiles without the spam:** guests (search engines included) see only a member's avatar, name, role, rank, join date, number of posts and posts. Website, social accounts, location, gender, birthdate, "about me" and signatures (also under posts) are shown to logged-in users only, so spam accounts get nothing out of a public profile, with no clean-up needed on existing sites. Links members add are marked `nofollow ugc`
 - Profiles of members without posts are not indexed (`noindex, follow`)
-- **Usernames and names with common characters only** (Configuration > Members, on by default): usernames with letters A-Z, digits and dashes, names with letters of any alphabet, digits, spaces and `. , ' - & ( )`, both starting with a letter or a digit; checked on registration and profile changes. **Tools > Normalise Usernames & Names** (and `kunena:users:normalize`) fixes existing accounts, e.g. `__carletto75__` becomes `carletto75` and "Daniel Correa ✔" becomes "Daniel Correa"
+- **Kunena > Maintenance**: the maintenance tools (recounts, user synchronisation, prune, IP cleanup, RE: prefixes, Empty Trash, usernames) on one page, each job with its own Run button and its result below it, long jobs in steps; Tools keeps Report Configuration, Sample Data, Menu Manager, Diagnostics and Uninstall
+- **Usernames and names with common characters only** (Configuration > Members, on by default): usernames with letters A-Z, digits and dashes, names with letters of any alphabet, digits, spaces and `. , ' - & ( )`, both starting with a letter or a digit; checked on registration and profile changes. **Maintenance > Normalise Usernames & Names** (and `kunena:users:normalize`) fixes existing accounts, e.g. `__carletto75__` becomes `carletto75` and "Daniel Correa ✔" becomes "Daniel Correa"
 - **XML sitemaps:** the profiles of members with posts (`profiles.xml`), when guests may see profiles
 - With "Allow Guests to see User Profiles" on, threads' structured data names each author's profile (`author.url`), which Google Search Console asks for
 
@@ -154,7 +155,7 @@ The posts Baldrick handles (and related public threads) are sent to the AI provi
 
 ## USERNAMES & NAMES
 
-By default, **Kunena > Configuration > Members > Usernames & Names** allows only common characters: usernames with the letters A to Z, digits and dashes; names with letters of any alphabet, digits, spaces and `. , ' - & ( )`; both starting with a letter or a digit. New accounts and changed usernames or names are checked everywhere (registration, profile edits, Joomla's user manager). To bring existing accounts in line, open **Kunena > Tools > Normalise Usernames & Names**: it shows how many accounts break the rules and the first changes, then rewrites them in batches. Make a backup first: members whose username changes must log in with the new one (Joomla's "Forgot your username?" sends it to them by e-mail).
+By default, **Kunena > Configuration > Members > Usernames & Names** allows only common characters: usernames with the letters A to Z, digits and dashes; names with letters of any alphabet, digits, spaces and `. , ' - & ( )`; both starting with a letter or a digit. New accounts and changed usernames or names are checked everywhere (registration, profile edits, Joomla's user manager). To bring existing accounts in line, open **Kunena > Maintenance**: "Preview" shows how many accounts break the rules and the first changes, and "Normalise Usernames & Names" rewrites them. Make a backup first: members whose username changes must log in with the new one (Joomla's "Forgot your username?" sends it to them by e-mail).
 
 ## SEARCH ENGINES & SOCIAL NETWORKS
 

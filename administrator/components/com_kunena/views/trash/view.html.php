@@ -105,9 +105,9 @@ class KunenaAdminViewTrash extends KunenaView
         JToolbarHelper::custom('purge', 'trash.png', 'trash_f2.png', 'COM_KUNENA_TRASH_PURGE');
         JToolbarHelper::spacer();
 
-        // 5.3.0 (JoomlaWorks Ltd.): shortcut to Tools > Empty Trash
+        // 5.3.0 (JoomlaWorks Ltd.): shortcut to Empty Trash (Kunena > Maintenance since 5.5.0)
         if (Factory::getUser()->authorise('core.admin', 'com_kunena')) {
-            JToolbar::getInstance('toolbar')->appendButton('Link', 'trash', 'COM_KUNENA_EMPTYTRASH', 'index.php?option=com_kunena&view=tools&layout=emptytrash');
+            JToolbar::getInstance('toolbar')->appendButton('Link', 'trash', 'COM_KUNENA_EMPTYTRASH', 'index.php?option=com_kunena&view=maintenance#emptytrash');
             JToolbarHelper::spacer();
         }
 

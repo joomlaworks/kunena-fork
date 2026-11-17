@@ -18,7 +18,7 @@ use Joomla\CMS\Language\Text;
 
 /**
  * The rules for usernames and names (Kunena > Configuration > Members), and the normalisation of existing accounts
- * (Kunena > Tools > Normalise Usernames & Names, and kunena:users:normalize):
+ * (Kunena > Maintenance > Normalise Usernames & Names, and kunena:users:normalize):
  *
  * - usernames: ASCII letters, digits and dashes (user_names_strict);
  * - names: letters of any alphabet, digits, spaces and . , ' ’ - & ( ) (user_names_strict);

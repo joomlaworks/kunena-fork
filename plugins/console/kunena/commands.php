@@ -17,7 +17,7 @@ use Joomla\CMS\Console\AbstractCommand;
 use Joomla\CMS\Console\CommandIO;
 
 /**
- * kunena:trash:purge - empties Kunena's trash (same as Kunena > Tools > Empty Trash).
+ * kunena:trash:purge - empties Kunena's trash (same as Kunena > Maintenance > Empty Trash).
  *
  * @since 5.3.0
  */
@@ -29,7 +29,7 @@ class KunenaTrashPurgeCommand extends AbstractCommand
     protected $description = 'Empty Kunena\'s trash: permanently delete every trashed thread and post';
 
     protected $help = 'Permanently deletes every thread and post in Kunena\'s trash, with their attachments (files included), '
-        . 'polls, thank-yous and ratings, then updates the forum statistics, like Kunena > Tools > Empty Trash. '
+        . 'polls, thank-yous and ratings, then updates the forum statistics, like Kunena > Maintenance > Empty Trash. '
         . 'This cannot be undone. Asks for a confirmation when the command is interactive; --dry-run only counts what '
         . 'would be deleted. Suitable for cron jobs (with --no-interaction).';
 
@@ -699,7 +699,7 @@ class KunenaSitemapGenerateCommand extends AbstractCommand
 
 /**
  * kunena:users:normalize: rewrite the usernames and names which break the rules of Configuration > Members > Usernames &
- * Names, like Kunena > Tools > Normalise Usernames & Names.
+ * Names, like Kunena > Maintenance > Normalise Usernames & Names.
  *
  * @since 5.5.0
  */
@@ -711,7 +711,7 @@ class KunenaUsersNormalizeCommand extends AbstractCommand
     protected $description = 'Normalise usernames and names that break Kunena\'s rules (Configuration > Members)';
 
     protected $help = 'Rewrites the usernames and names of existing accounts that break the rules in Kunena > Configuration > '
-        . 'Members > Usernames & Names, like Kunena > Tools > Normalise Usernames & Names: characters that aren\'t allowed '
+        . 'Members > Usernames & Names, like Kunena > Maintenance > Normalise Usernames & Names: characters that aren\'t allowed '
         . 'become dashes in usernames (accented and Greek letters written in Latin letters) and spaces in names, leading '
         . 'symbols are removed, and a username another account already has gets the account\'s ID added. Members whose '
         . 'username changes must log in with the new one. Asks for a confirmation when the command is interactive; '

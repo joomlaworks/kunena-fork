@@ -32,7 +32,7 @@ const base = process.argv[2], user = process.argv[3], pass = process.argv[4];
       wizard = 'finished: ' + page.url();
     } catch (e) { wizard = 'stuck: ' + (await page.locator('#kunena-install h2').textContent()); }
   }
-  const views = ['cpanel', 'categories', 'users', 'attachments', 'smilies', 'ranks', 'templates', 'config', 'plugins', 'logs', 'baldrick', 'statistics', 'tools', 'trash', 'tools&layout=report', 'tools&layout=diagnostics', 'tools&layout=prune', 'tools&layout=syncusers', 'tools&layout=recount', 'tools&layout=menu', 'tools&layout=emptytrash', 'tools&layout=sampledata', 'tools&layout=cleanupip', 'categories&layout=create', 'categories&layout=edit&catid=2', 'templates&layout=edit&name=crypsis', 'templates&layout=edit&name=blackadder' ];
+  const views = ['cpanel', 'categories', 'users', 'attachments', 'smilies', 'ranks', 'templates', 'config', 'plugins', 'logs', 'baldrick', 'statistics', 'tools', 'trash', 'tools&layout=report', 'tools&layout=diagnostics', 'tools&layout=menu', 'tools&layout=sampledata', 'maintenance', 'categories&layout=create', 'categories&layout=edit&catid=2', 'templates&layout=edit&name=crypsis', 'templates&layout=edit&name=blackadder' ];
   for (const v of views) {
     current = 'admin:' + v;
     await page.goto(base + 'administrator/index.php?option=com_kunena&view=' + v);

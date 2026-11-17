@@ -725,7 +725,6 @@ class KunenaUserBan extends CMSObject
                 $user->block = $banlevel;
                 $user->save();
             }
-            echo 'banlevel '.$banlevel;
 
             // Change user state also in #__kunena_users
             $profile         = KunenaFactory::getUser($this->userid);

@@ -23,14 +23,14 @@ php cli/joomla.php help kunena:trash:purge          # a command's options and he
 
 | Command | Does | Same as |
 |---|---|---|
-| [`kunena:trash:purge`](#kunenatrashpurge) | Permanently deletes every trashed thread and post | Kunena > Tools > Empty Trash |
+| [`kunena:trash:purge`](#kunenatrashpurge) | Permanently deletes every trashed thread and post | Kunena > Maintenance > Empty Trash |
 | [`kunena:sampledata:install`](#kunenasampledatainstall) | Installs the sample forum | Kunena > Tools > Sample Data |
 | [`kunena:sampledata:remove`](#kunenasampledataremove) | Removes the sample forum | Kunena > Tools > Sample Data |
 | [`kunena:baldrick:process`](#kunenabaldrickprocess) | Processes the threads waiting for Baldrick AI | Kunena > Baldrick AI > Process the queue now |
 | [`kunena:baldrick:index`](#kunenabaldrickindex) | Creates Baldrick AI's full-text search index | Kunena > Baldrick AI > Create the search index |
 | [`kunena:baldrick:check`](#kunenabaldrickcheck) | Tells whether Baldrick AI would answer a post, and why not | - |
 | [`kunena:sitemap:generate`](#kunenasitemapgenerate) | Writes the forum's XML sitemaps | - |
-| [`kunena:users:normalize`](#kunenausersnormalize) | Rewrites usernames and names that break the rules | Kunena > Tools > Normalise Usernames & Names |
+| [`kunena:users:normalize`](#kunenausersnormalize) | Rewrites usernames and names that break the rules | Kunena > Maintenance > Normalise Usernames & Names |
 
 All of them support `--dry-run` and run with Super User rights (whoever can run the site's command line can change it
 anyway). All change the site, except `kunena:baldrick:check` without `--queue`; `kunena:sitemap:generate` only writes

@@ -35,29 +35,48 @@ how the code base is organised and how to work on it, see [AGENTS.md](AGENTS.md)
   The System - Kunena plugin checks them in `onUserBeforeSave` whenever an account is created or its username or name
   changes (registration, profile edits, the user manager, the command line), with Joomla showing the reason; accounts
   that change neither are left alone. The rules live in `KunenaUserNormalizer` (`libraries/kunena/user/normalizer.php`).
-- **Tools > Normalise Usernames & Names** and `kunena:users:normalize` (`--dry-run` lists every change): rewrite the
+- **Maintenance > Normalise Usernames & Names** and `kunena:users:normalize` (`--dry-run` lists every change): rewrite the
   existing accounts which break the rules. Disallowed characters become dashes in usernames (accented, Greek and other
   letters transliterated with PHP's intl, Greek as Greeks write it: "Φώτης" -> "Fotis"; iconv or Joomla's
   transliteration otherwise) and spaces in names; leading symbols are removed; usernames shorter than 2 characters get
   the account's ID, empty ones become `user-<id>`; a username another account already has (compared without case)
   gets `-<id>`. Examples: `__carletto75__` -> `carletto75`, `007.david@gmail.com` -> `007-david-gmail-com`,
   "Daniel Correa ✔" -> "Daniel Correa". Only `#__users` (and the session's copy of the username) is written, in
-  batches over AJAX; the page shows the counts and the first 50 changes. Members whose username changes log in with
+  steps; "Preview" shows the counts and the first 50 changes. Members whose username changes log in with
   the new one (Joomla's "Forgot your username?" sends it to them).
 - Sample Data's accounts use dashes (`maria-lopez`), as the new rules want.
+- **Kunena > Maintenance** (JoomlaWorks Ltd.), a new administrator page (sidebar, and a tile in Tools) replacing seven
+  of Tools' sub-pages (Prune Categories, Synchronize Users, Recount Statistics, Purge RE: Prefixes, Cleanup IP
+  Addresses, Empty Trash, Normalise Usernames & Names): every job one after the other, with its name and description,
+  its own fields where it needs them, a Run button and its result below it. The jobs that were checkboxes run on their
+  own: recount threads, users' threads, categories, users, polls (polls had no checkbox before); add profiles, remove
+  the profiles of deleted users, update author names in posts, delete lifetime bans; preview and normalise usernames and
+  names; RE: prefixes; IP addresses of posts and of profiles (two jobs); prune; empty the trash. Each job runs through
+  one JSON task with `fetch()` (plain JavaScript); long ones run in steps of a few seconds and report their progress.
+  Destructive jobs ask for a confirmation. The old pages' addresses redirect to Maintenance and their files are
+  removed on update. Tools keeps Report Configuration, Sample Data, Menu Manager, Diagnostics and Uninstall.
+  - "Delete lifetime ban users" deleted every blocked Joomla account with raw SQL (registrations waiting for
+    activation included, leaving their group mappings), and ran twice; it now deletes, through Joomla, the accounts of
+    members banned for life (Kunena's permanent ban), with their Kunena profiles, never Super Users or yourself.
+  - "Purge RE: Prefixes" used `TRIM(LEADING ...)`, which SQLite lacks; it now strips the prefix in PHP, repeated
+    prefixes too ("Re: RE:"), in steps, on every database. "Remove user profiles from deleted users" works on SQLite.
+- Banning a user printed "banlevel 1" into the page (a leftover debug `echo`): removed.
 
 ### Test results (5.5.0)
 
 - PHP lint: 0 errors on PHP 7.1, 7.4, 8.0, 8.1, 8.2, 8.3, 8.4 and 8.5. PHP CS Fixer (@PSR12): 0 files to fix.
-- Class-load check against Joomla 3.x UTD 3.18 on PHP 8.5: 365 class files, 0 messages.
-- End-to-end on Joomla 3.x UTD 3.18, PHP 8.5, on SQLite 3.45 and PostgreSQL 16: 153 and 20
+- Class-load check against Joomla 3.x UTD 3.18 on PHP 8.5: 368 class files, 0 messages.
+- End-to-end on Joomla 3.x UTD 3.18, PHP 8.5, on SQLite 3.45 and PostgreSQL 16: 161 and 20
   scenarios pass, no failed SQL queries, no PHP messages from Kunena code. The new
   `profiles` scenario fills a member's website, social account, location and signature with spam and checks that
   guests see none of it on the profile or under the member's posts, that the member sees all of it when logged in, and
   that a profile without posts is `noindex`; the `sitemap` scenario checks `profiles.xml` against the members with
   posts. The new `usernames` scenario creates accounts breaking the rules, checks the CLI's dry run, the Tools page and
   its AJAX task (results, a username collision, Greek transliteration, nothing left to change), and a new account
-  refused and accepted through Joomla's user manager. These scenarios are now part of `tests/e2e/matrix.sh` (in 5.4.0
+  refused and accepted through Joomla's user manager. The Tools scenarios run every Maintenance job through its JSON
+  task, check that a lifetime-banned account is deleted while a pending registration stays and that RE: prefixes are
+  stripped, and that the old tool pages redirect; the Maintenance page was also checked in Chrome (headless: Run, the
+  preview, a cancelled confirmation, no JavaScript errors). These scenarios are now part of `tests/e2e/matrix.sh` (in 5.4.0
   the sitemap scenario was run on its own, on SQLite only).
 
 ---

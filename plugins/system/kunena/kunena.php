@@ -78,7 +78,7 @@ class plgSystemKunena extends \Joomla\CMS\Plugin\CMSPlugin
     /**
      * Usernames and names follow Kunena's rules (Configuration > Members > Usernames & Names): checked when an account
      * is created or its username/name changes (registration, profile edits, the user manager); accounts which don't
-     * change them are left alone (Tools > Normalise Usernames & Names deals with those).
+     * change them are left alone (Maintenance > Normalise Usernames & Names deals with those).
      *
      * @param   array    $old    The account before saving
      * @param   boolean  $isNew  New account

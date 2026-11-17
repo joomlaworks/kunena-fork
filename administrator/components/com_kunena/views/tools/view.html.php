@@ -43,32 +43,78 @@ class KunenaAdminViewTools extends KunenaView
     }
 
     /**
-     * @since Kunena
+     * The maintenance tools' old pages (Prune, Synchronize Users, Recount, Purge RE:, Cleanup IP, Empty Trash, Normalise
+     * Usernames & Names) are jobs of Kunena > Maintenance since 5.5.0: old links and bookmarks go there.
+     *
+     * @return void
+     * @since 5.5.0
      */
-    public function displayPrune()
+    protected function toMaintenance()
     {
-        $this->forumList       = $this->get('PruneCategories');
-        $this->listtrashdelete = $this->get('PruneListtrashdelete');
-        $this->controloptions  = $this->get('PruneControlOptions');
-        $this->keepSticky      = $this->get('PruneKeepSticky');
-
-        $this->setToolBarPrune();
-        $this->display();
+        Factory::getApplication()->redirect(\Joomla\CMS\Router\Route::_('index.php?option=com_kunena&view=maintenance', false));
     }
 
     /**
-     * @since Kunena
+     * @return void
+     * @since 5.5.0
      */
-    protected function setToolBarPrune()
+    public function displayPrune()
     {
-        JToolbarHelper::title(Text::_('COM_KUNENA'), 'tools');
-        JToolbarHelper::spacer();
-        JToolbarHelper::custom('prune', 'delete.png', 'delete_f2.png', 'COM_KUNENA_PRUNE', false);
-        JToolbarHelper::spacer();
-        JToolbarHelper::cancel();
-        JToolbarHelper::spacer();
-        $help_url = 'https://docs.kunena.org/en/manual/backend/tools/prune-categories';
-        JToolbarHelper::help('COM_KUNENA', false, $help_url);
+        $this->toMaintenance();
+    }
+
+    /**
+     * @return void
+     * @since 5.5.0
+     */
+    public function displaySyncUsers()
+    {
+        $this->toMaintenance();
+    }
+
+    /**
+     * @return void
+     * @since 5.5.0
+     */
+    public function displayRecount()
+    {
+        $this->toMaintenance();
+    }
+
+    /**
+     * @return void
+     * @since 5.5.0
+     */
+    public function displayPurgeReStatements()
+    {
+        $this->toMaintenance();
+    }
+
+    /**
+     * @return void
+     * @since 5.5.0
+     */
+    public function displayCleanupIP()
+    {
+        $this->toMaintenance();
+    }
+
+    /**
+     * @return void
+     * @since 5.5.0
+     */
+    public function displayEmptytrash()
+    {
+        $this->toMaintenance();
+    }
+
+    /**
+     * @return void
+     * @since 5.5.0
+     */
+    public function displayNormalizenames()
+    {
+        $this->toMaintenance();
     }
 
     /**
@@ -94,30 +140,6 @@ class KunenaAdminViewTools extends KunenaView
     }
 
     /**
-     * @since Kunena
-     */
-    public function displaySyncUsers()
-    {
-        $this->setToolBarSyncUsers();
-        $this->display();
-    }
-
-    /**
-     * @since Kunena
-     */
-    protected function setToolBarSyncUsers()
-    {
-        JToolbarHelper::title(Text::_('COM_KUNENA'), 'tools');
-        JToolbarHelper::spacer();
-        JToolbarHelper::custom('syncusers', 'apply.png', 'apply_f2.png', 'COM_KUNENA_SYNC', false);
-        JToolbarHelper::spacer();
-        JToolbarHelper::cancel();
-        JToolbarHelper::spacer();
-        $help_url = 'https://docs.kunena.org/en/manual/backend/tools/synchronize-users';
-        JToolbarHelper::help('COM_KUNENA', false, $help_url);
-    }
-
-    /**
      * Tools > Sample Data
      *
      * @return void
@@ -133,73 +155,6 @@ class KunenaAdminViewTools extends KunenaView
         JToolbarHelper::spacer();
         JToolbarHelper::cancel();
         $this->display();
-    }
-
-    /**
-     * Tools > Empty Trash
-     *
-     * @return void
-     * @since 5.3.0 (JoomlaWorks Ltd.)
-     */
-    public function displayEmptytrash()
-    {
-        $this->trashCounts = KunenaForumTrash::count();
-        $this->canEmpty    = Factory::getUser()->authorise('core.admin', 'com_kunena');
-        $this->setToolBarEmptytrash();
-        $this->display();
-    }
-
-    /**
-     * @return void
-     * @since 5.3.0 (JoomlaWorks Ltd.)
-     */
-    protected function setToolBarEmptytrash()
-    {
-        JToolbarHelper::title(Text::_('COM_KUNENA') . ': ' . Text::_('COM_KUNENA_EMPTYTRASH'), 'tools');
-        JToolbarHelper::spacer();
-        JToolbarHelper::cancel();
-    }
-
-    /**
-     * Tools > Normalise Usernames & Names
-     *
-     * @return void
-     * @since 5.5.0 (JoomlaWorks Ltd.)
-     */
-    public function displayNormalizenames()
-    {
-        $this->namesEnabled = KunenaUserNormalizer::isEnabled();
-        $this->namesCounts  = KunenaUserNormalizer::count();
-        $this->namesPreview = KunenaUserNormalizer::normalize(50, 0, true)['changed'];
-        $this->canNormalize = Factory::getUser()->authorise('core.admin', 'com_kunena');
-        JToolbarHelper::title(Text::_('COM_KUNENA') . ': ' . Text::_('COM_KUNENA_NORMALIZENAMES'), 'tools');
-        JToolbarHelper::spacer();
-        JToolbarHelper::cancel();
-        $this->display();
-    }
-
-    /**
-     * @since Kunena
-     */
-    public function displayRecount()
-    {
-        $this->setToolBarRecount();
-        $this->display();
-    }
-
-    /**
-     * @since Kunena
-     */
-    protected function setToolBarRecount()
-    {
-        JToolbarHelper::title(Text::_('COM_KUNENA'), 'tools');
-        JToolbarHelper::spacer();
-        JToolbarHelper::custom('recount', 'apply.png', 'apply_f2.png', 'COM_KUNENA_A_RECOUNT', false);
-        JToolbarHelper::spacer();
-        JToolbarHelper::cancel();
-        JToolbarHelper::spacer();
-        $help_url = 'https://docs.kunena.org/en/manual/backend/tools/recount-statistics';
-        JToolbarHelper::help('COM_KUNENA', false, $help_url);
     }
 
     /**
@@ -246,54 +201,6 @@ class KunenaAdminViewTools extends KunenaView
         JToolbarHelper::cancel();
         JToolbarHelper::spacer();
         $help_url = 'https://docs.kunena.org/en/manual/backend/tools/menu-manager';
-        JToolbarHelper::help('COM_KUNENA', false, $help_url);
-    }
-
-    /**
-     * @since Kunena
-     */
-    public function displayPurgeReStatements()
-    {
-        $this->setToolBarPurgeReStatements();
-        $this->display();
-    }
-
-    /**
-     * @since Kunena
-     */
-    protected function setToolBarPurgeReStatements()
-    {
-        JToolbarHelper::title(Text::_('COM_KUNENA'), 'tools');
-        JToolbarHelper::spacer();
-        JToolbarHelper::trash('purgerestatements', 'COM_KUNENA_A_PURGE_RE_MENU_VALIDATE', false);
-        JToolbarHelper::spacer();
-        JToolbarHelper::cancel();
-        JToolbarHelper::spacer();
-        $help_url = 'https://docs.kunena.org/en/manual/backend/tools/purge-re-prefixes';
-        JToolbarHelper::help('COM_KUNENA', false, $help_url);
-    }
-
-    /**
-     * @since Kunena
-     */
-    public function displayCleanupIP()
-    {
-        $this->setToolCleanupIP();
-        $this->display();
-    }
-
-    /**
-     * @since Kunena
-     */
-    protected function setToolCleanupIP()
-    {
-        JToolbarHelper::title(Text::_('COM_KUNENA'), 'tools');
-        JToolbarHelper::spacer();
-        JToolbarHelper::custom('cleanupip', 'apply.png', 'apply_f2.png', 'COM_KUNENA_TOOLS_LABEL_CLEANUP_IP', false);
-        JToolbarHelper::spacer();
-        JToolbarHelper::cancel();
-        JToolbarHelper::spacer();
-        $help_url = 'https://docs.kunena.org/en/manual/backend/tools/remove-stored-ip-addresses';
         JToolbarHelper::help('COM_KUNENA', false, $help_url);
     }
 

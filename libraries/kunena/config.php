@@ -1423,7 +1423,7 @@ class KunenaConfig extends CMSObject
 
     /**
      * @var    integer  Usernames only with ASCII letters, digits and dashes; names only with letters, digits, spaces and
-     *                  . , ' - & ( ) (checked on registration and profile changes; Tools > Normalise Usernames & Names)
+     *                  . , ' - & ( ) (checked on registration and profile changes; Maintenance > Normalise Usernames & Names)
      * @since  5.5.0
      */
     public $user_names_strict = 1;

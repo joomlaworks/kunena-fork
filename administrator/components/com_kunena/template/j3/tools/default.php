@@ -31,25 +31,9 @@ use Joomla\CMS\Language\Text;
 					<i class="icon-big icon-support"></i><br/>
 					<span><?php echo Text::_('COM_KUNENA_REPORT_SYSTEM'); ?></span>
 				</a>
-				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=prune">
-					<i class="icon-big icon-list-view"></i><br/>
-					<span><?php echo Text::_('COM_KUNENA_C_PRUNETAB'); ?></span>
-				</a>
-				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=syncusers">
-					<i class="icon-big icon-shuffle"></i><br/>
-					<span><?php echo Text::_('COM_KUNENA_SYNC_USERS'); ?></span>
-				</a>
-				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=recount">
-					<i class="icon-big icon-loop"></i><br/>
-					<span><?php echo Text::_('COM_KUNENA_A_RECOUNT'); ?></span>
-				</a>
-				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=normalizenames">
-					<i class="icon-big icon-users"></i><br/>
-					<span><?php echo Text::_('COM_KUNENA_NORMALIZENAMES'); ?></span>
-				</a>
-				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=emptytrash">
-					<i class="icon-big icon-trash"></i><br/>
-					<span><?php echo Text::_('COM_KUNENA_EMPTYTRASH'); ?></span>
+				<a class="btn" href="index.php?option=com_kunena&view=maintenance">
+					<i class="icon-big icon-wrench"></i><br/>
+					<span><?php echo Text::_('COM_KUNENA_MAINTENANCE'); ?></span>
 				</a>
 				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=sampledata">
 					<i class="icon-big icon-database"></i><br/>
@@ -58,14 +42,6 @@ use Joomla\CMS\Language\Text;
 				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=menu">
 					<i class="icon-big icon-menu"></i><br/>
 					<span><?php echo Text::_('COM_KUNENA_A_MENU_MANAGER'); ?></span>
-				</a>
-				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=purgerestatements">
-					<i class="icon-big icon-filter"></i><br/>
-					<span><?php echo Text::_('COM_KUNENA_A_PURGE_RE_STATEMENTS'); ?></span>
-				</a>
-				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=cleanupip">
-					<i class="icon-big icon-location"></i><br/>
-					<span><?php echo Text::_('COM_KUNENA_CPANEL_LABEL_CLEANUP_IP'); ?></span>
 				</a>
 				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=diagnostics">
 					<i class="icon-big icon-health"></i><br/>
