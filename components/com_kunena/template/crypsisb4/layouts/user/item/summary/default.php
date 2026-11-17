@@ -160,7 +160,7 @@ if ($this->config->showuserstats) {
 				</li>
 			<?php endif; ?>
 
-			<?php if (!empty($this->profile->location))
+			<?php if (KunenaUser::detailsVisible() && !empty($this->profile->location))
 			:
 			    ?>
 				<li class="list-group-item">
@@ -180,7 +180,7 @@ if ($this->config->showuserstats) {
 				</li>
 			<?php endif; ?>
 
-			<?php if ($this->profile->getGender())
+			<?php if (KunenaUser::detailsVisible() && $this->profile->getGender())
 			:
 			    ?>
 				<li class="list-group-item">
@@ -189,7 +189,7 @@ if ($this->config->showuserstats) {
 				</li>
 			<?php endif; ?>
 
-			<?php if ($this->profile->birthdate)
+			<?php if (KunenaUser::detailsVisible() && $this->profile->birthdate)
 			:
 			    ?>
 				<li class="list-group-item">

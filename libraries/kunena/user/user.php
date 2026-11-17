@@ -974,6 +974,20 @@ class KunenaUser extends CMSObject
     }
 
     /**
+     * Whether the current visitor sees what members write about themselves: website, social accounts, location,
+     * gender, birthdate, "about me" and signature. Guests (search engines included) don't: those fields were the
+     * spammers' reason to register; guests see a member's avatar, name, role, join date, post count and posts.
+     *
+     * @return  boolean
+     *
+     * @since 5.5.0
+     */
+    public static function detailsVisible()
+    {
+        return KunenaUserHelper::getMyself()->exists();
+    }
+
+    /**
      * Get website URL from the user.
      *
      * @return string  URL to the website.
@@ -982,6 +996,10 @@ class KunenaUser extends CMSObject
      */
     public function getWebsiteURL()
     {
+        if (!static::detailsVisible()) {
+            return '';
+        }
+
         $url = $this->websiteurl;
 
         if (!empty($url) && !preg_match("~^(?:f|ht)tps?://~i", $this->websiteurl)) {
@@ -1000,6 +1018,10 @@ class KunenaUser extends CMSObject
      */
     public function getWebsiteName()
     {
+        if (!static::detailsVisible()) {
+            return '';
+        }
+
         $name = trim((string) $this->websitename) ? $this->websitename : $this->websiteurl;
 
         return $name;
@@ -1051,7 +1073,7 @@ class KunenaUser extends CMSObject
      */
     public function getSignature()
     {
-        if (!$this->_config->signature) {
+        if (!$this->_config->signature || !static::detailsVisible()) {
             return false;
         }
 
@@ -1574,7 +1596,7 @@ class KunenaUser extends CMSObject
      */
     public function getPersonalText()
     {
-        if (!$this->_config->personal) {
+        if (!$this->_config->personal || !static::detailsVisible()) {
             return false;
         }
 
@@ -1594,6 +1616,11 @@ class KunenaUser extends CMSObject
      */
     public function profileIcon($name)
     {
+        // What members write about themselves is for logged-in users (see detailsVisible())
+        if (in_array($name, array('gender', 'birthdate', 'location', 'website'), true) && !static::detailsVisible()) {
+            return '';
+        }
+
         switch ($name) {
             case 'gender':
                 switch ($this->gender) {
@@ -1641,7 +1668,7 @@ class KunenaUser extends CMSObject
                 }
 
                 if ($this->websiteurl) {
-                    return '<a href="' . $this->escape($url) . '" target="_blank" rel="noopener noreferrer"><span data-toggle="tooltip" data-placement="right" title="' . $this->escape($websitename) . '">' . KunenaIcons::globe() . '</span></a>';
+                    return '<a href="' . $this->escape($url) . '" target="_blank" rel="nofollow ugc noopener noreferrer"><span data-toggle="tooltip" data-placement="right" title="' . $this->escape($websitename) . '">' . KunenaIcons::globe() . '</span></a>';
                 }
                 break;
             case 'private':
@@ -1782,7 +1809,7 @@ class KunenaUser extends CMSObject
 
         if ($social [$name] ['nourl'] == '0') {
             if (!empty($this->$name)) {
-                return '<a href="' . $this->escape($url) . '" ' . KunenaTemplate::getInstance()->tooltips(true) . ' target="_blank" title="' . $title . ': ' . $value . '"><span class="kicon-profile kicon-profile-' . $name . '"></span></a>';
+                return '<a href="' . $this->escape($url) . '" ' . KunenaTemplate::getInstance()->tooltips(true) . ' target="_blank" rel="nofollow ugc noopener noreferrer" title="' . $title . ': ' . $value . '"><span class="kicon-profile kicon-profile-' . $name . '"></span></a>';
             }
         } else {
             if (!empty($this->$name)) {
@@ -1805,6 +1832,10 @@ class KunenaUser extends CMSObject
      */
     public function socialButtons()
     {
+        if (!static::detailsVisible()) {
+            return array();
+        }
+
         $social = array('twitter'            => array('url' => 'https://twitter.com/##VALUE##', 'title' => Text::_('COM_KUNENA_MYPROFILE_TWITTER'), 'nourl' => '0'),
                         'facebook'           => array('url' => 'https://www.facebook.com/##VALUE##', 'title' => Text::_('COM_KUNENA_MYPROFILE_FACEBOOK'), 'nourl' => '0'),
                         'myspace'            => array('url' => 'https://www.myspace.com/##VALUE##', 'title' => Text::_('COM_KUNENA_MYPROFILE_MYSPACE'), 'nourl' => '0'),

@@ -7,7 +7,7 @@ change: [CHANGELOG.md](CHANGELOG.md).
 ## 1. What this is
 
 **Kunena Fork**: a maintained fork of **Kunena 5.2.14** (forum component for Joomla), first released as **5.3.0** (2026-11-12); current
-release **5.4.0** (2026-11-17).
+release **5.5.0** (2026-11-17).
 
 | Target | Supported |
 |---|---|
@@ -105,7 +105,7 @@ the Installer.
    `administrator/components/com_kunena/install/plugins/*/*.xml`, the templates' `config/*.xml`,
    `media/kunena/labels/labels.xml`, `media/kunena/topic_icons/default/*.xml`, and the three strings in
    `KunenaForum::buildVersion()` / `isDev()` (`libraries/kunena/forum/forum.php`). A quick way:
-   `grep -rl "5\.4\.0\|2026-11-17" --include=*.xml --include=*.php .`
+   `grep -rl "5\.5\.0\|2026-11-17" --include=*.xml --include=*.php .`
 2. Add a `<version>` entry at the end of `install/kunena.install.upgrade.xml` (with any upgrade queries/PHP files).
 3. Set the new version in `docs/update.xml` and `docs/collection.xml` (Joomla's updater compares it with the installed
    one) and point `downloadurl` to the release tag's snapshot,
@@ -320,8 +320,14 @@ Rules:
 - XML sitemaps: `kunena:sitemap:generate` only (command line, from cron), all code in the Console - Kunena plugin
   (`PlgConsoleKunenaSitemap`, `plugins/console/kunena/sitemap.php`; Kunena itself is unchanged: it reaches the router's
   and the topic helper's caches through reflection to keep memory flat). Static files in `media/kunena/sitemaps/`
-  (git-ignored): `sitemap_index.xml`, `categories.xml`, `threads-YYYY[-N].xml`; same guest-only rules as above; SEF
-  URLs built with the site application made current and `$_SERVER` simulated from `live_site` (`--live-site`).
+  (git-ignored): `sitemap_index.xml`, `categories.xml`, `threads-YYYY[-N].xml`, `profiles[-N].xml` (members with posts,
+  enabled and not banned, only with `pubprofile`); same guest-only rules as above; SEF URLs built with the site
+  application made current and `$_SERVER` simulated from `live_site` (`--live-site`).
+- Profiles for guests: what members write about themselves (website, social accounts, location, gender, birthdate,
+  "about me", signature) is shown to logged-in users only, through `KunenaUser::detailsVisible()` (the getters
+  `getSignature()`, `getPersonalText()`, `getWebsiteURL()`, `socialButtons()`, `profileIcon()` return nothing to guests;
+  layouts reading those fields directly check it). Guests see avatar, name, role, rank, join date, posts. Links members
+  add carry `rel="nofollow ugc"`. Profiles of members without posts are `noindex, follow`.
 - Development and test sites: Configuration > Development > "Don't send e-mails" (`dev_disable_email`); new code that
   sends mail checks `KunenaEmail::isDisabled()` (or goes through `KunenaEmail::send()`, which does).
 
@@ -411,7 +417,9 @@ tests/e2e/containers.sh down
   every count and counter checked, 17 frontend pages rendered, staff-only category hidden from visitors, removal
   keeping a thread another user replied to, no orphans or files left, CLI with and without `--dry-run`), XML
   sitemaps (`kunena:sitemap:generate` with SEF URLs: every listed URL answers 200 to a guest, counts match the
-  guest-readable categories and threads, stale files removed), the integrated extensions (all seven installed at the
+  guest-readable categories, threads and members with posts, stale files removed), profiles for guests (a member's
+  spam website, social account, location and signature hidden from guests on the profile and under posts, shown to
+  the logged-in member; `noindex` without posts), the integrated extensions (all seven installed at the
   package version with the plugins enabled, the four modules rendered in a template position, forum posts found by
   com_search, a Kunena Discuss reply creating the forum thread, a guest's reply refused without the Global Configuration CAPTCHA), Baldrick AI (against the mock provider
   `baldrick-mock.php`, e-mails captured by a fake sendmail: notice without a key, settings page, fetch models / test
@@ -436,7 +444,7 @@ tests/e2e/containers.sh down
   scripts refuse to work on a site containing symbolic links, so that an installation can never write through links
   into the repository.
 
-### 5.5 Results for 5.4.0
+### 5.5 Results for 5.5.0
 
 - Lint: 0 errors on PHP 7.1, 7.4, 8.0, 8.1, 8.2, 8.3, 8.4, 8.5. PHP CS Fixer @PSR12: 0 files to fix.
 - Class-load check (Joomla 3.x UTD 3.18, PHP 8.5): no messages from Kunena code.

@@ -16,7 +16,9 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
 
-// The top of a profile: avatar, name, role and status, actions; numbers; details; social links; about me, signature
+// The top of a profile: avatar, name, role and status, actions; numbers; details; social links; about me, signature.
+// Guests (search engines included) see only the avatar, name, role, rank, join date and number of posts: what members
+// write about themselves is for logged-in users (KunenaUser::detailsVisible()), so spam profiles give crawlers nothing.
 $profile      = $this->profile;
 $config       = $this->config;
 $template     = KunenaFactory::getTemplate();
@@ -33,24 +35,25 @@ $medals       = $activity->getUserMedals($profile->userid);
 $role         = $profile->getType(0, true);
 $stats        = array();
 $details      = array();
+$visible      = KunenaUser::detailsVisible();
 
 if (!empty($profile->posts)) {
     $stats[Text::_('COM_KUNENA_POSTS')] = (int) $profile->posts;
 }
 
-if (!empty($profile->thankyou) && $config->showthankyou) {
+if ($visible && !empty($profile->thankyou) && $config->showthankyou) {
     $stats[Text::_('COM_KUNENA_THANK_YOU_RECEIVED')] = (int) $profile->thankyou;
 }
 
-if (!empty($profile->uhits)) {
+if ($visible && !empty($profile->uhits)) {
     $stats[Text::_('COM_KUNENA_PROFILE_VIEWS')] = (int) $profile->uhits;
 }
 
-if ($config->showuserstats && $config->showkarma && !empty($profile->karma)) {
+if ($visible && $config->showuserstats && $config->showkarma && !empty($profile->karma)) {
     $stats[Text::_('COM_KUNENA_KARMA')] = (int) $profile->karma;
 }
 
-if (!empty($points)) {
+if ($visible && !empty($points)) {
     $stats[rtrim(Text::_('COM_KUNENA_AUP_POINTS'), ': ')] = $points;
 }
 
@@ -62,25 +65,27 @@ if ($config->userlist_joindate || $me->isModerator()) {
     $details[Text::_('COM_KUNENA_MYPROFILE_REGISTERDATE')] = '<span title="' . $profile->getRegisterDate()->toKunena('ago') . '">' . $profile->getRegisterDate()->toKunena('date_today', 'utc') . '</span>';
 }
 
-if ($config->userlist_lastvisitdate || $me->isModerator()) {
+if ($visible && ($config->userlist_lastvisitdate || $me->isModerator())) {
     $details[Text::_('COM_KUNENA_MYPROFILE_LASTLOGIN')] = $profile->getLastVisitDate()->toSpan('config_post_dateformat', 'ago');
 }
 
-$details[Text::_('COM_KUNENA_MYPROFILE_LOCAL_TIME')] = $profile->getTime()->toKunena('time') . ' <span class="kb-muted">(UTC ' . $profile->getTime()->toTimezone() . ')</span>';
-
-if (!empty($profile->location)) {
-    $details[Text::_('COM_KUNENA_MYPROFILE_LOCATION')] = '<a href="https://www.openstreetmap.org/search?query=' . rawurlencode($profile->location) . '" target="_blank" rel="nofollow noopener noreferrer">' . $this->escape($profile->location) . '</a>';
+if ($visible) {
+    $details[Text::_('COM_KUNENA_MYPROFILE_LOCAL_TIME')] = $profile->getTime()->toKunena('time') . ' <span class="kb-muted">(UTC ' . $profile->getTime()->toTimezone() . ')</span>';
 }
 
-if ($profile->getGender() >= 1) {
+if ($visible && !empty($profile->location)) {
+    $details[Text::_('COM_KUNENA_MYPROFILE_LOCATION')] = '<a href="https://www.openstreetmap.org/search?query=' . rawurlencode($profile->location) . '" target="_blank" rel="nofollow ugc noopener noreferrer">' . $this->escape($profile->location) . '</a>';
+}
+
+if ($visible && $profile->getGender() >= 1) {
     $details[Text::_('COM_KUNENA_MYPROFILE_GENDER')] = $profile->getGender();
 }
 
-if ($profile->birthdate >= '1901-01-01') {
+if ($visible && $profile->birthdate >= '1901-01-01') {
     $details[Text::_('COM_KUNENA_MYPROFILE_BIRTHDATE')] = KunenaDate::getInstance($profile->birthdate)->toSpan('date', 'ago', 'utc');
 }
 
-if (!empty($medals)) {
+if ($visible && !empty($medals)) {
     $details[rtrim(Text::_('COM_KUNENA_AUP_MEDALS'), ': ')] = implode(' ', $medals);
 }
 
@@ -116,7 +121,7 @@ if ($banInfo && $banInfo->reason_public) {
 				<a class="kb-btn kb-btn--sm" href="mailto:<?php echo $this->escape($profile->email); ?>" rel="nofollow"><?php echo $template->icon('envelope', Text::_('COM_KUNENA_MYPROFILE_EMAIL')); ?></a>
 			<?php endif; ?>
 			<?php if (!empty($websiteURL)) : ?>
-				<a class="kb-btn kb-btn--sm" rel="nofollow noopener noreferrer" target="_blank" href="<?php echo htmlspecialchars($websiteURL, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>"><?php echo $template->icon('globe'); ?><span><?php echo $websiteName ? $this->escape($websiteName) : Text::_('COM_KUNENA_MYPROFILE_WEBSITE'); ?></span></a>
+				<a class="kb-btn kb-btn--sm" rel="nofollow ugc noopener noreferrer" target="_blank" href="<?php echo htmlspecialchars($websiteURL, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>"><?php echo $template->icon('globe'); ?><span><?php echo $websiteName ? $this->escape($websiteName) : Text::_('COM_KUNENA_MYPROFILE_WEBSITE'); ?></span></a>
 			<?php endif; ?>
 		</div>
 	</div>
@@ -129,11 +134,13 @@ if ($banInfo && $banInfo->reason_public) {
 		</dl>
 	<?php endif; ?>
 
-	<dl class="kb-profile-details">
-		<?php foreach ($details as $label => $value) : ?>
-			<div><dt><?php echo $label; ?></dt><dd><?php echo $value; ?></dd></div>
-		<?php endforeach; ?>
-	</dl>
+	<?php if ($details) : ?>
+		<dl class="kb-profile-details">
+			<?php foreach ($details as $label => $value) : ?>
+				<div><dt><?php echo $label; ?></dt><dd><?php echo $value; ?></dd></div>
+			<?php endforeach; ?>
+		</dl>
+	<?php endif; ?>
 
 	<?php echo $this->subLayout('User/Item/Social')->set('profile', $profile)->set('socials', $profile->socialButtons()); ?>
 

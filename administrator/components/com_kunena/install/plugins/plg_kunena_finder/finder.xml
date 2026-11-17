@@ -2,7 +2,7 @@
 <!DOCTYPE extension>
 <extension version="2.5" type="plugin" group="kunena" method="upgrade">
     <name>plg_kunena_finder</name>
-    <version>5.4.0</version>
+    <version>5.5.0</version>
     <creationDate>2026-11-17</creationDate>
     <author>Kunena Team</author>
     <authorEmail>kunena@kunena.org</authorEmail>

@@ -148,6 +148,7 @@ if ($show) {
 </div>
 <div class="span3">
 	<br>
+	<?php if (KunenaUser::detailsVisible()) : ?>
 	<li>
 		<strong> <?php echo Text::_('COM_KUNENA_MYPROFILE_GENDER'); ?>:</strong>
 		<span> <?php echo $user->getGender(); ?> </span>
@@ -156,6 +157,7 @@ if ($show) {
 		<strong> <?php echo Text::_('COM_KUNENA_MYPROFILE_BIRTHDATE'); ?>:</strong>
 		<span> <?php echo KunenaDate::getInstance($user->birthdate)->toSpan('date', 'ago', 'utc'); ?> </span>
 	</li>
+	<?php endif; ?>
 	<?php echo $this->subLayout('Widget/Module')->set('position', 'kunena_profile_horizontal'); ?>
 	<?php echo $this->subLayout('Widget/Module')->set('position', 'kunena_profile_horizontal_' . $user->userid); ?>
 	<?php echo $this->subLayout('Widget/Module')->set('position', 'kunena_profile_horizontal_' . $user->rank); ?>

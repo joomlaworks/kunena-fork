@@ -1,4 +1,4 @@
-Kunena Fork 5.4 for Joomla 3.x & Joomla 3.x UTD
+Kunena Fork 5.5 for Joomla 3.x & Joomla 3.x UTD
 ===============================================
 
 Kunena Fork is a native forum component for Joomla. This repository is a maintained fork of **Kunena 5.2.14**, the last release of Kunena for Joomla 3.x & [Joomla 3.x UTD](https://j3xutd.joomlaworks.net), modernised for current PHP versions, hardened and packaged as a single installable extension.
@@ -9,7 +9,7 @@ Kunena Fork is a native forum component for Joomla. This repository is a maintai
 
 ---
 
-- **Version:** 5.4.0 - released November 17th, 2026
+- **Version:** 5.5.0 - released November 17th, 2026
 - **Joomla:** 3.x, from 3.9 to 3.18 - built and tested for [Joomla 3.x UTD](https://j3xutd.joomlaworks.net)
 - **PHP:** 7.1 to 8.5 (7.4 or newer recommended)
 - **Databases:** MySQL 5.5.3+ / MariaDB, PostgreSQL 9.5+, SQLite 3.37+ (Joomla 3.x UTD's SQLite driver)
@@ -19,6 +19,7 @@ Kunena Fork is a native forum component for Joomla. This repository is a maintai
 
 ## CONTENTS
 - [Changelog](#changelog)
+  - [Version 5.5.0 - released November 17th, 2026](#version-550---released-november-17th-2026)
   - [Version 5.4.0 - released November 17th, 2026](#version-540---released-november-17th-2026)
   - [Version 5.3.0 - released November 12th, 2026](#version-530---released-november-12th-2026)
 - [How to Install](#how-to-install)
@@ -33,6 +34,13 @@ Kunena Fork is a native forum component for Joomla. This repository is a maintai
 ## CHANGELOG
 
 A short overview of each release. Every change is described in detail in [CHANGELOG.md](CHANGELOG.md).
+
+## Version 5.5.0 - released November 17th, 2026
+Summary of changes:
+- **Public profiles without the spam:** guests (search engines included) see only a member's avatar, name, role, rank, join date, number of posts and posts. Website, social accounts, location, gender, birthdate, "about me" and signatures (also under posts) are shown to logged-in users only, so spam accounts get nothing out of a public profile, with no clean-up needed on existing sites. Links members add are marked `nofollow ugc`
+- Profiles of members without posts are not indexed (`noindex, follow`)
+- **XML sitemaps:** the profiles of members with posts (`profiles.xml`), when guests may see profiles
+- With "Allow Guests to see User Profiles" on, threads' structured data names each author's profile (`author.url`), which Google Search Console asks for
 
 ## Version 5.4.0 - released November 17th, 2026
 Summary of changes:
@@ -148,7 +156,9 @@ Structured data and the Open Graph / X card tags are on by default. In **Kunena 
 
 On Joomla 3.x UTD, the core plugin **System - Structured Data & Social Tags** writes the tags of every page; Kunena Fork gives it the forum's own (threads, profiles, categories), and the plugin's settings (site name, publisher, default image, X account) apply to everything else. Test a thread with Google's [Rich Results Test](https://search.google.com/test/rich-results).
 
-**XML sitemaps** (Joomla 3.x UTD): `php cli/joomla.php kunena:sitemap:generate --live-site=https://www.example.com` writes the forum's sitemaps into `media/kunena/sitemaps/` (an index, the categories and the threads by year, only what guests can see). Run it from cron, e.g. every 30 minutes, add `Sitemap: https://www.example.com/media/kunena/sitemaps/sitemap_index.xml` to the site's `robots.txt` and submit the same URL in Google Search Console. See [CLI-GUIDE.md](CLI-GUIDE.md#kunenasitemapgenerate).
+**Member profiles:** Google asks for a link to each post's author (`author.url`, "Missing field url" in Search Console). Kunena Fork gives it only when guests may see profiles: turn on **Allow Guests to see User Profiles** in **Kunena > Configuration > Security & Moderation**. Guests then see only a member's avatar, name, role, rank, join date and posts; everything members write about themselves (website, social accounts, location, about me, signature) stays for logged-in users, so spammers gain nothing from a profile. Profiles of members without posts are not indexed.
+
+**XML sitemaps** (Joomla 3.x UTD): `php cli/joomla.php kunena:sitemap:generate --live-site=https://www.example.com` writes the forum's sitemaps into `media/kunena/sitemaps/` (an index, the categories, the threads by year and, with public profiles, the members who have posted; only what guests can see). Run it from cron, e.g. every 30 minutes, add `Sitemap: https://www.example.com/media/kunena/sitemaps/sitemap_index.xml` to the site's `robots.txt` and submit the same URL in Google Search Console. See [CLI-GUIDE.md](CLI-GUIDE.md#kunenasitemapgenerate).
 
 ## COMMAND LINE
 

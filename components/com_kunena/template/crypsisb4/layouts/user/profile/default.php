@@ -156,7 +156,7 @@ if ($user->userid > 1)
 					</li>
 				<?php endif; ?>
 
-				<?php if ($user->gender)
+				<?php if (KunenaUser::detailsVisible() && $user->gender)
 				:
 				    ?>
 					<li>
@@ -164,7 +164,7 @@ if ($user->userid > 1)
 					</li>
 				<?php endif; ?>
 
-				<?php if ($user->birthdate)
+				<?php if (KunenaUser::detailsVisible() && $user->birthdate)
 				:
 				    ?>
 					<li>
@@ -172,7 +172,7 @@ if ($user->userid > 1)
 					</li>
 				<?php endif; ?>
 
-				<?php if ($user->location)
+				<?php if (KunenaUser::detailsVisible() && $user->location)
 				:
 				    ?>
 					<li>
@@ -180,7 +180,7 @@ if ($user->userid > 1)
 					</li>
 				<?php endif; ?>
 
-				<?php if ($user->websiteurl)
+				<?php if (KunenaUser::detailsVisible() && $user->websiteurl)
 				:
 				    ?>
 					<li>

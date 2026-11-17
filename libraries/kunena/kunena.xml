@@ -3,7 +3,7 @@
 <extension type="library" version="2.5" method="upgrade">
     <name>Kunena Framework</name>
     <libraryname>kunena</libraryname>
-    <version>5.4.0</version>
+    <version>5.5.0</version>
     <versionname>Tharsis</versionname>
     <creationDate>2026-11-17</creationDate>
     <author>Kunena Team</author>

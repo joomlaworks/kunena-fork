@@ -162,11 +162,15 @@ Writes the forum's XML sitemaps as static files into `media/kunena/sitemaps/`, r
 - `sitemap_index.xml`: the sitemap index, listing the files below with the time of their newest post;
 - `categories.xml`: every published category guests can read;
 - `threads-YYYY.xml`: the threads started in that year, newest year first (`threads-YYYY-2.xml`, `-3`... when a year
-  has more than 50,000 threads, the protocol's limit per file).
+  has more than 50,000 threads, the protocol's limit per file);
+- `profiles.xml`: the profiles of members with at least one post, an enabled account and no ban in force, only when
+  "Allow Guests to see User Profiles" is on (Kunena > Configuration > Security & Moderation); `profiles-2.xml`... past
+  50,000 members. Profiles have no modification time.
 
 Only what a guest can see is listed: published threads of categories guests can read, each by its first page, without
 the placeholders left by moved threads. The URLs are the site's own SEF URLs, built by Kunena's router with the site's
-menu items, exactly as on the pages. Files of years that no longer have threads are removed. Each file is written to a
+menu items, exactly as on the pages. Files with nothing left to list (a year without threads, or the profiles once
+guests may no longer see them) are removed. Each file is written to a
 temporary file first and then renamed, so search engines never read half a file. Memory stays low on large forums
 (threads are read 500 at a time).
 

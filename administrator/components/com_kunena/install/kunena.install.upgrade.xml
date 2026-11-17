@@ -728,5 +728,7 @@
         </version>
         <version version="5.4.0" versiondate="2026-11-17" versionname="Tharsis">
         </version>
+        <version version="5.5.0" versiondate="2026-11-17" versionname="Tharsis">
+        </version>
     </upgrade>
 </comupgrade>

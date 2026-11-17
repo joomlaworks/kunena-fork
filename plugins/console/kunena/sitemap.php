@@ -22,7 +22,8 @@ use Joomla\CMS\Uri\Uri;
  *
  * - sitemap_index.xml: the sitemap index, listing the files below;
  * - categories.xml: every category guests can read;
- * - threads-YYYY.xml: the threads started in that year (threads-YYYY-2.xml... past 50,000 URLs).
+ * - threads-YYYY.xml: the threads started in that year (threads-YYYY-2.xml... past 50,000 URLs);
+ * - profiles.xml: the profiles of members with posts, when guests may see profiles (profiles-2.xml... past 50,000).
  *
  * Only what a guest sees is listed: published threads of categories guests can read, without the shadows of moved
  * threads; each thread by its first page. The URLs are the site's own SEF URLs: the site application is made the current
@@ -96,6 +97,12 @@ abstract class PlgConsoleKunenaSitemap
             }
         }
 
+        $count = static::getProfileCount();
+
+        for ($part = 1; ($part - 1) * static::MAX_URLS < $count; $part++) {
+            $files[static::profileFile($part)] = min(static::MAX_URLS, $count - ($part - 1) * static::MAX_URLS);
+        }
+
         return $files;
     }
 
@@ -165,6 +172,41 @@ abstract class PlgConsoleKunenaSitemap
 
                 list($written[$file], $index[$file]) = static::closeUrlset($out);
             }
+
+            // Profiles of members with posts (only when guests may see profiles), without a modification time
+            if (static::getProfileCount()) {
+                $part    = 1;
+                $file    = static::profileFile($part);
+                $out     = static::openUrlset($file);
+                $profile = KunenaFactory::getProfile();
+
+                foreach (static::getProfileBatches() as $ids) {
+                    KunenaUserHelper::loadUsers($ids);
+
+                    foreach ($ids as $id) {
+                        $link = (string) $profile->getProfileURL((int) $id, '', false);
+
+                        if ($link === '') {
+                            continue;
+                        }
+
+                        if ($out['count'] === static::MAX_URLS) {
+                            list($written[$file], $index[$file]) = static::closeUrlset($out);
+                            $file                                = static::profileFile(++$part);
+                            $out                                 = static::openUrlset($file);
+                        }
+
+                        static::addUrl($out, static::absolute($link, $site), 0);
+                    }
+
+                    static::forget('KunenaUserHelper', '_instances', $ids);
+                    static::forget('KunenaRoute', 'filtered');
+                    static::forgetRoutes();
+                    KunenaRoute::$uris = array();
+                }
+
+                list($written[$file], $index[$file]) = static::closeUrlset($out);
+            }
         } finally {
             if (isset($out['handle']) && is_resource($out['handle'])) {
                 fclose($out['handle']);
@@ -176,13 +218,14 @@ abstract class PlgConsoleKunenaSitemap
 
         static::writeIndex($index, $site);
 
-        // Files of earlier runs which no longer have threads (e.g. a year whose threads were all deleted)
+        // Files of earlier runs which have nothing left (e.g. a year whose threads were all deleted, or profiles which
+        // guests may no longer see)
         $removed = array();
 
         foreach ((array) glob($folder . '/*.xml') as $path) {
             $name = basename($path);
 
-            if (preg_match('/^(categories|threads-\d{4}(-\d+)?)\.xml$/', $name) && !isset($written[$name]) && @unlink($path)) {
+            if (preg_match('/^(categories|threads-\d{4}(-\d+)?|profiles(-\d+)?)\.xml$/', $name) && !isset($written[$name]) && @unlink($path)) {
                 $removed[] = $name;
             }
         }
@@ -324,6 +367,91 @@ abstract class PlgConsoleKunenaSitemap
 
             yield $rows;
         }
+    }
+
+    /**
+     * Members whose profiles are listed: guests may see profiles (Configuration: "Allow Guests to see User Profiles"),
+     * and the member has posts, an enabled Joomla account and no ban in force. Members without posts are left out: their
+     * profiles have nothing to offer (and are the usual shape of a spam account).
+     *
+     * @param   \Joomla\Database\DatabaseQuery|\JDatabaseQuery  $query  Query
+     *
+     * @return  \Joomla\Database\DatabaseQuery|\JDatabaseQuery|false  The query with the conditions, or false (no profiles)
+     *
+     * @since 5.5.0
+     */
+    protected static function profileConditions($query)
+    {
+        if (!KunenaConfig::getInstance()->pubprofile) {
+            return false;
+        }
+
+        $db  = Factory::getDbo();
+        $now = $db->quote(Factory::getDate()->toSql());
+
+        return $query
+            ->from($db->quoteName('#__kunena_users', 'ku'))
+            ->innerJoin($db->quoteName('#__users', 'u') . ' ON ' . $db->quoteName('u.id') . ' = ' . $db->quoteName('ku.userid'))
+            ->where($db->quoteName('ku.posts') . ' > 0')
+            ->where($db->quoteName('u.block') . ' = 0')
+            ->where('(' . $db->quoteName('ku.banned') . ' IS NULL OR (' . $db->quoteName('ku.banned') . ' <> ' . $db->quote($db->getNullDate())
+                . ' AND ' . $db->quoteName('ku.banned') . ' < ' . $now . '))');
+    }
+
+    /**
+     * @return  integer  Profiles to list
+     *
+     * @since 5.5.0
+     */
+    protected static function getProfileCount()
+    {
+        $db    = Factory::getDbo();
+        $query = static::profileConditions($db->getQuery(true));
+
+        return $query ? (int) $db->setQuery($query->select('COUNT(*)'))->loadResult() : 0;
+    }
+
+    /**
+     * @return  Generator  Batches of BATCH member ids, in id order (keyset pagination)
+     *
+     * @since 5.5.0
+     */
+    protected static function getProfileBatches()
+    {
+        $db     = Factory::getDbo();
+        $lastId = 0;
+
+        while (true) {
+            $ids = $db->setQuery(
+                static::profileConditions($db->getQuery(true))
+                    ->select($db->quoteName('u.id'))
+                    ->where($db->quoteName('u.id') . ' > ' . (int) $lastId)
+                    ->order($db->quoteName('u.id')),
+                0,
+                static::BATCH
+            )->loadColumn();
+
+            if (!$ids) {
+                return;
+            }
+
+            $ids    = array_map('intval', $ids);
+            $lastId = max($ids);
+
+            yield $ids;
+        }
+    }
+
+    /**
+     * @param   integer  $part  Part (1, 2... past MAX_URLS profiles)
+     *
+     * @return  string  File name
+     *
+     * @since 5.5.0
+     */
+    protected static function profileFile($part)
+    {
+        return 'profiles' . ($part > 1 ? '-' . (int) $part : '') . '.xml';
     }
 
     /**
@@ -521,8 +649,19 @@ abstract class PlgConsoleKunenaSitemap
      */
     protected static function url($link, $site)
     {
-        $url = (string) KunenaRoute::_($link, false);
+        return static::absolute((string) KunenaRoute::_($link, false), $site);
+    }
 
+    /**
+     * @param   string  $url   URL made by Kunena's router (usually relative to the site's root)
+     * @param   string  $site  The site's address
+     *
+     * @return  string  Absolute URL, with non-ASCII characters and spaces percent-encoded
+     *
+     * @since 5.5.0
+     */
+    protected static function absolute($url, $site)
+    {
         if (!preg_match('#^https?://#i', $url)) {
             $url = preg_replace('#^(https?://[^/]+).*$#i', '$1', $site) . '/' . ltrim($url, '/');
         }

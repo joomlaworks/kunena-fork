@@ -153,7 +153,7 @@ if ($this->config->showuserstats) {
 							<?php endif; ?>
 						</ul>
 						<ul class="unstyled span3">
-							<?php if (!empty($this->profile->location))
+							<?php if (KunenaUser::detailsVisible() && !empty($this->profile->location))
 							:
 							    ?>
 								<li>
@@ -173,7 +173,7 @@ if ($this->config->showuserstats) {
 								</li>
 							<?php endif; ?>
 							<?php
-                            if ($this->profile->getGender() >= 1)
+                            if (KunenaUser::detailsVisible() && $this->profile->getGender() >= 1)
                             :
                                 ?>
 								<li>
@@ -182,7 +182,7 @@ if ($this->config->showuserstats) {
 								</li>
 							<?php endif; ?>
 							<?php
-                            if ($this->profile->birthdate >= '1901-01-01')
+                            if (KunenaUser::detailsVisible() && $this->profile->birthdate >= '1901-01-01')
                             :
                                 ?>
 								<li>

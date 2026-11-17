@@ -3,6 +3,45 @@
 All notable changes to Kunena Fork, this fork of Kunena, are documented here. For a short overview see [README.md](README.md); for
 how the code base is organised and how to work on it, see [AGENTS.md](AGENTS.md).
 
+## [5.5.0] - 2026-11-17
+
+### Changed
+
+- **Profiles shown to guests without what spammers come for** (JoomlaWorks Ltd.): spam accounts used to fill their
+  profiles and signatures with links for search engines to crawl, which kept sites from opening profiles to guests, and
+  without public profiles Google Search Console reports "Missing field url" for every post's `author` and every
+  reply's `comment.author`. Now guests (search engines included) see a member's avatar, name, role, rank, join date,
+  number of posts and posts; website, social accounts, location, gender, birthdate, "about me" and signature are shown
+  to logged-in users only, on the profile and under posts, in every template. One rule, `KunenaUser::detailsVisible()`
+  (the visitor is logged in): `getSignature()`, `getPersonalText()`, `getWebsiteURL()`, `getWebsiteName()`,
+  `socialButtons()` and `profileIcon()` return nothing to guests, and the layouts which read the fields themselves
+  (Blackadder's profile summary; Crypsis's profile summary and post sidebars) check it too. Nothing is removed from
+  the database, so existing sites need no clean-up; the profile's thank-yous, views, karma, points, medals, last visit
+  and local time are for logged-in users too. With "Allow Guests to see User Profiles" on, threads' structured data
+  carries each author's `url` again.
+- Links members add (website, social accounts, location) carry `rel="nofollow ugc"`, Google's marker for user-generated
+  links.
+- Profiles of members without posts are `noindex, follow`: nothing to index, and the usual shape of a spam account.
+
+### Added
+
+- **Sitemaps:** `profiles.xml` (`profiles-2.xml`... past 50,000) lists the profiles of members with posts, an enabled
+  account and no ban in force, when guests may see profiles; it is removed when they no longer may.
+
+### Test results (5.5.0)
+
+- PHP lint: 0 errors on PHP 7.1, 7.4, 8.0, 8.1, 8.2, 8.3, 8.4 and 8.5. PHP CS Fixer (@PSR12): 0 files to fix.
+- Class-load check against Joomla 3.x UTD 3.18 on PHP 8.5: 364 class files, 0 messages.
+- End-to-end on Joomla 3.x UTD 3.18, PHP 8.5, on SQLite 3.45 and PostgreSQL 16: 149 and 20
+  scenarios pass, no failed SQL queries, no PHP messages from Kunena code. The new
+  `profiles` scenario fills a member's website, social account, location and signature with spam and checks that
+  guests see none of it on the profile or under the member's posts, that the member sees all of it when logged in, and
+  that a profile without posts is `noindex`; the `sitemap` scenario checks `profiles.xml` against the members with
+  posts. Both scenarios are now part of `tests/e2e/matrix.sh` (in 5.4.0 the sitemap scenario was run on its own, on
+  SQLite only).
+
+---
+
 ## [5.4.0] - 2026-11-17
 
 ### Added
@@ -24,7 +63,8 @@ how the code base is organised and how to work on it, see [AGENTS.md](AGENTS.md)
 - PHP lint: 0 errors on PHP 7.1, 7.4, 8.0, 8.1, 8.2, 8.3, 8.4 and 8.5. PHP CS Fixer (@PSR12): 0 files to fix.
 - Class-load check against Joomla 3.x UTD 3.18 on PHP 8.5: 364 class files, 0 messages.
 - End-to-end on Joomla 3.x UTD 3.18, PHP 8.5, installing the GitHub-style ZIP, on SQLite 3.45 and PostgreSQL 16: 144
-  and 20 scenarios pass, no failed SQL queries, no PHP messages from Kunena code. The new `sitemap` scenario turns on
+  and 20 scenarios pass, no failed SQL queries, no PHP messages from Kunena code. The new `sitemap` scenario (run on
+  its own, on SQLite) turns on
   SEF URLs and checks that every listed URL answers 200 to a guest, that the counts match the categories and threads
   guests can read, that a stale file is removed and that the command refuses to run without the site's address.
 - The tests read the package's version from `kunena.xml` instead of expecting a fixed one.

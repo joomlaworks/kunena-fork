@@ -124,25 +124,25 @@ if ($show) {
 					</li>
 				<?php endif; ?>
 
-				<?php if ($user->gender) : ?>
+				<?php if (KunenaUser::detailsVisible() && $user->gender) : ?>
 					<li>
 						<?php echo $user->profileIcon('gender'); ?>
 					</li>
 				<?php endif; ?>
 
-				<?php if ($user->birthdate) : ?>
+				<?php if (KunenaUser::detailsVisible() && $user->birthdate) : ?>
 					<li>
 						<?php echo $user->profileIcon('birthdate'); ?>
 					</li>
 				<?php endif; ?>
 
-				<?php if ($user->location) : ?>
+				<?php if (KunenaUser::detailsVisible() && $user->location) : ?>
 					<li>
 						<?php echo $user->profileIcon('location'); ?>
 					</li>
 				<?php endif; ?>
 
-				<?php if ($user->websiteurl) : ?>
+				<?php if (KunenaUser::detailsVisible() && $user->websiteurl) : ?>
 					<li>
 						<?php echo $user->profileIcon('website'); ?>
 					</li>

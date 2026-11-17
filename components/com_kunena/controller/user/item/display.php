@@ -195,6 +195,11 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
             }
         }
 
+        // Members without posts: nothing to index (and the usual shape of a spam account); the sitemaps leave them out too
+        if (!(int) $this->profile->posts) {
+            $this->setMetaData('robots', 'noindex, follow');
+        }
+
         // Structured data (ProfilePage) and the OpenGraph / X tags
         KunenaSeo::profile($this->profile);
     }

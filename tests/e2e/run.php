@@ -6,7 +6,7 @@ require __DIR__ . '/lib.php';
 $env = parse_ini_string(preg_replace('/^(\w+)=/m', '$1=', shell_exec('bash -c ". ' . __DIR__ . '/env.sh; set | grep -E \'^(DBTEST|SITES|OUT|ADMIN_USER|ADMIN_PASS)=\'"')));
 $db   = isset($argv[1]) ? $argv[1] : 'sqlite';
 $ports = array('sqlite' => 8101, 'pg' => 8102, 'mariadb' => 8103, 'pgpdo' => 8104, 'mysql' => 8105);
-$all  = array('install', 'wizard', 'admin', 'config', 'site', 'post', 'guest', 'features', 'search', 'profile', 'recent', 'moderate', 'emptytrash', 'sampledata', 'sitemap', 'extras', 'baldrick', 'adminpages', 'tools', 'uninstall');
+$all  = array('install', 'wizard', 'admin', 'config', 'site', 'post', 'guest', 'features', 'search', 'profile', 'recent', 'moderate', 'emptytrash', 'sampledata', 'sitemap', 'profiles', 'extras', 'baldrick', 'adminpages', 'tools', 'uninstall');
 $steps = isset($argv[2]) ? explode(',', $argv[2]) : $all;
 $site = $env['SITES'] . '/' . $db;
 $base = 'http://127.0.0.1:' . $ports[$db] . '/';
@@ -691,7 +691,9 @@ PHP
                 $gen = $cli("kunena:sitemap:generate -n $live");
                 $expected = kexecJson('$db = JFactory::getDbo(); $ids = KunenaForumCategoryHelper::getGuestReadable();
 $db->setQuery("SELECT COUNT(*) FROM #__kunena_topics WHERE hold=0 AND moved_id=0 AND category_id IN (" . implode(",", array_map("intval", $ids)) . ")");
-return json_encode(array("categories" => count($ids), "threads" => (int) $db->loadResult()));');
+$threads = (int) $db->loadResult();
+$db->setQuery("SELECT COUNT(*) FROM #__kunena_users ku INNER JOIN #__users u ON u.id = ku.userid WHERE ku.posts > 0 AND u.block = 0 AND ku.banned IS NULL");
+return json_encode(array("categories" => count($ids), "threads" => $threads, "profiles" => (int) $db->loadResult()));');
                 $index = @simplexml_load_file("$folder/sitemap_index.xml");
                 $files = array();
                 $urls  = array();
@@ -700,7 +702,7 @@ return json_encode(array("categories" => count($ids), "threads" => (int) $db->lo
                     $file = basename((string) $entry->loc);
                     $files[$file] = 0;
                     $set = @simplexml_load_file("$folder/$file");
-                    if (!$set || strpos((string) $entry->loc, rtrim($base, '/') . '/media/kunena/sitemaps/') !== 0 || !strtotime((string) $entry->lastmod)) {
+                    if (!$set || strpos((string) $entry->loc, rtrim($base, '/') . '/media/kunena/sitemaps/') !== 0 || ($file !== 'profiles.xml' && !strtotime((string) $entry->lastmod))) {
                         $bad[] = $file;
                         continue;
                     }
@@ -709,7 +711,7 @@ return json_encode(array("categories" => count($ids), "threads" => (int) $db->lo
                         $urls[] = (string) $u->loc;
                     }
                 }
-                $threads = array_sum($files) - (isset($files['categories.xml']) ? $files['categories.xml'] : 0);
+                $threads = array_sum($files) - (isset($files['categories.xml']) ? $files['categories.xml'] : 0) - (isset($files['profiles.xml']) ? $files['profiles.xml'] : 0);
                 $guest = new JClient($base, "$out/$db-sitemap.jar");
                 foreach ($urls as $u) {
                     $guest->req($u, null, false);
@@ -722,8 +724,54 @@ return json_encode(array("categories" => count($ids), "threads" => (int) $db->lo
                 shell_exec('cd ' . escapeshellarg($site) . ' && php cli/joomla.php config:set sef=0 -n -q');
                 $ok = empty($noSite['success']) && $dryOk && !empty($gen['success']) && $index && !$bad && $served
                     && isset($files['categories.xml']) && $files['categories.xml'] == $expected['categories'] && $threads == $expected['threads'] && $threads > 0
+                    && $expected['profiles'] > 0 && isset($files['profiles.xml']) && $files['profiles.xml'] == $expected['profiles']
                     && !is_file("$folder/threads-1999.xml") && in_array('threads-1999.xml', (array) ($gen['data']['removed'] ?? array()));
                 result('sitemap', $ok, 'files=' . json_encode($files) . ' expected=' . json_encode($expected) . ' served=' . (int) $served . ' bad=' . json_encode(array_slice($bad, 0, 5)) . ' gen=' . json_encode($gen['messages'] ?? $gen));
+                break;
+            case 'profiles':
+                // Guests see a member's avatar, name, role, join date and posts only: website, social accounts, location
+                // and signature (the spammers' targets) are for logged-in users; profiles without posts aren't indexed
+                $p = kexecJson('$db = JFactory::getDbo(); $id = (int) JUserHelper::getUserId(' . var_export($env['ADMIN_USER'], true) . ');
+$db->setQuery("SELECT signature, websiteurl, websitename, location, twitter FROM #__kunena_users WHERE userid=" . $id); $orig = $db->loadAssoc();
+$db->setQuery("UPDATE #__kunena_users SET signature=" . $db->quote("Sig [url=https://spam-sig.example]spam[/url]") . ", websiteurl=" . $db->quote("https://spam-site.example") . ", websitename=" . $db->quote("Spam site") . ", location=" . $db->quote("Spamville") . ", twitter=" . $db->quote("spamhandle") . " WHERE userid=" . $id)->execute();
+$db->setQuery("SELECT m.thread, m.catid FROM #__kunena_messages m WHERE m.userid=" . $id . " AND m.hold=0 AND m.catid IN (" . implode(",", array_map("intval", KunenaForumCategoryHelper::getGuestReadable())) . ") ORDER BY m.id DESC", 0, 1); $t = $db->loadAssoc();
+$db->setQuery("SELECT id FROM #__users WHERE username=" . $db->quote("quietmember")); foreach ($db->loadColumn() as $old) { $db->setQuery("DELETE FROM #__user_usergroup_map WHERE user_id=" . (int) $old)->execute(); $db->setQuery("DELETE FROM #__users WHERE id=" . (int) $old)->execute(); }
+$u = (object) array("name" => "Quiet Member", "username" => "quietmember", "email" => "quiet@example.invalid", "password" => "", "block" => 0, "sendEmail" => 0, "registerDate" => JFactory::getDate()->toSql(), "lastvisitDate" => $db->getNullDate(), "activation" => "", "params" => "{}", "lastResetTime" => $db->getNullDate(), "resetCount" => 0, "otpKey" => "", "otep" => "", "requireReset" => 0);
+$db->insertObject("#__users", $u, "id");
+$map = (object) array("user_id" => (int) $u->id, "group_id" => 2); $db->insertObject("#__user_usergroup_map", $map);
+return json_encode(array("id" => $id, "orig" => $orig, "thread" => $t, "quiet" => (int) $u->id));');
+                if (empty($p['id'])) {
+                    result('profiles', false, 'setup: ' . json_encode($p));
+                    break;
+                }
+                $guest = new JClient($base, "$out/$db-profiles-guest.jar");
+                $leaks = function ($html) {
+                    return array_values(array_filter(array('spam-sig.example', 'spam-site.example', 'Spamville', 'spamhandle'), function ($n) use ($html) {
+                        return stripos($html, $n) !== false;
+                    }));
+                };
+                $guest->get(kurl('view=user&userid=' . (int) $p['id']));
+                list($gok, $gnote) = check($guest, 'profiles', 'profile-guest');
+                $guestProfile = $leaks($guest->last);
+                $guestNoindex = (bool) preg_match('/<meta name="robots" content="noindex/i', $guest->last);
+                $fe->get(kurl('view=user&userid=' . (int) $p['id']));
+                list($mok, $mnote) = check($fe, 'profiles', 'profile-member');
+                $memberProfile = $leaks($fe->last);
+                $topic = kurl('view=topic&catid=' . (int) $p['thread']['catid'] . '&id=' . (int) $p['thread']['thread']);
+                $guest->get($topic);
+                $guestTopic = $leaks($guest->last);
+                $fe->get($topic);
+                $memberTopic = $leaks($fe->last);
+                $guest->get(kurl('view=user&userid=' . (int) $p['quiet']));
+                $quietNoindex = $guest->code == 200 && (bool) preg_match('/<meta name="robots" content="noindex, follow[",]/i', $guest->last);
+                kexecJson('$db = JFactory::getDbo(); $o = ' . var_export($p['orig'], true) . '; $set = array();
+foreach ($o as $k => $v) { $set[] = $db->quoteName($k) . "=" . ($v === null ? "NULL" : $db->quote($v)); }
+$db->setQuery("UPDATE #__kunena_users SET " . implode(",", $set) . " WHERE userid=" . ' . (int) $p['id'] . ')->execute();
+$db->setQuery("DELETE FROM #__user_usergroup_map WHERE user_id=' . (int) $p['quiet'] . '")->execute(); $db->setQuery("DELETE FROM #__users WHERE id=' . (int) $p['quiet'] . '")->execute(); $db->setQuery("DELETE FROM #__kunena_users WHERE userid=' . (int) $p['quiet'] . '")->execute(); return json_encode(true);');
+                result('profile-guest', $gok && !$guestProfile && !$guestNoindex, "$gnote leaks=" . json_encode($guestProfile));
+                result('profile-member', $mok && count($memberProfile) == 4, "$mnote shown=" . json_encode($memberProfile));
+                result('signature-guest', $p['thread'] && !$guestTopic && in_array('spam-sig.example', $memberTopic), 'guest=' . json_encode($guestTopic) . ' member=' . json_encode($memberTopic));
+                result('profile-noposts', $quietNoindex, 'HTTP ' . $guest->code);
                 break;
             case 'extras':
                 // The modules and plugins kunena.org used to distribute separately, now in the package

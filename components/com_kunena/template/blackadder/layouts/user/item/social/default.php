@@ -29,7 +29,7 @@ foreach ((array) $this->socials as $key => $social) {
 
     if (empty($social['nourl'])) {
         $url     = strtr($social['url'], array('##VALUE##' => $value));
-        $links[] = '<a class="kb-chip" href="' . $this->escape($url) . '" target="_blank" rel="nofollow noopener noreferrer me">' . $title . '</a>';
+        $links[] = '<a class="kb-chip" href="' . $this->escape($url) . '" target="_blank" rel="nofollow ugc noopener noreferrer me">' . $title . '</a>';
     } else {
         $links[] = '<span class="kb-chip">' . $title . ': ' . $this->escape($value) . '</span>';
     }
