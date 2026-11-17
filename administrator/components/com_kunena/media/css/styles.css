@@ -63,6 +63,11 @@
 
 #kunena .kunena-dashboard #dashboard-icons .btn {margin:0;padding:1.25em 0.5em;}
 
+#kunena .kunena-dashboard .kunena-dashboard-divider {grid-column:1 / -1;width:100%;margin:0;}
+
+/* Sidebar: the forum's content, then configuration, tools and insights */
+#kunena .nav-list > .kunena-menu-divider {height:0;margin:0.6em 0.75em;border:0;border-top:1px solid rgba(128, 128, 128, 0.35);overflow:hidden;}
+
 /* Maintenance: sections of jobs; each job its name, description, fields and result, its button centred in a second column */
 .kunena-maintenance h3 {margin:1.75em 0 0.6em;font-size:1.35em;}
 

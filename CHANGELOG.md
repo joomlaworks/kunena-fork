@@ -65,6 +65,10 @@ how the code base is organised and how to work on it, see [AGENTS.md](AGENTS.md)
   to this fork's CHANGELOG.md follows the version number; no codename and no "Getting Started" block (kunena.org's
   documentation); the shortcuts block is as tall as the information block next to it, its shortcuts spread over it.
   Tools lists its pages alphabetically, and Maintenance its sections.
+- Administrator sidebar and dashboard shortcuts come from one list (`template/j3/common/items.php`): the same entries,
+  names and icons in both (the dashboard gains Baldrick AI and Maintenance; "Config", "Files" and "Trash" read
+  "Configuration", "Attachments" and "Trashbin"), in two groups divided by a line, as WordPress does: the forum's content
+  (categories to templates), then configuration, tools and insights.
 - **MySQL/MariaDB: Kunena's tables to utf8mb4.** Kunena's installer only ever changed its tables' default character
   set to utf8mb4 (`ALTER TABLE ... DEFAULT CHARACTER SET`), never the columns, so forums installed before utf8mb4
   still have utf8 (utf8mb3) columns: posts can't hold emoji, and a search with one fails with "Illegal mix of
