@@ -28,11 +28,9 @@ class KunenaAdminViewCpanel extends KunenaView
      */
     public function displayDefault()
     {
-        $help_url = 'https://docs.kunena.org/en/';
-        JToolbarHelper::help('COM_KUNENA', false, $help_url);
+        // 5.5.0: only Options in the toolbar (kunena.org's changelog, support forum and help pages are Kunena's, not this
+        // fork's); the fork's changelog is linked next to the version
         JToolbarHelper::title(Text::_('COM_KUNENA') . ': ' . Text::_('COM_KUNENA_DASHBOARD'), 'dashboard');
-        JToolbarHelper::link('https://www.kunena.org/bugs/changelog', Text::_('COM_KUNENA_DASHBOARD_CHANGELOG'));
-        JToolbarHelper::link('https://www.kunena.org/forum', Text::_('COM_KUNENA_DASHBOARD_GET_SUPPORT'));
 
         if (Factory::getUser()->authorise('core.admin', 'com_kunena')) {
             JToolbarHelper::spacer();

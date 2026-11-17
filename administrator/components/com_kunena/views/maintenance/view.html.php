@@ -35,6 +35,8 @@ class KunenaAdminViewMaintenance extends KunenaView
         $this->canRun      = Factory::getUser()->authorise('core.admin', 'com_kunena');
         $this->trashCounts = KunenaForumTrash::count();
         $this->namesOn     = KunenaUserNormalizer::isEnabled();
+        $this->utf8mb4     = KunenaDatabaseUtf8mb4::applies();
+        $this->utf8mb4Todo = $this->utf8mb4 ? KunenaDatabaseUtf8mb4::pending() : array();
         $this->categories  = HTMLHelper::_(
             'kunenaforum.categorylist',
             'categories[]',

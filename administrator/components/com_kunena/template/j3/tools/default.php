@@ -27,25 +27,21 @@ use Joomla\CMS\Language\Text;
 			</div>
 			<hr class="hr-condensed">
 			<div id="dashboard-icons" class="btn-group">
-				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=report">
-					<i class="icon-big icon-support"></i><br/>
-					<span><?php echo Text::_('COM_KUNENA_REPORT_SYSTEM'); ?></span>
-				</a>
-				<a class="btn" href="index.php?option=com_kunena&view=maintenance">
-					<i class="icon-big icon-wrench"></i><br/>
-					<span><?php echo Text::_('COM_KUNENA_MAINTENANCE'); ?></span>
-				</a>
-				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=sampledata">
-					<i class="icon-big icon-database"></i><br/>
-					<span><?php echo Text::_('COM_KUNENA_SAMPLEDATA'); ?></span>
+				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=diagnostics">
+					<i class="icon-big icon-health"></i><br/>
+					<span><?php echo Text::_('COM_KUNENA_DIAGNOSTICS_LABEL_DIAGNOSTICS'); ?></span>
 				</a>
 				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=menu">
 					<i class="icon-big icon-menu"></i><br/>
 					<span><?php echo Text::_('COM_KUNENA_A_MENU_MANAGER'); ?></span>
 				</a>
-				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=diagnostics">
-					<i class="icon-big icon-health"></i><br/>
-					<span><?php echo Text::_('COM_KUNENA_DIAGNOSTICS_LABEL_DIAGNOSTICS'); ?></span>
+				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=report">
+					<i class="icon-big icon-support"></i><br/>
+					<span><?php echo Text::_('COM_KUNENA_REPORT_SYSTEM'); ?></span>
+				</a>
+				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=sampledata">
+					<i class="icon-big icon-database"></i><br/>
+					<span><?php echo Text::_('COM_KUNENA_SAMPLEDATA'); ?></span>
 				</a>
 				<a class="btn" href="index.php?option=com_kunena&view=tools&layout=uninstall">
 					<i class="icon-big icon-remove"></i><br/>

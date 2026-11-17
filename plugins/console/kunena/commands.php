@@ -809,3 +809,110 @@ class KunenaUsersNormalizeCommand extends AbstractCommand
         return $rows;
     }
 }
+
+/**
+ * kunena:database:utf8mb4: convert Kunena's MySQL tables whose columns aren't utf8mb4 yet, like Kunena > Maintenance >
+ * Convert Kunena's tables to utf8mb4 (without the web server's time limit, for large forums).
+ *
+ * @since 5.5.0
+ */
+#[\AllowDynamicProperties]
+class KunenaDatabaseUtf8mb4Command extends AbstractCommand
+{
+    protected $name = 'kunena:database:utf8mb4';
+
+    protected $description = 'Convert Kunena\'s MySQL tables to utf8mb4 (emoji in posts, no "Illegal mix of collations")';
+
+    protected $help = 'Converts every Kunena table whose columns are still utf8 (utf8mb3) to utf8mb4 (utf8mb4_unicode_ci), one '
+        . 'table at a time, like Kunena > Maintenance. Kunena\'s installer only changed the tables\' default character set, '
+        . 'so forums installed before utf8mb4 kept utf8mb3 columns: posts can\'t hold emoji, and searching for them fails '
+        . 'with "Illegal mix of collations". Large tables take a while and are locked meanwhile: make a backup and run it '
+        . 'at a quiet time. MySQL and MariaDB only. --dry-run lists the tables.';
+
+    protected $dryRun = true;
+
+    protected $superUser = true;
+
+    /**
+     * @param   CommandIO  $io  Input/output
+     *
+     * @return  integer  Exit code
+     *
+     * @since 5.5.0
+     */
+    protected function doExecute(CommandIO $io)
+    {
+        $io->title('Kunena: tables to utf8mb4');
+
+        if (!kunenaConsoleLoad() || !class_exists('KunenaDatabaseUtf8mb4')) {
+            $io->error('Kunena is not installed, or its installation has not been completed.');
+
+            return self::FAILURE;
+        }
+
+        if (!KunenaDatabaseUtf8mb4::applies()) {
+            $io->setData('tables', array());
+            $io->success('Only MySQL and MariaDB databases need this.');
+
+            return self::SUCCESS;
+        }
+
+        $pending = KunenaDatabaseUtf8mb4::pending();
+        $rows    = array();
+
+        foreach ($pending as $name => $table) {
+            $rows[] = array('table' => $name, 'rows' => $table->rows, 'columns' => $table->columns, 'collation' => $table->collation);
+        }
+
+        if (!$rows) {
+            $io->setData('tables', array());
+            $io->success('Every Kunena table is in utf8mb4.');
+
+            return self::SUCCESS;
+        }
+
+        $io->table(array('table' => 'Table', 'rows' => 'Rows (estimate)', 'columns' => 'Columns not utf8mb4', 'collation' => 'Collation'), $rows, 'tables');
+
+        if ($io->isDryRun()) {
+            $io->plan(sprintf('Convert %d tables to utf8mb4 (%s)', count($rows), KunenaDatabaseUtf8mb4::COLLATION), array('action' => 'convert', 'count' => count($rows)));
+
+            return self::SUCCESS;
+        }
+
+        if ($io->isInteractive() && !$io->confirm(sprintf('Convert %d tables to utf8mb4? Make a backup first: large tables take a while and are locked meanwhile.', count($rows)), false)) {
+            $io->warning('Cancelled.');
+
+            return self::REFUSED;
+        }
+
+        @set_time_limit(0);
+        $converted = array();
+        $failed    = array();
+
+        foreach (array_keys($pending) as $name) {
+            $start = microtime(true);
+
+            try {
+                KunenaDatabaseUtf8mb4::convert($name);
+                $converted[] = $name;
+                $io->text(sprintf('%s converted (%.1f s)', $name, microtime(true) - $start));
+            } catch (Exception $e) {
+                $failed[$name] = $e->getMessage();
+                $io->warning($name . ': ' . $e->getMessage());
+            }
+        }
+
+        $io->setData('converted', $converted);
+
+        if ($failed) {
+            $io->setData('failed', $failed);
+            $io->error(sprintf('%d tables converted, %d failed.', count($converted), count($failed)));
+
+            return self::FAILURE;
+        }
+
+        $io->success(sprintf('%d tables converted to utf8mb4.', count($converted)));
+
+        return self::SUCCESS;
+    }
+}

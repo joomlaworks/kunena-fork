@@ -41,6 +41,6 @@ class PlgConsoleKunena extends CMSPlugin
 
         require_once __DIR__ . '/commands.php';
 
-        return array(new KunenaTrashPurgeCommand(), new KunenaSampledataInstallCommand(), new KunenaSampledataRemoveCommand(), new KunenaBaldrickProcessCommand(), new KunenaBaldrickIndexCommand(), new KunenaBaldrickCheckCommand(), new KunenaSitemapGenerateCommand(), new KunenaUsersNormalizeCommand());
+        return array(new KunenaTrashPurgeCommand(), new KunenaSampledataInstallCommand(), new KunenaSampledataRemoveCommand(), new KunenaBaldrickProcessCommand(), new KunenaBaldrickIndexCommand(), new KunenaBaldrickCheckCommand(), new KunenaSitemapGenerateCommand(), new KunenaUsersNormalizeCommand(), new KunenaDatabaseUtf8mb4Command());
     }
 }

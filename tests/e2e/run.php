@@ -6,7 +6,7 @@ require __DIR__ . '/lib.php';
 $env = parse_ini_string(preg_replace('/^(\w+)=/m', '$1=', shell_exec('bash -c ". ' . __DIR__ . '/env.sh; set | grep -E \'^(DBTEST|SITES|OUT|ADMIN_USER|ADMIN_PASS)=\'"')));
 $db   = isset($argv[1]) ? $argv[1] : 'sqlite';
 $ports = array('sqlite' => 8101, 'pg' => 8102, 'mariadb' => 8103, 'pgpdo' => 8104, 'mysql' => 8105);
-$all  = array('install', 'wizard', 'admin', 'config', 'site', 'post', 'guest', 'features', 'search', 'profile', 'recent', 'moderate', 'emptytrash', 'sampledata', 'sitemap', 'profiles', 'usernames', 'extras', 'baldrick', 'adminpages', 'tools', 'uninstall');
+$all  = array('install', 'wizard', 'admin', 'config', 'site', 'post', 'guest', 'features', 'search', 'profile', 'recent', 'moderate', 'emptytrash', 'sampledata', 'sitemap', 'profiles', 'usernames', 'utf8mb4', 'extras', 'baldrick', 'adminpages', 'tools', 'uninstall');
 $steps = isset($argv[2]) ? explode(',', $argv[2]) : $all;
 $site = $env['SITES'] . '/' . $db;
 $base = 'http://127.0.0.1:' . $ports[$db] . '/';
@@ -846,6 +846,28 @@ return json_encode(array("ids" => $ids, "counts" => KunenaUserNormalizer::count(
                 result('names-register', $ok, 'refusedMsg=' . (int) (stripos($refused, 'Usernames may only contain') !== false) . ' made=' . json_encode($made));
                 kexecJson($clean . ' return json_encode(true);');
                 break;
+            case 'utf8mb4':
+                // MySQL/MariaDB: Kunena's tables of old sites still have utf8 (utf8mb3) columns; Maintenance converts them
+                if (!in_array($db, array('mariadb', 'mysql'), true)) {
+                    $r = maintenance('db_utf8mb4');
+                    result('utf8mb4', $r && !empty($r['success']) && !empty($r['done']), 'not needed on ' . $db . ': ' . json_encode($r));
+                    break;
+                }
+                $old = kexecJson('$db = JFactory::getDbo(); foreach (array("#__kunena_messages", "#__kunena_messages_text") as $t) { $db->setQuery("ALTER TABLE " . $db->quoteName($t) . " CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci")->execute(); }
+return json_encode(array_keys(KunenaDatabaseUtf8mb4::pending()));');
+                $cli = json_decode(shell_exec('cd ' . escapeshellarg($site) . ' && php cli/joomla.php kunena:database:utf8mb4 --dry-run --format=json 2>/dev/null'), true);
+                $page = $admin->get('administrator/' . kurl('view=maintenance'));
+                $r = maintenance('db_utf8mb4');
+                $after = kexecJson('$db = JFactory::getDbo(); $pending = array_keys(KunenaDatabaseUtf8mb4::pending());
+$db->setQuery("SELECT id FROM #__kunena_messages ORDER BY id DESC", 0, 1); $id = (int) $db->loadResult();
+$db->setQuery("UPDATE #__kunena_messages SET subject=" . $db->quote("Emoji \u{1F600} subject") . " WHERE id=" . $id)->execute();
+$db->setQuery("SELECT COUNT(*) FROM #__kunena_messages WHERE subject LIKE " . $db->quote("%\u{1F600}%")); $found = (int) $db->loadResult();
+$db->setQuery("SELECT subject FROM #__kunena_messages WHERE id=" . $id); $back = $db->loadResult();
+return json_encode(array("pending" => $pending, "found" => $found, "stored" => $back === "Emoji \u{1F600} subject"));');
+                $ok = count($old) == 2 && count(isset($cli['data']['tables']) ? $cli['data']['tables'] : array()) == 2 && strpos($page, 'kunena-job-db_utf8mb4') !== false
+                    && $r && !empty($r['success']) && !empty($r['done']) && $after['pending'] === array() && $after['found'] === 1 && $after['stored'];
+                result('utf8mb4', $ok, 'before=' . json_encode($old) . ' cli=' . json_encode(isset($cli['data']) ? $cli['data'] : $cli) . ' job=' . json_encode($r) . ' after=' . json_encode($after));
+                break;
             case 'extras':
                 // The modules and plugins kunena.org used to distribute separately, now in the package
                 $x = kexecJson(
@@ -1042,7 +1064,7 @@ $db->insertObject("#__users", $u, "id"); $k = (object) array("userid" => (int) $
 $p = (object) array("name" => "Pending Member", "username" => "pending-member", "email" => "pending@maint.invalid", "password" => "", "block" => 1, "sendEmail" => 0, "registerDate" => JFactory::getDate()->toSql(), "lastvisitDate" => $db->getNullDate(), "activation" => "abc", "params" => "{}", "lastResetTime" => $db->getNullDate(), "resetCount" => 0, "otpKey" => "", "otep" => "", "requireReset" => 0);
 $db->setQuery("DELETE FROM #__users WHERE email=" . $db->quote("pending@maint.invalid"))->execute(); $db->insertObject("#__users", $p, "id");
 return json_encode(array("banned" => (int) $u->id, "pending" => (int) $p->id));');
-                kexecJson('$db = JFactory::getDbo(); $db->setQuery("UPDATE #__kunena_messages SET subject=" . $db->quote("Re: RE: Seeded prefix") . " WHERE id=(SELECT MAX(id) FROM #__kunena_messages)")->execute(); return json_encode(true);');
+                kexecJson('$db = JFactory::getDbo(); $db->setQuery("SELECT MAX(id) FROM #__kunena_messages"); $id = (int) $db->loadResult(); $db->setQuery("UPDATE #__kunena_messages SET subject=" . $db->quote("Re: RE: Seeded prefix") . " WHERE id=" . $id)->execute(); return json_encode(true);');
                 foreach (array(
                     'users_add' => array(), 'users_rename' => array(), 'users_remove' => array(), 'users_lifetime' => array(),
                     'prune' => array('categories' => array(2), 'days' => 3650, 'delete' => 0, 'only' => 'all', 'keepsticky' => 1),

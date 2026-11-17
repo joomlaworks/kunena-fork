@@ -45,7 +45,7 @@ how the code base is organised and how to work on it, see [AGENTS.md](AGENTS.md)
   steps; "Preview" shows the counts and the first 50 changes. Members whose username changes log in with
   the new one (Joomla's "Forgot your username?" sends it to them).
 - Sample Data's accounts use dashes (`maria-lopez`), as the new rules want.
-- **Kunena > Maintenance** (JoomlaWorks Ltd.), a new administrator page (sidebar, and a tile in Tools) replacing seven
+- **Kunena > Maintenance** (JoomlaWorks Ltd.), a new administrator page (in the sidebar, after Tools) replacing seven
   of Tools' sub-pages (Prune Categories, Synchronize Users, Recount Statistics, Purge RE: Prefixes, Cleanup IP
   Addresses, Empty Trash, Normalise Usernames & Names): every job one after the other, with its name and description,
   its own fields where it needs them, a Run button and its result below it. The jobs that were checkboxes run on their
@@ -61,6 +61,18 @@ how the code base is organised and how to work on it, see [AGENTS.md](AGENTS.md)
   - "Purge RE: Prefixes" used `TRIM(LEADING ...)`, which SQLite lacks; it now strips the prefix in PHP, repeated
     prefixes too ("Re: RE:"), in steps, on every database. "Remove user profiles from deleted users" works on SQLite.
 - Banning a user printed "banlevel 1" into the page (a leftover debug `echo`): removed.
+- Dashboard: the toolbar keeps only Options (Changelog, Get Support and Help pointed to kunena.org); a "Changelog" link
+  to this fork's CHANGELOG.md follows the version number; no codename and no "Getting Started" block (kunena.org's
+  documentation); the shortcuts block is as tall as the information block next to it, its shortcuts spread over it.
+  Tools lists its pages alphabetically, and Maintenance its sections.
+- **MySQL/MariaDB: Kunena's tables to utf8mb4.** Kunena's installer only ever changed its tables' default character
+  set to utf8mb4 (`ALTER TABLE ... DEFAULT CHARACTER SET`), never the columns, so forums installed before utf8mb4
+  still have utf8 (utf8mb3) columns: posts can't hold emoji, and a search with one fails with "Illegal mix of
+  collations (utf8mb3_general_ci,IMPLICIT) and (utf8mb4_0900_ai_ci,COERCIBLE) for operation 'like'" (reproduced on
+  MySQL 8.4). `KunenaDatabaseUtf8mb4` finds the Kunena tables with columns that aren't utf8mb4 (information_schema)
+  and converts them (`CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`), one per step, from Maintenance >
+  Database (shown on MySQL and MariaDB, with the tables still to convert) or `kunena:database:utf8mb4` (no time limit,
+  for large forums).
 
 ### Test results (5.5.0)
 
@@ -76,7 +88,9 @@ how the code base is organised and how to work on it, see [AGENTS.md](AGENTS.md)
   refused and accepted through Joomla's user manager. The Tools scenarios run every Maintenance job through its JSON
   task, check that a lifetime-banned account is deleted while a pending registration stays and that RE: prefixes are
   stripped, and that the old tool pages redirect; the Maintenance page was also checked in Chrome (headless: Run, the
-  preview, a cancelled confirmation, no JavaScript errors). These scenarios are now part of `tests/e2e/matrix.sh` (in 5.4.0
+  preview, a cancelled confirmation, no JavaScript errors). The `utf8mb4` scenario (MySQL, MariaDB) turns two Kunena
+  tables back to utf8, checks the CLI's dry run and the Maintenance job, then stores and finds an emoji with LIKE.
+  These scenarios are now part of `tests/e2e/matrix.sh` (in 5.4.0
   the sitemap scenario was run on its own, on SQLite only).
 
 ---

@@ -88,114 +88,131 @@ $select = function ($id, $name, array $options, $selected, $label) use ($escape,
 		<?php if (!$this->canRun) : ?>
 			<div class="alert alert-error"><?php echo Text::_('COM_KUNENA_MAINTENANCE_NOT_ALLOWED'); ?></div>
 		<?php else : ?>
+			<?php if ($this->utf8mb4) : ?>
+				<h3 id="database"><?php echo Text::_('COM_KUNENA_MAINTENANCE_DATABASE'); ?></h3>
+				<div class="kunena-maintenance-group">
+					<?php
+                    $job(
+                        'db_utf8mb4',
+                        Text::_('COM_KUNENA_MAINTENANCE_UTF8MB4'),
+                        Text::_('COM_KUNENA_MAINTENANCE_UTF8MB4_DESC') . ' '
+                        . ($this->utf8mb4Todo ? '<strong>' . Text::sprintf('COM_KUNENA_MAINTENANCE_UTF8MB4_TODO', count($this->utf8mb4Todo), $escape(implode(', ', array_keys($this->utf8mb4Todo)))) . '</strong>'
+                            : Text::_('COM_KUNENA_MAINTENANCE_UTF8MB4_NONE')),
+                        '',
+                        Text::_('COM_KUNENA_MAINTENANCE_UTF8MB4_CONFIRM')
+                    );
+			    ?>
+				</div>
+			<?php endif; ?>
+
+			<h3><?php echo Text::_('COM_KUNENA_MAINTENANCE_POSTS'); ?></h3>
+			<div class="kunena-maintenance-group">
+			<?php
+            $job(
+                'purge_re',
+                Text::_('COM_KUNENA_A_PURGE_RE_STATEMENTS'),
+                Text::_('COM_KUNENA_MAINTENANCE_PURGE_RE_DESC'),
+                $field('kunena-purge-prefix', Text::_('COM_KUNENA_MAINTENANCE_PURGE_RE_PREFIX'), '<input type="text" id="kunena-purge-prefix" name="prefix" value="Re:" class="ksm-field kunena-maintenance-wide" maxlength="255" required="required"/>', 'kunena-maintenance-field--block'),
+                Text::_('COM_KUNENA_MAINTENANCE_CONFIRM')
+            );
+$job(
+    'ip_posts',
+    Text::_('COM_KUNENA_LEGEND_CLEANUP_IP'),
+    Text::_('COM_KUNENA_MAINTENANCE_IP_POSTS_DESC'),
+    $days('kunena-ip-days', 'days', 365, Text::_('COM_KUNENA_CLEANUP_IP_LEGEND_FROMDAYS')),
+    Text::_('COM_KUNENA_MAINTENANCE_CONFIRM')
+);
+$job('ip_users', Text::_('COM_KUNENA_DELETE_USERS_IP'), Text::_('COM_KUNENA_MAINTENANCE_IP_USERS_DESC'), '', Text::_('COM_KUNENA_MAINTENANCE_CONFIRM'));
+$job(
+    'prune',
+    Text::_('COM_KUNENA_A_PRUNE'),
+    Text::_('COM_KUNENA_A_PRUNE_DESC'),
+    $field('categories', Text::_('COM_KUNENA_A_PRUNE_NAME'), $this->categories, 'kunena-maintenance-field--block')
+    . $days('kunena-prune-days', 'days', 30, Text::_('COM_KUNENA_A_PRUNE_NOPOSTS'))
+    . $select(
+        'kunena-prune-only',
+        'only',
+        array(
+            'normal'     => Text::_('COM_KUNENA_A_PRUNE_NORMAL'),
+            'all'        => Text::_('COM_KUNENA_A_PRUNE_ALL'),
+            'locked'     => Text::_('COM_KUNENA_A_PRUNE_LOCKED'),
+            'unanswered' => Text::_('COM_KUNENA_A_PRUNE_UNANSWERED'),
+            'answered'   => Text::_('COM_KUNENA_A_PRUNE_ANSWERED'),
+            'unapproved' => Text::_('COM_KUNENA_A_PRUNE_UNAPPROVED'),
+            'deleted'    => Text::_('COM_KUNENA_A_PRUNE_DELETED'),
+            'shadow'     => Text::_('COM_KUNENA_A_PRUNE_SHADOW'),
+        ),
+        'normal',
+        Text::_('COM_KUNENA_A_PRUNE_CONTROL_OPTIONS')
+    )
+    . $select('kunena-prune-sticky', 'keepsticky', array('1' => Text::_('JYES'), '0' => Text::_('JNO')), '1', Text::_('COM_KUNENA_A_PRUNE_KEEP_STICKY'))
+    . $select('kunena-prune-delete', 'delete', array('0' => Text::_('COM_KUNENA_MAINTENANCE_PRUNE_TRASH'), '1' => Text::_('COM_KUNENA_MAINTENANCE_PRUNE_DELETE')), '0', Text::_('COM_KUNENA_MAINTENANCE_PRUNE_ACTION')),
+    Text::_('COM_KUNENA_MAINTENANCE_PRUNE_CONFIRM'),
+    '',
+    'btn-danger'
+);
+?>
+			</div>
+
 			<h3><?php echo Text::_('COM_KUNENA_A_RECOUNT'); ?></h3>
 			<div class="kunena-maintenance-group">
 			<?php
-            $job('recount_topics', Text::_('COM_KUNENA_A_RECOUNT_TOPICS'), Text::_('COM_KUNENA_A_RECOUNT_TOPICS_DESC'));
-		    $job('recount_usertopics', Text::_('COM_KUNENA_A_RECOUNT_USERTOPICS'), Text::_('COM_KUNENA_A_RECOUNT_USERTOPICS_DESC'));
-		    $job('recount_categories', Text::_('COM_KUNENA_A_RECOUNT_CATEGORIES'), Text::_('COM_KUNENA_A_RECOUNT_CATEGORIES_DESC'));
-		    $job('recount_users', Text::_('COM_KUNENA_A_RECOUNT_USERS'), Text::_('COM_KUNENA_A_RECOUNT_USERS_DESC'));
-		    $job('recount_polls', Text::_('COM_KUNENA_MAINTENANCE_RECOUNT_POLLS'), Text::_('COM_KUNENA_MAINTENANCE_RECOUNT_POLLS_DESC'));
-		    ?>
+$job('recount_topics', Text::_('COM_KUNENA_A_RECOUNT_TOPICS'), Text::_('COM_KUNENA_A_RECOUNT_TOPICS_DESC'));
+$job('recount_usertopics', Text::_('COM_KUNENA_A_RECOUNT_USERTOPICS'), Text::_('COM_KUNENA_A_RECOUNT_USERTOPICS_DESC'));
+$job('recount_categories', Text::_('COM_KUNENA_A_RECOUNT_CATEGORIES'), Text::_('COM_KUNENA_A_RECOUNT_CATEGORIES_DESC'));
+$job('recount_users', Text::_('COM_KUNENA_A_RECOUNT_USERS'), Text::_('COM_KUNENA_A_RECOUNT_USERS_DESC'));
+$job('recount_polls', Text::_('COM_KUNENA_MAINTENANCE_RECOUNT_POLLS'), Text::_('COM_KUNENA_MAINTENANCE_RECOUNT_POLLS_DESC'));
+?>
 			</div>
 
 			<h3><?php echo Text::_('COM_KUNENA_SYNC_USERS'); ?></h3>
 			<div class="kunena-maintenance-group">
 			<?php
-		    $job('users_add', Text::_('COM_KUNENA_SYNC_USERS_ADD'), Text::_('COM_KUNENA_SYNC_USERS_ADD_DESC'));
-		    $job('users_remove', Text::_('COM_KUNENA_SYNC_USERS_DEL'), Text::_('COM_KUNENA_SYNC_USERS_DEL_DESC'), '', Text::_('COM_KUNENA_MAINTENANCE_CONFIRM'));
-		    $job('users_rename', Text::_('COM_KUNENA_SYNC_USERS_RENAME'), Text::_('COM_KUNENA_SYNC_USERS_RENAME_DESC'));
-		    $job('users_lifetime', Text::_('COM_KUNENA_SYNC_USERS_DELLIFE'), Text::_('COM_KUNENA_MAINTENANCE_LIFETIME_DESC'), '', Text::_('COM_KUNENA_MAINTENANCE_LIFETIME_CONFIRM'), '', 'btn-danger');
-		    ?>
-			</div>
-
-			<h3><?php echo Text::_('COM_KUNENA_CFG_SECTION_USERNAMES'); ?></h3>
-			<div class="kunena-maintenance-group">
-			<?php
-		    $job(
-		        'names_preview',
-		        Text::_('COM_KUNENA_NORMALIZENAMES_PREVIEW_TITLE'),
-		        Text::sprintf($this->namesOn ? 'COM_KUNENA_NORMALIZENAMES_PREVIEW_DESC' : 'COM_KUNENA_NORMALIZENAMES_DISABLED', $escape('index.php?option=com_kunena&view=config')),
-		        '',
-		        '',
-		        Text::_('COM_KUNENA_NORMALIZENAMES_PREVIEW_BUTTON'),
-		        'btn-default'
-		    );
-		    $job(
-		        'names_normalize',
-		        Text::_('COM_KUNENA_NORMALIZENAMES'),
-		        Text::sprintf('COM_KUNENA_NORMALIZENAMES_DESC', $escape('index.php?option=com_kunena&view=config')) . ' <strong>' . Text::_('COM_KUNENA_NORMALIZENAMES_WARNING') . '</strong>',
-		        '',
-		        Text::_('COM_KUNENA_NORMALIZENAMES_CONFIRM'),
-		        '',
-		        'btn-danger'
-		    );
-		    ?>
-			</div>
-
-			<h3><?php echo Text::_('COM_KUNENA_MAINTENANCE_POSTS'); ?></h3>
-			<div class="kunena-maintenance-group">
-			<?php
-		    $job(
-		        'purge_re',
-		        Text::_('COM_KUNENA_A_PURGE_RE_STATEMENTS'),
-		        Text::_('COM_KUNENA_MAINTENANCE_PURGE_RE_DESC'),
-		        $field('kunena-purge-prefix', Text::_('COM_KUNENA_MAINTENANCE_PURGE_RE_PREFIX'), '<input type="text" id="kunena-purge-prefix" name="prefix" value="Re:" class="ksm-field kunena-maintenance-wide" maxlength="255" required="required"/>', 'kunena-maintenance-field--block'),
-		        Text::_('COM_KUNENA_MAINTENANCE_CONFIRM')
-		    );
-		    $job(
-		        'ip_posts',
-		        Text::_('COM_KUNENA_LEGEND_CLEANUP_IP'),
-		        Text::_('COM_KUNENA_MAINTENANCE_IP_POSTS_DESC'),
-		        $days('kunena-ip-days', 'days', 365, Text::_('COM_KUNENA_CLEANUP_IP_LEGEND_FROMDAYS')),
-		        Text::_('COM_KUNENA_MAINTENANCE_CONFIRM')
-		    );
-		    $job('ip_users', Text::_('COM_KUNENA_DELETE_USERS_IP'), Text::_('COM_KUNENA_MAINTENANCE_IP_USERS_DESC'), '', Text::_('COM_KUNENA_MAINTENANCE_CONFIRM'));
-		    $job(
-		        'prune',
-		        Text::_('COM_KUNENA_A_PRUNE'),
-		        Text::_('COM_KUNENA_A_PRUNE_DESC'),
-		        $field('categories', Text::_('COM_KUNENA_A_PRUNE_NAME'), $this->categories, 'kunena-maintenance-field--block')
-		        . $days('kunena-prune-days', 'days', 30, Text::_('COM_KUNENA_A_PRUNE_NOPOSTS'))
-		        . $select(
-		            'kunena-prune-only',
-		            'only',
-		            array(
-		                'normal'     => Text::_('COM_KUNENA_A_PRUNE_NORMAL'),
-		                'all'        => Text::_('COM_KUNENA_A_PRUNE_ALL'),
-		                'locked'     => Text::_('COM_KUNENA_A_PRUNE_LOCKED'),
-		                'unanswered' => Text::_('COM_KUNENA_A_PRUNE_UNANSWERED'),
-		                'answered'   => Text::_('COM_KUNENA_A_PRUNE_ANSWERED'),
-		                'unapproved' => Text::_('COM_KUNENA_A_PRUNE_UNAPPROVED'),
-		                'deleted'    => Text::_('COM_KUNENA_A_PRUNE_DELETED'),
-		                'shadow'     => Text::_('COM_KUNENA_A_PRUNE_SHADOW'),
-		            ),
-		            'normal',
-		            Text::_('COM_KUNENA_A_PRUNE_CONTROL_OPTIONS')
-		        )
-		        . $select('kunena-prune-sticky', 'keepsticky', array('1' => Text::_('JYES'), '0' => Text::_('JNO')), '1', Text::_('COM_KUNENA_A_PRUNE_KEEP_STICKY'))
-		        . $select('kunena-prune-delete', 'delete', array('0' => Text::_('COM_KUNENA_MAINTENANCE_PRUNE_TRASH'), '1' => Text::_('COM_KUNENA_MAINTENANCE_PRUNE_DELETE')), '0', Text::_('COM_KUNENA_MAINTENANCE_PRUNE_ACTION')),
-		        Text::_('COM_KUNENA_MAINTENANCE_PRUNE_CONFIRM'),
-		        '',
-		        'btn-danger'
-		    );
-		    ?>
+$job('users_add', Text::_('COM_KUNENA_SYNC_USERS_ADD'), Text::_('COM_KUNENA_SYNC_USERS_ADD_DESC'));
+$job('users_remove', Text::_('COM_KUNENA_SYNC_USERS_DEL'), Text::_('COM_KUNENA_SYNC_USERS_DEL_DESC'), '', Text::_('COM_KUNENA_MAINTENANCE_CONFIRM'));
+$job('users_rename', Text::_('COM_KUNENA_SYNC_USERS_RENAME'), Text::_('COM_KUNENA_SYNC_USERS_RENAME_DESC'));
+$job('users_lifetime', Text::_('COM_KUNENA_SYNC_USERS_DELLIFE'), Text::_('COM_KUNENA_MAINTENANCE_LIFETIME_DESC'), '', Text::_('COM_KUNENA_MAINTENANCE_LIFETIME_CONFIRM'), '', 'btn-danger');
+?>
 			</div>
 
 			<h3 id="emptytrash"><?php echo Text::_('COM_KUNENA_MAINTENANCE_TRASH'); ?></h3>
 			<div class="kunena-maintenance-group">
 			<?php
-		    $job(
-		        'empty_trash',
-		        Text::_('COM_KUNENA_EMPTYTRASH'),
-		        Text::_('COM_KUNENA_EMPTYTRASH_DESC') . ' ' . Text::sprintf('COM_KUNENA_MAINTENANCE_TRASH_COUNTS', (int) $this->trashCounts['topics'], (int) $this->trashCounts['messages'])
-		        . ' <strong>' . Text::_('COM_KUNENA_EMPTYTRASH_WARNING') . '</strong>',
-		        '',
-		        Text::_('COM_KUNENA_EMPTYTRASH_CONFIRM'),
-		        '',
-		        'btn-danger'
-		    );
-		    ?>
+$job(
+    'empty_trash',
+    Text::_('COM_KUNENA_EMPTYTRASH'),
+    Text::_('COM_KUNENA_EMPTYTRASH_DESC') . ' ' . Text::sprintf('COM_KUNENA_MAINTENANCE_TRASH_COUNTS', (int) $this->trashCounts['topics'], (int) $this->trashCounts['messages'])
+    . ' <strong>' . Text::_('COM_KUNENA_EMPTYTRASH_WARNING') . '</strong>',
+    '',
+    Text::_('COM_KUNENA_EMPTYTRASH_CONFIRM'),
+    '',
+    'btn-danger'
+);
+?>
+			</div>
+
+			<h3><?php echo Text::_('COM_KUNENA_CFG_SECTION_USERNAMES'); ?></h3>
+			<div class="kunena-maintenance-group">
+			<?php
+$job(
+    'names_preview',
+    Text::_('COM_KUNENA_NORMALIZENAMES_PREVIEW_TITLE'),
+    Text::sprintf($this->namesOn ? 'COM_KUNENA_NORMALIZENAMES_PREVIEW_DESC' : 'COM_KUNENA_NORMALIZENAMES_DISABLED', $escape('index.php?option=com_kunena&view=config')),
+    '',
+    '',
+    Text::_('COM_KUNENA_NORMALIZENAMES_PREVIEW_BUTTON'),
+    'btn-default'
+);
+$job(
+    'names_normalize',
+    Text::_('COM_KUNENA_NORMALIZENAMES'),
+    Text::sprintf('COM_KUNENA_NORMALIZENAMES_DESC', $escape('index.php?option=com_kunena&view=config')) . ' <strong>' . Text::_('COM_KUNENA_NORMALIZENAMES_WARNING') . '</strong>',
+    '',
+    Text::_('COM_KUNENA_NORMALIZENAMES_CONFIRM'),
+    '',
+    'btn-danger'
+);
+?>
 			</div>
 		<?php endif; ?>
 	</div>

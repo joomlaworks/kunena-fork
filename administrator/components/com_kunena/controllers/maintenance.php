@@ -59,6 +59,7 @@ class KunenaAdminControllerMaintenance extends KunenaController
         'purge_re'           => 'jobPurgeRe',
         'prune'              => 'jobPrune',
         'empty_trash'        => 'jobEmptyTrash',
+        'db_utf8mb4'         => 'jobDbUtf8mb4',
     );
 
     /**
@@ -662,6 +663,56 @@ class KunenaAdminControllerMaintenance extends KunenaController
         return array(
             'message' => Text::sprintf('COM_KUNENA_EMPTYTRASH_DONE', $state['topics'], $state['messages']),
             'errors'  => $state['errors'],
+        );
+    }
+
+    /**
+     * Converts Kunena's MySQL tables whose columns aren't utf8mb4 yet (KunenaDatabaseUtf8mb4), one table per step: a
+     * large table can take a while, and the page shows each one as it is done.
+     *
+     * @param   array  $state  Job state (total, converted, failed)
+     *
+     * @return  array
+     *
+     * @since 5.5.0
+     */
+    protected function jobDbUtf8mb4(array &$state)
+    {
+        if (!KunenaDatabaseUtf8mb4::applies()) {
+            return array('message' => Text::_('COM_KUNENA_MAINTENANCE_UTF8MB4_NOT_NEEDED'));
+        }
+
+        $pending = array_diff_key(KunenaDatabaseUtf8mb4::pending(), isset($state['failed']) ? $state['failed'] : array());
+
+        if (!isset($state['total'])) {
+            $state = array('total' => count($pending), 'converted' => 0, 'failed' => array());
+        }
+
+        if (!$pending) {
+            return array(
+                'success' => !$state['failed'],
+                'message' => $state['total'] ? Text::sprintf('COM_KUNENA_MAINTENANCE_UTF8MB4_DONE', $state['converted']) : Text::_('COM_KUNENA_MAINTENANCE_UTF8MB4_NONE'),
+                'errors'  => array_values($state['failed']),
+            );
+        }
+
+        $table = key($pending);
+        @set_time_limit(0);
+
+        try {
+            KunenaDatabaseUtf8mb4::convert($table);
+            $state['converted']++;
+        } catch (Exception $e) {
+            $state['failed'][$table] = $table . ': ' . $e->getMessage();
+        }
+
+        $handled = $state['converted'] + count($state['failed']);
+
+        return array(
+            'done'    => false,
+            'status'  => min(99, (int) floor(100 * $handled / max(1, $state['total']))) . '%',
+            'message' => Text::sprintf('COM_KUNENA_MAINTENANCE_UTF8MB4_PROGRESS', $table, $handled, $state['total']),
+            'errors'  => array_values($state['failed']),
         );
     }
 

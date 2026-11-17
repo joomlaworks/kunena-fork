@@ -51,6 +51,18 @@
 /* Tab bars wrap onto a second row instead of hiding tabs behind a horizontal scroll (the configuration has ten) */
 #kunena .nav-tabs {flex-wrap:wrap;overflow-x:visible;}
 
+/* Dashboard: both blocks as tall as the taller one, the shortcuts spread over their block */
+#kunena .kunena-dashboard {display:flex;flex-wrap:wrap;}
+
+#kunena .kunena-dashboard > [class*="span"] {display:flex;flex-direction:column;}
+
+#kunena .kunena-dashboard .well {display:flex;flex:1 1 auto;flex-direction:column;}
+
+/* rem: Bootstrap 2 gives .btn-group font-size:0 */
+#kunena .kunena-dashboard #dashboard-icons {display:grid;flex:1 1 auto;grid-template-columns:repeat(auto-fill, minmax(7.5rem, 1fr));align-content:space-evenly;gap:0.75rem 0.5rem;}
+
+#kunena .kunena-dashboard #dashboard-icons .btn {margin:0;padding:1.25em 0.5em;}
+
 /* Maintenance: sections of jobs; each job its name, description, fields and result, its button centred in a second column */
 .kunena-maintenance h3 {margin:1.75em 0 0.6em;font-size:1.35em;}
 

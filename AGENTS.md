@@ -148,6 +148,10 @@ the Installer.
   `LIMIT x,y` in raw SQL (use `setQuery($q, $offset, $limit)`), multi-table `UPDATE`/`DELETE`, user variables
   (`@x`), double-quoted string literals, `GROUP BY` that doesn't list every selected non-aggregated column, comparing
   integer columns with `''`, zero dates (`0000-00-00`).
+- MySQL character set: Kunena's tables are utf8mb4 (`utf8mb4_unicode_ci`). The installer's old "conversion" only changes
+  each table's default, so older sites can still have utf8mb3 columns; `KunenaDatabaseUtf8mb4` (Maintenance >
+  Database, `kunena:database:utf8mb4`) converts them. Don't add code that assumes utf8mb4 columns on MySQL without
+  that in mind (e.g. 4-byte characters in `LIKE`).
 - Schema changes: edit `install/install.xml` (schema.php generates MySQL and PostgreSQL DDL from it); upgrade steps for
   existing MySQL sites go into `install/kunena.install.upgrade.xml`.
 

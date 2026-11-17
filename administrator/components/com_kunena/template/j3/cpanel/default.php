@@ -20,7 +20,7 @@ use Joomla\CMS\Language\Text;
 	</div>
 	<div id="j-main-container" class="span10">
 		<section class="content-block" role="main">
-			<div class="row-fluid">
+			<div class="row-fluid kunena-dashboard">
 				<div class="span7">
 					<div class="well well-small">
 						<div class="module-title nav-header"><?php echo Text::_('COM_KUNENA_CPANEL_DESC_WELCOME') ?></div>
@@ -102,25 +102,6 @@ use Joomla\CMS\Language\Text;
 						</div>
 						<div class="clearfix"></div>
 					</div>
-					<div class="well well-small">
-						<div class="module-title nav-header"><?php echo Text::_('COM_KUNENA_CPANEL_LABEL_GETTINGSTARTED') ?></div>
-						<hr class="hr-condensed">
-						<ul class="pull-left">
-							<li><i class="icon icon-question"></i> <a href="https://docs.kunena.org/en/setup"
-																	  target="_blank"
-																	  rel="noopener noreferrer"><?php echo Text::_('COM_KUNENA_CPANEL_DESC_HOWTOSETUP') ?> </a>
-							</li>
-							<li><i class="icon icon-question"></i> <a
-										href="https://docs.kunena.org/en/setup/sections-categories" target="_blank"
-										rel="noopener noreferrer"><?php echo Text::_('COM_KUNENA_CPANEL_DESC_CATEGORIES') ?> </a>
-							</li>
-							<li><i class="icon icon-question"></i> <a href="https://www.kunena.org/forum"
-																	  target="_blank"
-																	  rel="noopener noreferrer"><?php echo Text::_('COM_KUNENA_CPANEL_DESC_SUPPORT') ?> </a>
-							</li>
-						</ul>
-						<div class="clearfix"></div>
-					</div>
 				</div>
 
 				<div class="span5">
@@ -133,10 +114,7 @@ use Joomla\CMS\Language\Text;
 						<dl class="dl-horizontal kunena-about">
 							<hr class="hr-condensed">
 							<dt><?php echo Text::_('COM_KUNENA_CPANEL_LABEL_VERSION') ?>:</dt>
-							<dd><?php echo strtoupper(KunenaForum::version()); ?></dd>
-							<hr class="hr-condensed">
-							<dt><?php echo Text::_('COM_KUNENA_CPANEL_LABEL_CODENAME') ?>:</dt>
-							<dd><?php echo KunenaForum::versionName(); ?></dd>
+							<dd><?php echo strtoupper(KunenaForum::version()); ?> (<a href="https://github.com/joomlaworks/kunena-fork/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer"><?php echo Text::_('COM_KUNENA_DASHBOARD_CHANGELOG'); ?></a>)</dd>
 							<hr class="hr-condensed">
 							<dt><?php echo Text::_('COM_KUNENA_CPANEL_LABEL_DATE') ?>:</dt>
 							<dd><?php echo KunenaForum::versionDate(); ?></dd>
